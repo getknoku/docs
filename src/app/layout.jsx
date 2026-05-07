@@ -84,15 +84,12 @@ export default async function RootLayout({ children }) {
           navbar={navbar}
           footer={
             <Footer>
-              © {new Date().getFullYear()} Knoku · Built with{' '}
+              © {new Date().getFullYear()} Knoku · Built with Nextra ·{' '}
               <a
-                href="https://nextra.site"
-                target="_blank"
-                rel="noopener noreferrer"
+                href="/integrations/nextra"
                 style={{ textDecoration: 'underline' }}>
-                Nextra
+                Add Knoku to your Nextra site →
               </a>
-              .
             </Footer>
           }
           editLink={null}

@@ -18,20 +18,45 @@ When a visitor asks a question, Knoku selects the most relevant sections from
 your docs and generates an answer based only on that content. Every response
 includes source references so visitors can verify the answer.
 
+## Does Knoku use embeddings or a vector database?
+
+No. Knoku uses **tree-based retrieval**: when you push docs, it builds a
+hierarchical tree from the heading structure (pages → sections → leaves) and
+traverses that tree at query time to find the relevant content. There are no
+embeddings, no vector index, and no similarity search.
+
+The practical effect is that citations point to specific sections rather
+than similarity-matched chunks, and retrieval behavior stays predictable as
+your docs grow or are reorganized.
+
+## Which LLM does Knoku use?
+
+Knoku is **LLM-agnostic**. Answers are generated through commercial LLM
+APIs — currently models from OpenAI, Anthropic, and Google Gemini. Which
+model handles a given question can change over time as better options
+become available, without any change on your side.
+
+Retrieval (the tree traversal) runs on Knoku's own infrastructure
+regardless of which LLM is selected. Only the sections chosen for a given
+question, plus the question itself, are sent to the LLM — your full corpus
+is never sent.
+
 ## Can visitors ask questions about topics not in my docs?
 
 Knoku is designed to answer from your indexed documentation. If the answer is not
-in your docs, it should say so rather than making something up.
+in your docs, it will say so rather than making something up.
 
 ## How do I keep the index up to date?
 
 Run `npx @knoku/cli@latest push` after each documentation change. For CI workflows,
-add `push` as a step after your docs build so every merge updates the index.
+add `push` as a step after your docs build so every merge updates the index. See
+[CLI > push](/cli/push) for the full command reference and CI examples.
 
 ## Can I customize the widget?
 
-Yes. You can set custom accent colors, change the greeting text, and position
-the launcher with script tag attributes.
+Yes — accent colors, greeting text, launcher position, panel layout, custom
+trigger button, multilingual UI, consent gating, and visitor identity. See
+[Widget setup guides](/widget) for the full list.
 
 ## Does the widget work with dark mode?
 
@@ -47,25 +72,42 @@ for current limits.
 ## Is my documentation data private?
 
 Your documentation is stored on Knoku servers and used only to answer questions
-for your project. It is not shared with other projects or used to train models.
+for your project. It is not shared with other Knoku projects.
+
+## Where is my data stored?
+
+Indexed documentation, project configuration, and analytics are hosted on
+Knoku's managed infrastructure in **Frankfurt, Germany (EU)**. For other
+data-residency requirements, contact support@knoku.com before onboarding.
+
+## Is Knoku GDPR-compliant?
+
+Knoku acts as a data processor for documentation content, visitor questions,
+and any visitor identity metadata you choose to pass through the widget. For
+specific compliance requirements, contact support@knoku.com.
+
+## Can Knoku be self-hosted?
+
+No. Knoku is offered only as a managed service. This lets us ship retrieval
+and model improvements continuously without upgrade work on your side.
+
+If your concern is data residency, see "Where is my data stored?" above.
 
 ## Can I use Knoku on multiple sites?
 
 Yes, two ways depending on what you need:
 
-**Multiple domains in one project.** Add as many hosts as you need under
-**Project > Settings > Allowed Domains**. Common cases: marketing site +
-docs subdomain (`example.com` + `docs.example.com`), staging + production,
-apex + `www`, or locale subdomains (`en.docs.example.com` +
-`de.docs.example.com`). The indexed docs, analytics, and plan limits are
-shared across every listed domain.
+**Multiple domains in one project.** Add hosts under **Project > Settings >
+Allowed Domains**. Each host must be listed explicitly — domains are
+matched as exact hosts, so wildcards like `*.example.com` are not
+supported. Common cases: marketing site + docs subdomain (`example.com` +
+`docs.example.com`), staging + production, apex + `www`, or locale
+subdomains (`en.docs.example.com` + `de.docs.example.com`). The indexed
+docs, analytics, and plan limits are shared across every listed domain.
 
 **Separate projects.** Create one project per site when you want
 independent analytics, a different set of indexed docs, or separate
 billing per site.
-
-Domains are matched as exact hosts; wildcards like `*.example.com` are not
-supported.
 
 ## What happens if I remove the widget?
 
