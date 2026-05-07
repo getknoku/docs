@@ -1,0 +1,69 @@
+# Match your brand
+
+Two layers: a primary accent applied to the launcher, submit button, and focus states; and per-slot component styles for everything else.
+
+## Primary accent
+
+Set one color across both modes, or a light/dark pair.
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-primary-color-light="#0ea5e9"
+  data-primary-color-dark="#38bdf8"
+></script>
+```
+
+Or a single value for both:
+
+```html
+data-primary-color="#0ea5e9"
+```
+
+Defaults are `#171717` / `#d4d4d4` (Knoku's near-black/near-white from the brand palette). Invalid hex falls back to the default with a console warning.
+
+## Launcher copy
+
+```html
+data-launcher-text="Ask anything"
+data-launcher-subtitle="Powered by AI"
+data-launcher-align="bottom-right"
+```
+
+## Per-slot overrides
+
+Slot + property attributes target one CSS property on one slot. Append `-dark` to scope to dark mode.
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-panel-header-background-color="#ffffff"
+  data-panel-header-background-color-dark="#020617"
+  data-suggestion-chip-border-radius="6px"
+  data-suggestion-chip-padding-x="10px"
+></script>
+```
+
+The full slot list and allowed CSS properties live in [Component Styles](/widget/reference/component-styles).
+
+## Feedback thumbs in your brand color
+
+Defaults are green / red. Override the selected state to a single brand color:
+
+```html
+data-feedback-up-color="#0ea5e9"
+data-feedback-down-color="#0ea5e9"
+data-feedback-up-color-dark="#38bdf8"
+data-feedback-down-color-dark="#38bdf8"
+```
+
+Only the selected state is overridden; unselected thumbs stay in the placeholder color.
+
+## Related
+
+- [Color attributes](/widget/reference/attributes#colors)
+- [Component Styles](/widget/reference/component-styles)

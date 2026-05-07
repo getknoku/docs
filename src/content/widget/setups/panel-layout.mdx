@@ -1,0 +1,71 @@
+# Choose a panel layout
+
+`data-layout` controls how the chat panel sits relative to your site content. Two modes:
+
+- **`overlay`** (default) — panel floats above the existing layout. Site content does not move.
+- **`push`** — adds a right margin to the page body while the panel is open, so site content shifts left and the panel looks embedded next to it.
+
+## Overlay (default)
+
+Nothing to set; this is the default.
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+></script>
+```
+
+Best for sites that already use the right edge of the viewport — fixed sidebar, right-aligned table of contents, sticky header. The panel covers a vertical strip on the right; existing layout is untouched.
+
+## Push
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-layout="push"
+></script>
+```
+
+Best for full-width or centered content layouts (long-form docs, marketing pages, blog posts) where shifting content left avoids the panel covering it.
+
+While open, the widget injects this style into the document head:
+
+```css
+body { margin-right: 440px; transition: margin-right 0.2s ease; }
+```
+
+The style is removed on close and on widget destroy.
+
+## Mobile
+
+Both modes render full-width on screens below 640px. The push margin is suppressed automatically so mobile users always see the panel as a full-screen sheet.
+
+## When to pick which
+
+| Layout type | Recommended |
+|---|---|
+| Fixed sidebar / TOC docs (Docusaurus, VitePress, MkDocs default themes) | `overlay` |
+| Centered max-width content with side gutters | `overlay` |
+| Single-column long-form (Mintlify, blog, marketing pages) | `push` |
+| Full-bleed app-style UI (admin dashboards) | `push` |
+
+Try both in your dev environment before shipping — refresh with `data-layout="push"` and watch how your specific layout reacts (sticky elements, overflow, fixed-position elements often need adjustment in push mode).
+
+## npm path
+
+```ts
+import { initKnokuWidget } from '@knoku/widget'
+
+await initKnokuWidget({
+  projectId: 'YOUR_PROJECT_ID',
+  layout: 'push',  // or 'overlay' (default)
+})
+```
+
+## Related
+
+- [`data-layout` in the attributes reference](/widget/reference/attributes#behavior)

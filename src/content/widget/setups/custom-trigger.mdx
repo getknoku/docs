@@ -1,0 +1,83 @@
+# Add an AI button to your header
+
+`data-open-selector` lets any element on your page open the widget. Pass a CSS selector; the widget binds click listeners to every match.
+
+## Both buttons
+
+Keep the floating launcher and add a second opener.
+
+```html
+<header>
+  <button id="ask-ai">Ask AI</button>
+</header>
+
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-open-selector="#ask-ai"
+></script>
+```
+
+## Only your button
+
+Add `data-launcher-hidden="true"` to hide the floating launcher.
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-launcher-hidden="true"
+  data-open-selector="#ask-ai"
+></script>
+```
+
+The runtime API still works, only the visible launcher is gone.
+
+## SPA and dynamically rendered triggers
+
+`data-open-selector` works whether the matching element is in the static HTML or rendered later by a framework (React, Vue, Svelte) or injected by another script. The widget watches the DOM and binds the click handler when a match appears, so navbar items in Docusaurus, VitePress, or any client-side router are picked up automatically. Keep using the same attribute, no extra setup required.
+
+## Search input or keyboard shortcut
+
+`data-open-selector` accepts any selector, including search inputs:
+
+```html
+<input id="search" placeholder="Search docs or ask AI" />
+
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-open-selector="#search"
+></script>
+```
+
+For keyboard shortcuts, call the runtime API directly:
+
+```js
+document.addEventListener('keydown', (e) => {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'i') {
+    e.preventDefault()
+    window.Knoku?.open()
+  }
+})
+```
+
+## Pre-fill a question
+
+`Knoku.ask(question)` opens the panel and submits the question in one call.
+
+```js
+document.getElementById('pricing-question').addEventListener('click', () => {
+  window.Knoku?.ask('How does pricing work?')
+})
+```
+
+If consent is required and not yet accepted, the panel opens on the consent screen first; the question is submitted after the user accepts. See [Require consent before chat](/widget/setups/consent).
+
+## Related
+
+- [`data-launcher-hidden`, `data-open-selector`](/widget/reference/attributes#behavior)
+- [Runtime API](/widget/reference/runtime-api)

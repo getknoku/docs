@@ -1,0 +1,124 @@
+# Configuration
+
+All CLI settings are stored in a `.env` file. The [`init`](/cli/init) command creates this file automatically.
+
+## Config file location
+
+The CLI looks for a config file in this order:
+
+1. **`KNOKU_ENV_FILE`**: if this environment variable is set, its value is used as the file path.
+2. **`.knoku/.env`**: project-scoped config (default location, created by `init`).
+3. **`.env`**: root-level fallback.
+
+If none exist, run [`init`](/cli/init) to create `.knoku/.env`.
+
+## Environment variables
+
+| Variable | Required | Default | Description |
+| --- | --- | --- | --- |
+| `KNOKU_API_URL` | No | `https://api.knoku.com` | Backend API endpoint |
+| `KNOKU_API_KEY` | Yes | - | API key from your dashboard (`sk_live_...`) |
+| `KNOKU_PROJECT_ID` | Yes | - | Project identifier (UUID, e.g. `01234567-89ab-cdef-0123-456789abcdef`) |
+| `KNOKU_DOCS_DIR` | No | `./docs/` | Path to your documentation files |
+| `KNOKU_EXCLUDE` | No | - | Comma-separated glob patterns to exclude |
+| `KNOKU_URL_BASE` | No | - | Override site URL prefix (replaces framework adapter routing) |
+| `KNOKU_ENV_FILE` | No | - | Custom path to the env file |
+
+Most commands fall back to `KNOKU_DOCS_DIR=./docs/` when the variable is missing. `init` writes the detected framework directory into `.knoku/.env`; if no framework is detected, it writes `KNOKU_DOCS_DIR=./`.
+
+## Example file
+
+```env
+KNOKU_API_URL=https://api.knoku.com
+KNOKU_API_KEY=sk_live_abc123...
+KNOKU_PROJECT_ID=01234567-89ab-cdef-0123-456789abcdef
+KNOKU_DOCS_DIR=./docs/
+KNOKU_EXCLUDE=blog/**,changelog.md
+```
+
+## Exclude patterns
+
+`KNOKU_EXCLUDE` accepts comma-separated glob patterns. Matched files are skipped during [`push`](/cli/push).
+
+```env
+KNOKU_EXCLUDE=blog/**,changelog.md,api-reference/**
+```
+
+Common patterns:
+
+| Pattern | Excludes |
+| --- | --- |
+| `blog/**` | All files in the blog directory |
+| `changelog.md` | A single file |
+| `api-reference/**` | Auto-generated API docs |
+| `drafts/**` | Unpublished drafts |
+| `**/internal-*` | Files prefixed with `internal-` in any directory |
+
+Some frameworks get a default exclude pattern during `init`:
+
+| Framework | Default |
+| --- | --- |
+| Docusaurus | `blog/**` |
+| MkDocs | `blog/**` |
+| Others | *(none)* |
+
+## URL routing
+
+The widget renders citation links back to your site using a `url_path` the CLI sends along with each document. By default, the framework adapter generates this path (e.g. Docusaurus produces `/docs/install`, MkDocs produces `/install/`). When your site uses a different scheme you have two override paths, applied in priority order:
+
+1. **Frontmatter `url:`** (per-file, highest priority)
+   ```md
+   ---
+   url: /widget/install/
+   ---
+
+   # Install Knoku Widget
+   ```
+2. **`KNOKU_URL_BASE`** (project-wide prefix)
+   ```env
+   KNOKU_URL_BASE=/widget
+   ```
+   With this set, every file maps to `KNOKU_URL_BASE` + the file's slug (extension and `/index` suffix stripped). The framework adapter is bypassed.
+
+If neither is set the framework adapter's default routing applies; if no framework is detected the CLI falls back to `/<path-without-extension>`.
+
+Run [`knoku doctor`](/cli/doctor) to preview the resolved URLs before pushing.
+
+## Environment variable precedence
+
+Environment variables set in the shell take precedence over values in the config file. This is useful for CI where you set secrets directly:
+
+```bash
+export KNOKU_API_KEY=sk_live_...
+export KNOKU_PROJECT_ID=01234567-89ab-cdef-0123-456789abcdef
+npx @knoku/cli@latest push
+```
+
+The CLI only writes to `process.env` if the key is not already defined.
+
+## Multiple environments
+
+Use `KNOKU_ENV_FILE` to switch between configs:
+
+```bash
+# Push to staging
+KNOKU_ENV_FILE=.knoku/.env.staging npx @knoku/cli@latest push
+
+# Push to production
+KNOKU_ENV_FILE=.knoku/.env.production npx @knoku/cli@latest push
+```
+
+> ⚠️ **Heads up: manual setup.** `init` only creates `.knoku/.env`. Variant files like `.knoku/.env.staging` and `.knoku/.env.production` are your responsibility to create (copy `.knoku/.env`, edit credentials).
+>
+> The default `.gitignore` entry the CLI adds is `.knoku/.env`, exact match only. **If you create variant files, extend your `.gitignore`** to cover them, otherwise API keys will be committed:
+>
+> ```gitignore
+> # Knoku secrets: covers .env, .env.staging, .env.production, etc.
+> .knoku/.env*
+> ```
+
+## Security
+
+- `.knoku/.env` is added to `.gitignore` by `init`. Never commit API keys.
+- API keys start with `sk_live_` and are validated before use.
+- In CI, use encrypted secrets instead of config files.

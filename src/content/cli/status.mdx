@@ -1,0 +1,35 @@
+# status
+
+Show the documents currently indexed in your Knoku project.
+
+```bash
+npx @knoku/cli@latest status
+# or, if installed globally
+knoku status
+```
+
+## What it does
+
+1. **Reads your config**: loads `KNOKU_API_KEY` and `KNOKU_PROJECT_ID` from your env file.
+2. **Fetches documents**: calls `GET /api/v1/documents` on the Knoku API. When `KNOKU_PROJECT_ID` is set, it is sent as `?project_id=...`.
+3. **Lists indexed files**: prints each document's path and title.
+
+If a document has no title, `status` prints `untitled`.
+
+## Example output
+
+```
+Documents: 24 indexed
+  overview/index.mdx — Overview
+  overview/get-started.mdx — Get Started
+  cli/index.mdx — CLI
+  cli/init.mdx — init
+  cli/push.mdx — push
+  ...
+```
+
+## When to use
+
+- **After a push**: verify that all expected files were indexed.
+- **Debugging**: check if a specific file made it to the backend.
+- **Auditing**: see the full list of documents in a project without opening the dashboard.

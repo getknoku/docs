@@ -1,0 +1,37 @@
+# Widget
+
+The Knoku widget is an embeddable AI chat panel for documentation sites. Visitors ask questions and get answers with citations linking back to your docs.
+
+The widget renders inside a Shadow DOM, so your site's CSS doesn't leak in and Knoku's styles don't leak out. Dark mode follows your site automatically.
+
+## Get started
+
+1. **[Install](/widget/installation)**: add the script tag (or npm package) and verify it mounts.
+2. **Pick a setup**: start from a real scenario below, copy the snippet, adjust.
+3. **Reference**: when you need the full attribute list or the runtime API.
+
+## Common setups
+
+Each setup is one focused page with a working example. Most sites combine two or three.
+
+- **[Add an AI button to your header](/widget/setups/custom-trigger)**: open chat from your own button, search bar, or a keyboard shortcut. Hide the default launcher when you want a single branded entry.
+- **[Match your brand](/widget/setups/branding)**: set your accent color, override panel header, suggestion chips, hover states, and dark variants.
+- **[Choose a panel layout](/widget/setups/panel-layout)**: panel floats above your content (default) or pushes the page over while open — pick what fits your site.
+- **[Require consent before chat](/widget/setups/consent)**: show a consent screen before the first question; held questions resume after acceptance.
+- **[Translate the widget](/widget/setups/localize)**: pick from 13 built-in languages or auto-detect from the browser; provide your own greeting and suggested questions in any language.
+- **[Identify logged-in users](/widget/setups/identify-users)**: associate chat sessions with known users for auth-gated docs and richer analytics.
+
+## Reference
+
+When you've outgrown the setups and need the full surface area:
+
+- **[Attributes](/widget/reference/attributes)**: every `data-*` attribute and its `initKnokuWidget()` equivalent.
+- **[Component Styles](/widget/reference/component-styles)**: per-slot, per-property visual overrides (panel, launcher, bubbles, chips, hover, dark variants).
+- **[Icons](/widget/reference/icons)**: the 24 built-in suggestion icons and how to pass custom SVG via the npm path.
+- **[Runtime API](/widget/reference/runtime-api)**: `window.Knoku.open() / close() / toggle() / ask() / identify()`, custom events, response listeners.
+
+## Framework guides
+
+If your docs run on a known framework, the script tag goes in a different place. See:
+
+- [Mintlify](/integrations/mintlify) · [Nextra](/integrations/nextra) · [Docusaurus](/integrations/docusaurus) · [VitePress](/integrations/vitepress) · [MkDocs](/integrations/mkdocs) · [Sphinx](/integrations/sphinx) · [ReadTheDocs](/integrations/readthedocs) · [Custom website](/integrations/custom-website)

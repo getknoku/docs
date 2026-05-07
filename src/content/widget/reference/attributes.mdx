@@ -1,0 +1,119 @@
+# Attributes Reference
+
+Every option you can set on the `<script>` tag and its `initKnokuWidget()` equivalent. For the full visual override surface (per-slot, per-property), see [Component Styles](/widget/reference/component-styles). For programmatic control, see [Runtime API](/widget/reference/runtime-api).
+
+Only `data-project-id` is required. Invalid values for enums, hex colors, and `data-language` are dropped with a console warning and the default takes over.
+
+## Identity
+
+| Attribute | npm option | Type | Default |
+|---|---|---|---|
+| `data-project-id` | `projectId` | UUID | **required** |
+
+## Behavior
+
+| Attribute | npm option | Type | Default |
+|---|---|---|---|
+| `data-theme` | `theme` | `auto` \| `light` \| `dark` | `auto` |
+| `data-language` | `language` | `en`, `tr`, `de`, `es`, `fr`, `it`, `pt`, `nl`, `ja`, `ko`, `zh`, `ru`, `cs` | browser-detected → `en` |
+| `data-layout` | `layout` | `overlay` \| `push` | `overlay` |
+| `data-launcher-align` | `launcherAlign` | `bottom-right` \| `bottom-left` | `bottom-right` |
+| `data-launcher-hidden` | `launcherHidden` | `true` \| `false` | `false` |
+| `data-launcher-icon` | `launcherIcon` | built-in icon name (see [Icons](/widget/reference/icons)) or — npm only — raw SVG content starting with `<` | `book-open` |
+| `data-open-selector` | `openSelector` | CSS selector | none |
+
+`data-language` controls built-in UI strings (placeholders, buttons, default consent copy). It does **not** translate `data-greeting`, `data-suggested-questions`, or your custom consent text; provide those in the language you want users to see. See [Translate the widget](/widget/setups/localize).
+
+`data-layout="overlay"` (default) floats the panel above the existing layout; `data-layout="push"` adds a right margin to the page body while open so the panel looks embedded next to your content. See [Choose a panel layout](/widget/setups/panel-layout).
+
+## Copy
+
+| Attribute | npm option | Type | Default |
+|---|---|---|---|
+| `data-greeting` | `greeting` | text | none (greeting hidden) |
+| `data-launcher-text` | `launcherText` | text | `Need help?` |
+| `data-launcher-subtitle` | `launcherSubtitle` | text | `Ask AI` |
+| `data-suggested-questions` | `suggestedQuestions` | comma-separated text, optional `\|icon-name` per item | none |
+
+`data-greeting` is hidden when the attribute is omitted. Set it to a value to show a centered greeting line above the chat (`How can I help?`, `Hi there!`, etc.).
+
+`data-suggested-questions` accepts an optional `|icon-name` suffix per item to set a leading icon — e.g. `Get started|rocket,Pricing|card,API|code`. See the [icon reference](/widget/reference/icons) for the full list of built-in names. Suggestion items without `|` use the `sparkle` icon. For questions containing commas or `|`, or to pass custom SVG, use the npm path with the object form.
+
+## Consent
+
+| Attribute | npm option | Type | Default |
+|---|---|---|---|
+| `data-consent-required` | `consent.required` | `true` \| `false` | `false` |
+| `data-consent-title` | `consent.title` | text | translated default for `data-language` |
+| `data-consent-disclaimer` | `consent.disclaimer` | text | translated default for `data-language` |
+| `data-consent-accept-text` | `consent.acceptText` | text | translated default for `data-language` |
+| `data-consent-reject-text` | `consent.rejectText` | text | translated default for `data-language` |
+
+When required, `window.Knoku.ask(question)` opens the panel on the consent screen first; the question is held until the user accepts. See [Require consent before chat](/widget/setups/consent).
+
+## Colors
+
+| Attribute | npm option | Type | Default |
+|---|---|---|---|
+| `data-primary-color` | `primaryColor` | `#RRGGBB` | none (sets light + dark) |
+| `data-primary-color-light` | `primaryColorLight` | `#RRGGBB` | `#171717` |
+| `data-primary-color-dark` | `primaryColorDark` | `#RRGGBB` | `#d4d4d4` |
+
+The primary accent applies to the launcher, submit button, and focus states. For per-slot overrides (panel header, suggestion chips, hover states, dark variants), see [Component Styles](/widget/reference/component-styles).
+
+## Component Styles
+
+Per-slot, per-property visual overrides follow the pattern `data-{slot}-{property}` (with optional `{state}` and `-dark` suffix). Full slot list, allowed CSS properties, and examples live on the dedicated page: [Component Styles](/widget/reference/component-styles).
+
+## Light and Dark Mode
+
+`data-theme="auto"` (the default) detects dark mode from the host page in this order:
+
+1. `<html class="dark">`: Tailwind class-based dark mode, VitePress, Nextra, Mintlify
+2. `<html data-theme="dark">`: Docusaurus
+3. OS-level `prefers-color-scheme: dark`
+
+Only `<html>` is checked, not `<body>`. Theme changes on the host are followed live without a remount.
+
+`data-theme="light"` and `data-theme="dark"` force a mode regardless of host signals.
+
+## npm Path
+
+Every attribute above maps to a property on the `initKnokuWidget(options)` argument. Component styles are passed as a nested `componentStyles` object (see the [Component Styles npm equivalent](/widget/reference/component-styles#npm-equivalent)).
+
+```ts
+import { initKnokuWidget } from '@knoku/widget'
+
+await initKnokuWidget({
+  projectId: 'YOUR_PROJECT_ID',
+  theme: 'auto',
+  language: 'en',
+  layout: 'overlay',
+  greeting: 'How can I help?',
+  launcherText: 'Need help?',
+  launcherSubtitle: 'Ask AI',
+  launcherAlign: 'bottom-right',
+  launcherHidden: false,
+  openSelector: '#ask-ai',
+  suggestedQuestions: [
+    { text: 'Get started', icon: 'rocket' },
+    { text: 'API reference', icon: 'code' },
+    { text: 'Pricing', icon: 'card' },
+    'How does authentication work?',  // string also accepted; defaults to sparkle icon
+  ],
+  primaryColorLight: '#171717',
+  primaryColorDark: '#d4d4d4',
+  launcherIcon: 'book-open',
+  consent: {
+    required: true,
+    title: 'AI chat consent',
+    disclaimer: 'Your question is sent to our AI to generate an answer.',
+    acceptText: 'Continue',
+    rejectText: 'Cancel',
+  },
+  componentStyles: {
+    'panel-header': { 'background-color': '#ffffff' },
+    'panel-header:dark': { 'background-color': '#020617' },
+  },
+})
+```

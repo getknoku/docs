@@ -1,0 +1,91 @@
+# push
+
+Push documentation files to Knoku for indexing.
+
+```bash
+npx @knoku/cli@latest push
+# or, if installed globally
+knoku push
+```
+
+## What it does
+
+1. **Scans the docs directory**: finds all `.md`, `.mdx`, and `.rst` files under `KNOKU_DOCS_DIR`.
+2. **Computes checksums**: calculates a SHA-256 hash for each file.
+3. **Checks for changes**: sends checksums to the API. The backend compares them against stored hashes and returns which files changed or were deleted.
+4. **Uploads changed files**: sends file content in batches of 10 to the backend for indexing.
+5. **Deletes removed files**: notifies the backend about files that no longer exist locally.
+6. **Computes URL paths**: resolves the site URL for each file (frontmatter `url:` > `KNOKU_URL_BASE` > framework adapter > fallback; used for widget citation links). See [URL path mapping](#url-path-mapping).
+
+If nothing changed since the last push, the CLI prints "Everything is up to date." and exits.
+
+## Automatic exclusions
+
+The following directories are always excluded:
+
+- `node_modules/`
+- `.git/`
+- `.knoku/`
+
+Additional patterns from `KNOKU_EXCLUDE` are applied on top. See [Configuration](/cli/configuration) for details.
+
+## Change detection
+
+The CLI never re-uploads unchanged files. On each push:
+
+1. Local checksums are sent to `POST /api/v1/ingest/check-changes`
+2. The backend returns two lists: `changed` (new or modified) and `deleted` (removed locally)
+3. Only `changed` files are uploaded; `deleted` files are removed from the index
+
+This keeps pushes fast and avoids unnecessary re-indexing.
+
+## URL path mapping
+
+Each file gets a `url_path` field that the chat widget uses to link citations back to the correct page on your site. The CLI resolves this path in priority order:
+
+1. **Frontmatter `url:`**, per-file override.
+   ```md
+   ---
+   url: /widget/install/
+   ---
+   ```
+2. **`KNOKU_URL_BASE` env**, project-wide prefix that replaces the adapter routing.
+3. **Framework adapter default**, auto-detected (Docusaurus adds `/docs/`, MkDocs adds a trailing slash, Sphinx uses `.html`, etc.).
+4. **Generic fallback**: `/<path-without-extension>` when no framework is detected.
+
+Run [`knoku doctor`](/cli/doctor) to preview the resolved URLs for a sample of files before pushing. See [Configuration → URL routing](/cli/configuration#url-routing) for the override details and [Integrations](/integrations) for per-framework adapter mapping.
+
+## CI / CD usage
+
+Run `push` after your docs build step to keep the index up to date on every merge:
+
+```yaml
+# GitHub Actions example
+- name: Push docs to Knoku
+  env:
+    KNOKU_API_KEY: ${{ secrets.KNOKU_API_KEY }}
+    KNOKU_PROJECT_ID: ${{ secrets.KNOKU_PROJECT_ID }}
+    KNOKU_API_URL: https://api.knoku.com
+    KNOKU_DOCS_DIR: ./docs
+  run: npx @knoku/cli@latest push
+```
+
+No `init` step is needed in CI; set the environment variables directly.
+
+## Example output
+
+```
+Found 24 files in /Users/you/project/docs
+8 files to upload, 2 deleted
+  Uploading batch 1... done
+  Deleting 2 removed files... done
+
+Done! 8 files pushed, 2 files deleted, indexing started.
+```
+
+When everything is already synced:
+
+```
+Found 24 files in /Users/you/project/docs
+Everything is up to date.
+```

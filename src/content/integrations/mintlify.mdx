@@ -1,0 +1,103 @@
+# Mintlify
+
+Add the Knoku widget to a Mintlify site.
+
+## Before you start
+
+The widget only works once your project exists and your docs are indexed:
+
+1. Create a project and add your site's domain as the allowed domain. See [Widget installation](/widget/installation#before-you-start).
+2. Sync your docs from the Mintlify repository root with [`knoku init`](/cli/init) and [`knoku push`](/cli/push) so answers come from your own content.
+
+## Add the widget
+
+Mintlify includes custom JavaScript files from your content directory on every page. Add a small loader file at the same level as `docs.json` or `mint.json`:
+
+```js
+// knoku.js
+const script = document.createElement('script')
+script.src = 'https://cdn.knoku.com/widget.js'
+script.async = true
+script.dataset.projectId = 'YOUR_PROJECT_ID'
+document.head.appendChild(script)
+```
+
+Replace `YOUR_PROJECT_ID` with the Project ID from your dashboard.
+
+Run the Mintlify dev server and confirm `knoku.js` is included on the page. If your docs live in a monorepo subfolder, put `knoku.js` in the Mintlify content root, not the repository root.
+
+## Widget attributes in JavaScript
+
+For script-tag attributes, set `dataset` properties in camelCase:
+
+```js
+const script = document.createElement('script')
+script.src = 'https://cdn.knoku.com/widget.js'
+script.async = true
+script.dataset.projectId = 'YOUR_PROJECT_ID'
+script.dataset.greeting = 'How can I help?'
+script.dataset.launcherText = 'Need help?'
+script.dataset.primaryColorLight = '#EA580C'
+script.dataset.primaryColorDark = '#9A3412'
+script.dataset.suggestedQuestions = 'Get started|rocket,API reference|code,Pricing|card'
+document.head.appendChild(script)
+```
+
+The browser serializes `dataset.primaryColorLight` as `data-primary-color-light`. Full list: [Attributes reference](/widget/reference/attributes). For per-slot visual overrides (`data-panel-header-background-color`, etc.) see [Component Styles](/widget/reference/component-styles).
+
+## Add an Ask AI button to the topbar
+
+The most reliable approach is to add your own button (or React component) with a stable ID and point `data-open-selector` at it. Mintlify allows custom React components in the topbar.
+
+```js
+script.dataset.openSelector = '#ask-ai'
+script.dataset.launcherHidden = 'true'
+```
+
+Pair this with a button somewhere in your Mintlify content or layout that carries `id="ask-ai"`. The widget watches the DOM, so it binds the click handler once the element is rendered. See [Add an AI button to your header](/widget/setups/custom-trigger) for the full behavior.
+
+If you do not want to customize the topbar, keep the default floating launcher and skip this section.
+
+## CLI behavior
+
+The CLI detects Mintlify when it finds `docs.json` or `mint.json` at the project root.
+
+| Setting | Value |
+| --- | --- |
+| Detected by | `docs.json` or `mint.json` |
+| Default `KNOKU_DOCS_DIR` | `./` |
+| URL style | `/<path-without-extension>` |
+
+For a file like `guides/install.mdx`, the default citation URL is `/guides/install`. For `index.mdx`, it is `/`.
+
+If your Mintlify docs are served under a subpath, set `KNOKU_URL_BASE`:
+
+```env
+KNOKU_URL_BASE=/docs
+```
+
+Then `guides/install.mdx` maps to `/docs/guides/install`.
+
+## Verify
+
+```bash
+npx @knoku/cli@latest doctor
+```
+
+Then open your Mintlify site and check browser devtools:
+
+1. `knoku.js` is loaded by Mintlify.
+2. `https://cdn.knoku.com/widget.js` is requested.
+3. `https://api.knoku.com/api/v1/config/{projectId}` returns `200`.
+
+If the config request returns `403`, add the exact Mintlify domain or custom domain as the project's allowed domain.
+
+## Customize the widget
+
+- [Add an AI button to your header](/widget/setups/custom-trigger)
+- [Match your brand](/widget/setups/branding)
+- [Choose a panel layout](/widget/setups/panel-layout)
+- [Require consent before chat](/widget/setups/consent)
+- [Translate the widget](/widget/setups/localize)
+- [Identify logged-in users](/widget/setups/identify-users)
+- [Attributes reference](/widget/reference/attributes) · [Component Styles](/widget/reference/component-styles) · [Icons](/widget/reference/icons) · [Runtime API](/widget/reference/runtime-api)

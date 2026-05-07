@@ -1,0 +1,73 @@
+# Get Started
+
+Shortest path from an existing documentation project to a working Knoku widget.
+
+## 1. Create a Project
+
+Sign up at [knoku.com](https://knoku.com) and create a new project from the
+dashboard. Once created, you will see:
+
+- **Project ID**: a UUID, e.g. `01234567-89ab-cdef-0123-456789abcdef`
+- **API key**: starts with `sk_live_`, found under **Project > Settings > API Keys**
+
+Add your documentation site's domain under **Project > Settings > Allowed Domains**.
+The widget only loads on that allowed domain in production.
+
+## 2. Initialize the CLI
+
+Run this from the root of your documentation project:
+
+```bash
+npx @knoku/cli@latest init
+```
+
+The command asks for your API key and project ID, then writes a local config
+file at `.knoku/.env`.
+
+Check `KNOKU_DOCS_DIR` in that file before continuing. It must point to the
+folder that contains your documentation files.
+
+## 3. Sync Your Docs
+
+Push the first version of your documentation:
+
+```bash
+npx @knoku/cli@latest push
+```
+
+This uploads all `.md`, `.mdx`, and `.rst` files from `KNOKU_DOCS_DIR` to Knoku.
+
+## 4. Install the Widget
+
+Add the widget script to your documentation site:
+
+```html
+<script
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  async
+></script>
+```
+
+Replace `YOUR_PROJECT_ID` with your project ID from step 1.
+
+Place the script in a layout or template file so the widget appears on every
+documentation page. See [Integrations](/integrations) for platform-specific
+instructions.
+
+## 5. Verify
+
+Run the CLI diagnostics:
+
+```bash
+npx @knoku/cli@latest doctor
+```
+
+Then open your documentation site and ask a question. The setup is working when
+the widget returns an answer with source references from your docs.
+
+## Next Steps
+
+- [CLI](/cli): command reference, CI usage
+- [Widget](/widget): script attributes, theming, runtime API
+- [Integrations](/integrations): per-platform installation guides

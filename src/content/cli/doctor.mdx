@@ -1,0 +1,89 @@
+# doctor
+
+Verify your Knoku setup and diagnose issues.
+
+```bash
+npx @knoku/cli@latest doctor
+# or, if installed globally
+knoku doctor
+```
+
+## What it checks
+
+The doctor command runs 7 checks:
+
+| Check | What it verifies |
+| --- | --- |
+| **Config** | `.knoku/.env` (or custom env file) exists |
+| **API Key** | Key is present and starts with `sk_live_` |
+| **Project ID** | `KNOKU_PROJECT_ID` is set |
+| **Docs directory** | `KNOKU_DOCS_DIR` exists, shows file count |
+| **Exclude patterns** | Shows configured `KNOKU_EXCLUDE` patterns |
+| **Framework** | Auto-detects documentation framework when possible; unknown is non-fatal |
+| **API connection** | Reaches `GET {KNOKU_API_URL}/health` within 5 seconds |
+
+After the checks, `doctor` also prints a sample of the URLs the CLI would send for the first few files in your docs directory:
+
+```
+URL preview (sample 5 of 24):
+    install.md                → /widget/install
+    configuration.md          → /widget/configuration
+    api.md                    → /widget/api
+    advanced/auth.md          → /widget/advanced/auth
+    advanced/webhooks.md      → /widget/advanced/webhooks
+    Open one in your browser to verify routing before pushing.
+```
+
+This is the exact `url_path` the widget will use for source citations. If a URL does not match an actual page on your site (404), adjust [`KNOKU_URL_BASE`](/cli/configuration#url-routing) or add a `url:` field to the file's frontmatter and re-run `doctor`.
+
+## Exit code
+
+- **0**: all checks passed
+- **1**: one or more checks failed
+
+Use this in CI to catch configuration issues early.
+
+## Example output
+
+All checks passing:
+
+```
+Knoku Doctor
+
+  ✓ Config: .knoku/.env
+  ✓ API Key: sk_live_abc1****
+  ✓ Project ID: 01234567-89ab-cdef-0123-456789abcdef
+  ✓ Docs directory: ./docs (24 files)
+  ✓ Exclude patterns: blog/**
+  ✓ Framework: Docusaurus
+  ✓ API connection: https://api.knoku.com
+
+  7/7 checks passed
+```
+
+With failures:
+
+```
+Knoku Doctor
+
+  ✓ Config: .knoku/.env
+  ✗ API Key: (missing)
+  ✗ Project ID: (missing)
+  ✓ Docs directory: ./docs (12 files)
+  ✓ Exclude patterns: (none configured)
+  ✓ Framework: Unknown (not required)
+  ✗ API connection: Cannot reach https://api.knoku.com
+
+  4/7 checks passed
+```
+
+## Troubleshooting
+
+| Failure | Fix |
+| --- | --- |
+| Config not found | Run `npx @knoku/cli@latest init` |
+| API Key missing | Add `KNOKU_API_KEY` to `.knoku/.env` or re-run `init` |
+| Project ID missing | Add `KNOKU_PROJECT_ID` to `.knoku/.env` or re-run `init` |
+| Docs directory not found | Set `KNOKU_DOCS_DIR` to your docs folder path |
+| Framework unknown | Not a problem; the CLI works without framework detection |
+| API connection failed | Check your network, `KNOKU_API_URL`, or firewall settings |

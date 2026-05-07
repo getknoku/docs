@@ -1,0 +1,225 @@
+# Component Styles
+
+The widget is composed of named slots: launcher, panel header, message bubbles, suggestion chips, and so on. Each slot can be styled independently with `data-*` attributes on the script tag.
+
+For brand color and dark/light mode setup, see [Match your brand](/widget/setups/branding). Component styles always take precedence over the default theme.
+
+## How It Works
+
+Concatenate the `data-` prefix with the component's slot name and the CSS property:
+
+```
+data-{slot}-{property}="value"
+```
+
+Example. Give the panel header a dark background and light text:
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-panel-header-background-color="#1a1a2e"
+  data-panel-header-color="#ffffff"
+></script>
+```
+
+Each attribute targets exactly one CSS property on one slot. Add as many as you need.
+
+## Available Components
+
+| Slot | Attribute Name | Description |
+|---|---|---|
+| Panel | `panel` | The chat panel container |
+| Panel Header | `panel-header` | Top bar of the panel |
+| Panel Body | `panel-body` | Message scroll area |
+| Panel Footer | `panel-footer` | Bottom area below messages |
+| Launcher | `launcher` | Floating launcher button (outer positioning) |
+| Bottom Bar | `bottom-bar` | Launcher card (visible background, border, shadow) |
+| Launcher Mark | `launcher-mark` | Icon container on the left of the launcher |
+| Launcher Text | `launcher-text` | Launcher label text (`Need help?` by default) |
+| Launcher Subtitle | `launcher-subtitle` | Launcher second line (`Ask AI` by default) |
+| Launcher Send | `launcher-send` | Arrow button on the right of the launcher |
+| Submit Button | `submit-button` | Send button inside the panel composer |
+| User Bubble | `user-bubble` | User's question bubble |
+| Assistant Answer | `assistant-answer` | Assistant's answer block |
+| Greeting | `greeting` | Empty-state greeting line |
+| Suggestion Chip | `suggestion-chip` | Starter question chip |
+| Source Chip | `source-chip` | Citation chip on assistant answers |
+| Disclaimer | `disclaimer` | Chat disclaimer line |
+| Consent Screen | `consent-screen` | Consent screen container |
+| Consent Accept Button | `consent-accept-button` | Consent accept button |
+| Consent Reject Button | `consent-reject-button` | Consent reject button |
+| Feedback Thumb Up | `feedback-up` | 👍 button selected color (default green) |
+| Feedback Thumb Down | `feedback-down` | 👎 button selected color (default red) |
+
+The Knoku branding footer is plan-controlled and not customizable.
+
+`feedback-up` / `feedback-down` are special: overrides apply to the **selected** state only. The unselected thumbs stay in the generic placeholder color. Defaults are green / red because they're universal "good / bad" signals; override them to a single brand color (e.g. primary) when you want a uniform look.
+
+## Supported CSS Properties
+
+The following CSS properties can be applied to any slot. All are optional; defaults come from the widget's built-in theme.
+
+| Property | Notes |
+|---|---|
+| `background-color` | |
+| `border` | Shorthand: `1px solid #e5e7eb` |
+| `border-bottom` | |
+| `border-color` | |
+| `border-radius` | |
+| `color` | Text color |
+| `font-family` | |
+| `font-size` | |
+| `font-weight` | |
+| `opacity` | `0` to `1` |
+| `height`, `width` | |
+| `min-height`, `max-height`, `min-width`, `max-width` | |
+| `padding` | Shorthand |
+| `padding-top`, `padding-bottom`, `padding-left`, `padding-right` | |
+| `padding-x`, `padding-y` | Horizontal / vertical padding shortcuts |
+| `margin-top`, `margin-bottom`, `margin-left`, `margin-right` | |
+| `margin-x`, `margin-y` | Horizontal / vertical margin shortcuts |
+| `flex-direction`, `justify-content` | |
+| `top`, `left`, `right`, `bottom` | |
+| `box-shadow`, `text-shadow` | |
+| `z-index` | |
+
+Properties not in this list are dropped silently.
+
+`padding-x` expands to `padding-left` and `padding-right`; `padding-y` expands to `padding-top` and `padding-bottom`. `margin-x` and `margin-y` work the same way for horizontal and vertical margins.
+
+## Pseudo-State Variants
+
+To style a hover, focus, or active state, insert the state between the slot name and the property:
+
+```
+data-{slot}-{state}-{property}="value"
+```
+
+| Prefix | CSS State | Example |
+|---|---|---|
+| `hover` | `:hover` | `data-launcher-hover-background-color` |
+| `focus` | `:focus` | `data-submit-button-focus-border-color` |
+| `active` | `:active` | `data-suggestion-chip-active-background-color` |
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-launcher-background-color="#6366f1"
+  data-launcher-hover-background-color="#4f46e5"
+  data-suggestion-chip-active-background-color="#eef2ff"
+></script>
+```
+
+## Dark Mode Variants
+
+Append `-dark` to any component-style attribute to apply it only when the widget is in dark mode:
+
+```
+data-{slot}-{property}-dark="value"
+data-{slot}-{state}-{property}-dark="value"
+```
+
+Without `-dark`, a value applies in both modes. With `-dark`, it overrides only in dark mode.
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-panel-header-background-color="#f9fafb"
+  data-panel-header-background-color-dark="#0f172a"
+  data-panel-header-color="#111827"
+  data-panel-header-color-dark="#f1f5f9"
+></script>
+```
+
+The widget detects dark mode automatically from the host page (`<html class="dark">`, `<html data-theme="dark">`, or `prefers-color-scheme`). See [Light and Dark Mode in the attributes reference](/widget/reference/attributes#light-and-dark-mode).
+
+## Examples
+
+### Custom launcher with brand colors
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-launcher-background-color="#0ea5e9"
+  data-launcher-hover-background-color="#0284c7"
+  data-launcher-text-color="#ffffff"
+  data-launcher-text-font-weight="600"
+></script>
+```
+
+### Tighter suggestion chips
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-suggestion-chip-border-radius="6px"
+  data-suggestion-chip-padding-x="10px"
+  data-suggestion-chip-padding-y="6px"
+  data-suggestion-chip-font-size="13px"
+></script>
+```
+
+### Distinct dark-mode panel header
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-panel-header-background-color="#ffffff"
+  data-panel-header-background-color-dark="#020617"
+  data-panel-header-border-bottom="1px solid #e5e7eb"
+  data-panel-header-border-bottom-dark="1px solid #1e293b"
+></script>
+```
+
+### Uniform feedback thumbs in brand color
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-feedback-up-color="#6366f1"
+  data-feedback-down-color="#6366f1"
+  data-feedback-up-color-dark="#818cf8"
+  data-feedback-down-color-dark="#818cf8"
+></script>
+```
+
+## npm Equivalent
+
+When mounting via npm, pass `componentStyles` as a nested object. Keys follow the same `slot` / `slot:state` / `slot:dark` / `slot:state:dark` convention:
+
+```ts
+import { initKnokuWidget } from '@knoku/widget'
+
+await initKnokuWidget({
+  projectId: 'YOUR_PROJECT_ID',
+  componentStyles: {
+    'panel-header': {
+      'background-color': '#ffffff',
+      'border-bottom': '1px solid #e5e7eb',
+    },
+    'panel-header:dark': {
+      'background-color': '#020617',
+    },
+    'launcher': {
+      'background-color': '#0ea5e9',
+    },
+    'launcher:hover': {
+      'background-color': '#0284c7',
+    },
+  },
+})
+```

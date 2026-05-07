@@ -1,0 +1,144 @@
+# Nextra
+
+Add the Knoku widget to a Nextra site.
+
+## Before you start
+
+The widget only works once your project exists and your docs are indexed:
+
+1. Create a project and add your site's domain as the allowed domain. See [Widget installation](/widget/installation#before-you-start).
+2. Sync your docs from the project root with [`knoku init`](/cli/init) and [`knoku push`](/cli/push) so answers come from your own content.
+
+## Add the widget with App Router
+
+For Nextra v4 and App Router projects, add the script to the root layout with `next/script`.
+
+```tsx
+// app/layout.tsx or src/app/layout.tsx
+import Script from 'next/script'
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        {children}
+        <Script
+          src="https://cdn.knoku.com/widget.js"
+          data-project-id="YOUR_PROJECT_ID"
+          strategy="afterInteractive"
+        />
+      </body>
+    </html>
+  )
+}
+```
+
+If your layout renders the Nextra `<Layout>` component, keep that unchanged and place `<Script />` once inside `<body>`.
+
+## Add the widget with Pages Router
+
+For older Nextra projects using `pages/`, add the script in `_app.tsx` or `_app.jsx`:
+
+```tsx
+// pages/_app.tsx or src/pages/_app.tsx
+import Script from 'next/script'
+import type { AppProps } from 'next/app'
+
+export default function App({ Component, pageProps }: AppProps) {
+  return (
+    <>
+      <Component {...pageProps} />
+      <Script
+        src="https://cdn.knoku.com/widget.js"
+        data-project-id="YOUR_PROJECT_ID"
+        strategy="afterInteractive"
+      />
+    </>
+  )
+}
+```
+
+## Widget attributes in JSX
+
+Most widget options can be passed as normal `data-*` props:
+
+```tsx
+<Script
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-greeting="How can I help?"
+  data-launcher-text="Need help?"
+  data-suggested-questions="Get started|rocket,API reference|code,Pricing|card"
+  strategy="afterInteractive"
+/>
+```
+
+Full list: [Attributes reference](/widget/reference/attributes). For per-slot visual overrides (`data-panel-header-background-color`, etc.) see [Component Styles](/widget/reference/component-styles).
+
+## Add an Ask AI button to the navbar
+
+Nextra renders the navbar from your root layout configuration. Add a button to the navbar area and point the widget at it with `data-open-selector`.
+
+One simple option is to add your own button near the layout and style it with your existing classes:
+
+```tsx
+<button id="ask-ai" type="button">
+  Ask AI
+</button>
+
+<Script
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-open-selector="#ask-ai"
+  data-launcher-hidden="true"
+  strategy="afterInteractive"
+/>
+```
+
+For a fully integrated navbar item, render the same button through your Nextra `Navbar` / layout configuration. The important part is that the element has a stable selector. The widget watches the DOM, so it binds after Nextra hydrates.
+
+See [Add an AI button to your header](/widget/setups/custom-trigger) for custom trigger behavior.
+
+## CLI behavior
+
+The CLI detects Nextra when it finds a Next.js config and a `nextra` dependency.
+
+| Project layout | Default `KNOKU_DOCS_DIR` |
+| --- | --- |
+| App Router with `src/content` | `./src/content/` |
+| App Router with `content` | `./content/` |
+| Pages Router with `src/pages` | `./src/pages/` |
+| Pages Router with `pages` | `./pages/` |
+| Fallback | `./` |
+
+Nextra uses extensionless routes by default. For `src/content/widget/install.mdx`, the default citation URL is `/widget/install`. For `index.mdx`, it is `/`.
+
+If your docs are served under a subpath, set `KNOKU_URL_BASE`:
+
+```env
+KNOKU_URL_BASE=/docs
+```
+
+## Verify
+
+```bash
+npx @knoku/cli@latest doctor
+```
+
+Then run or deploy your Nextra site and check that:
+
+1. the widget script loads once on every docs page
+2. the config request returns `200`
+3. answers include source links that match your Nextra routes
+
+If the widget does not appear, see the [Widget installation troubleshooting checklist](/widget/installation#verify).
+
+## Customize the widget
+
+- [Add an AI button to your header](/widget/setups/custom-trigger)
+- [Match your brand](/widget/setups/branding)
+- [Choose a panel layout](/widget/setups/panel-layout)
+- [Require consent before chat](/widget/setups/consent)
+- [Translate the widget](/widget/setups/localize)
+- [Identify logged-in users](/widget/setups/identify-users)
+- [Attributes reference](/widget/reference/attributes) · [Component Styles](/widget/reference/component-styles) · [Icons](/widget/reference/icons) · [Runtime API](/widget/reference/runtime-api)

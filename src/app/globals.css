@@ -1,0 +1,20 @@
+/* Tighten the gap between Nextra navbar children (default `gap-4`). */
+header.nextra-navbar > nav {
+  gap: 0.5rem !important;
+}
+
+/* Position the custom navbar button (Ask AI) to the left of the search input.
+   Nextra renders Navbar children after the search wrapper in source order;
+   flex `order` re-positions them visually without DOM changes. */
+header.nextra-navbar a[aria-label="Ask AI"] {
+  order: 90;
+}
+header.nextra-navbar > nav > div:has(input[type="search"]) {
+  order: 100;
+}
+
+/* Hover state for the Ask AI button (inline styles can't do hover). */
+header.nextra-navbar a[aria-label="Ask AI"]:hover {
+  background-color: rgba(99, 102, 241, 0.14) !important;
+  border-color: rgba(99, 102, 241, 0.28) !important;
+}

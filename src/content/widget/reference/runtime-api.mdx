@@ -1,0 +1,126 @@
+# Runtime API
+
+Once mounted, the widget exposes `window.Knoku` for programmatic control and dispatches events you can listen to.
+
+## Methods
+
+```js
+window.Knoku.open()              // Show the chat panel
+window.Knoku.close()             // Hide the chat panel
+window.Knoku.toggle()            // Toggle visibility
+window.Knoku.ask('How do I...?') // Open panel and submit a question
+window.Knoku.identify({ ... })   // Associate a known user (see below)
+```
+
+### ask
+
+Opens the panel and submits the question. If `data-consent-required="true"` is set and the user has not yet accepted, the panel opens on the consent screen first; the question is held and submitted automatically when the user accepts. If the user rejects, the question is discarded.
+
+### identify
+
+Links the anonymous session to a known user. Call this after your site authenticates the visitor:
+
+```js
+window.Knoku.identify({
+  id: 'user_123',
+  email: 'user@example.com',
+  metadata: { plan: 'pro' }
+})
+```
+
+Pass `null` to clear the identity:
+
+```js
+window.Knoku.identify(null)
+```
+
+## Custom Events (Inbound)
+
+You can also control the widget by dispatching events on `window`. This is useful for HTML-only buttons that don't run JavaScript directly.
+
+```js
+window.dispatchEvent(new CustomEvent('knoku:open'))
+window.dispatchEvent(new CustomEvent('knoku:close'))
+window.dispatchEvent(new CustomEvent('knoku:toggle'))
+window.dispatchEvent(new CustomEvent('knoku:ask', {
+  detail: { question: 'How do I get started?' }
+}))
+```
+
+For a button that opens the widget without writing JavaScript at all, see [Add an AI button to your header](/widget/setups/custom-trigger) (`data-open-selector`).
+
+## Events From The Widget
+
+Listen on `window` for events the widget dispatches.
+
+```js
+window.addEventListener('knoku:message', (e) => {
+  console.log('User asked:', e.detail.question)
+})
+
+window.addEventListener('knoku:response', (e) => {
+  console.log('Answer:', e.detail.answer)
+  console.log('Sources:', e.detail.sources)
+})
+```
+
+### Event payloads
+
+| Event | When | `detail` shape |
+|---|---|---|
+| `knoku:message` | User submits a question (before the SSE request starts) | `{ question: string }` |
+| `knoku:response` | Assistant answer is complete (SSE `done` received) | `{ answer: string, sources: SourceRef[] }` |
+
+`SourceRef` looks like:
+
+```ts
+{
+  doc_id: string
+  path: string
+  url_path?: string
+  title: string
+  lines: string  // e.g. "12-18"
+}
+```
+
+There is **no `knoku:error` event today.** When a question fails, the error message appears inline in the chat bubble (`Error: ...` or `Connection error: ...`) and is not propagated to host listeners. If you need analytics on failures, derive them by comparing `knoku:message` (always fires) to `knoku:response` (only fires on success) within a reasonable timeout.
+
+There is also **no `knoku:ready` event today.** With the CDN script, mounting is async (the loader fetches `/api/v1/config/{projectId}` first and only then attaches the panel), so `window.Knoku` appears at some point after the script runs. Poll briefly if you need it; see [Availability](#availability).
+
+## Example: Deep Link To A Question
+
+Open the widget with a pre-filled question from a URL parameter:
+
+```js
+const params = new URLSearchParams(window.location.search)
+const question = params.get('ask')
+if (question && window.Knoku) {
+  window.Knoku.ask(question)
+}
+```
+
+## Availability
+
+With the CDN script, `window.Knoku` is set asynchronously. `initKnokuWidget` fetches `/api/v1/config/{projectId}` and only attaches the panel once the project is verified active and the host origin is allowlisted. If your code runs before the script loads or before that fetch resolves, poll briefly and act when it's ready:
+
+```js
+function whenReady(fn, timeoutMs = 10_000) {
+  if (window.Knoku) return fn()
+  const start = Date.now()
+  const id = setInterval(() => {
+    if (window.Knoku) {
+      clearInterval(id)
+      fn()
+    } else if (Date.now() - start > timeoutMs) {
+      clearInterval(id)
+      console.warn('Knoku widget did not mount within timeout')
+    }
+  }, 50)
+}
+
+whenReady(() => {
+  window.Knoku.open()
+})
+```
+
+When mounting via npm, `await initKnokuWidget(options)` resolves once the widget is mounted, so the polling pattern is only needed with the CDN script.

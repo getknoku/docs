@@ -1,0 +1,125 @@
+# Read the Docs
+
+Add Knoku to documentation hosted on Read the Docs.
+
+Read the Docs builds your project with an underlying documentation framework. Use the guide that matches your project:
+
+- [Sphinx](/integrations/sphinx) for projects with `conf.py`
+- [MkDocs](/integrations/mkdocs) for projects with `mkdocs.yml` or `mkdocs.yaml`
+
+This page covers Read the Docs-specific deployment and domain details.
+
+## Before you start
+
+The widget only works once your project exists and your docs are indexed:
+
+1. Create a project and add your Read the Docs domain as the allowed domain. See [Widget installation](/widget/installation#before-you-start).
+2. Sync your docs from the repository root with [`knoku init`](/cli/init) and [`knoku push`](/cli/push) so answers come from your own content.
+
+The allowed domain must match the host exactly. The backend checks the request origin host, not the path, so use the host without any path or version segment:
+
+- `https://PROJECT.readthedocs.io` for default-hosted projects
+- your custom docs domain (e.g. `https://docs.example.com`), if configured
+
+Do not include `/en/latest` or other path segments — they are not part of the host check and will not match.
+
+## Sphinx projects
+
+Add the widget through `html_js_files` in `conf.py`:
+
+```python
+html_static_path = ['_static']
+html_js_files = [
+    'knoku.js',
+]
+```
+
+Create `_static/knoku.js` next to `conf.py`:
+
+```js
+const script = document.createElement('script')
+script.src = 'https://cdn.knoku.com/widget.js'
+script.async = true
+script.dataset.projectId = 'YOUR_PROJECT_ID'
+document.head.appendChild(script)
+```
+
+For full Sphinx details, including URL mapping, see [Sphinx](/integrations/sphinx).
+
+## MkDocs projects
+
+Add a loader file under your MkDocs `docs_dir`, usually `docs/javascripts/knoku.js`:
+
+```js
+const script = document.createElement('script')
+script.src = 'https://cdn.knoku.com/widget.js'
+script.async = true
+script.dataset.projectId = 'YOUR_PROJECT_ID'
+document.head.appendChild(script)
+```
+
+Then include it in `mkdocs.yml`:
+
+```yaml
+extra_javascript:
+  - javascripts/knoku.js
+```
+
+For full MkDocs details, including `docs_dir` detection, see [MkDocs](/integrations/mkdocs).
+
+## Push docs in CI
+
+Read the Docs builds your documentation, but Knoku indexing is separate. Run `knoku push` in your repository CI when docs change.
+
+```yaml
+# GitHub Actions example
+- name: Push docs to Knoku
+  env:
+    KNOKU_API_KEY: ${{ secrets.KNOKU_API_KEY }}
+    KNOKU_PROJECT_ID: ${{ secrets.KNOKU_PROJECT_ID }}
+    KNOKU_API_URL: https://api.knoku.com
+  run: npx @knoku/cli@latest push
+```
+
+If your docs source is not where the adapter expects, set `KNOKU_DOCS_DIR`:
+
+```yaml
+env:
+  KNOKU_DOCS_DIR: ./docs/source
+```
+
+If your MkDocs Read the Docs URLs include a language or version prefix and citations need to include it, set `KNOKU_URL_BASE`:
+
+```yaml
+env:
+  KNOKU_URL_BASE: /en/latest
+```
+
+Then source files map under `/en/latest/...`.
+
+For Sphinx projects with default `.html` URLs, do not use `KNOKU_URL_BASE` unless your deployed URLs are extensionless. `KNOKU_URL_BASE` bypasses the Sphinx adapter and strips `.html`. For exact Sphinx overrides, use MyST Markdown frontmatter where possible or keep the default adapter output.
+
+## Verify
+
+```bash
+npx @knoku/cli@latest doctor
+```
+
+Then open the published Read the Docs site and check that:
+
+1. the loader file is present in the built HTML
+2. `https://cdn.knoku.com/widget.js` is requested
+3. the widget config request returns `200`
+4. source links include the correct language/version prefix if your site uses one
+
+If the config request returns `403`, add the exact Read the Docs host or custom domain as the project's allowed domain.
+
+## Customize the widget
+
+- [Add an AI button to your header](/widget/setups/custom-trigger)
+- [Match your brand](/widget/setups/branding)
+- [Choose a panel layout](/widget/setups/panel-layout)
+- [Require consent before chat](/widget/setups/consent)
+- [Translate the widget](/widget/setups/localize)
+- [Identify logged-in users](/widget/setups/identify-users)
+- [Attributes reference](/widget/reference/attributes) · [Component Styles](/widget/reference/component-styles) · [Icons](/widget/reference/icons) · [Runtime API](/widget/reference/runtime-api)

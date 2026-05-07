@@ -1,0 +1,124 @@
+# Sphinx
+
+Add the Knoku widget to a Sphinx documentation site.
+
+## Before you start
+
+The widget only works once your project exists and your docs are indexed:
+
+1. Create a project and add your site's domain as the allowed domain. See [Widget installation](/widget/installation#before-you-start).
+2. Sync your docs from the Sphinx project root with [`knoku init`](/cli/init) and [`knoku push`](/cli/push) so answers come from your own content.
+
+## Add the widget
+
+Sphinx loads custom JavaScript through `html_js_files`. Put a small loader file under your Sphinx static directory.
+
+Create `_static/knoku.js` next to `conf.py`:
+
+```js
+const script = document.createElement('script')
+script.src = 'https://cdn.knoku.com/widget.js'
+script.async = true
+script.dataset.projectId = 'YOUR_PROJECT_ID'
+document.head.appendChild(script)
+```
+
+Then update `conf.py`:
+
+```python
+html_static_path = ['_static']
+html_js_files = [
+    'knoku.js',
+]
+```
+
+If your project uses `docs/source/conf.py`, create `docs/source/_static/knoku.js` and update that `conf.py`.
+
+Restart your Sphinx dev server or rebuild the HTML output after saving.
+
+## Widget attributes in JavaScript
+
+For script-tag attributes, set `dataset` properties in camelCase:
+
+```js
+const script = document.createElement('script')
+script.src = 'https://cdn.knoku.com/widget.js'
+script.async = true
+script.dataset.projectId = 'YOUR_PROJECT_ID'
+script.dataset.greeting = 'How can I help?'
+script.dataset.launcherText = 'Need help?'
+script.dataset.suggestedQuestions = 'Get started|rocket,API reference|code,Pricing|card'
+document.head.appendChild(script)
+```
+
+The browser serializes camelCase `dataset` keys (e.g. `dataset.launcherText`) as kebab-case `data-*` attributes (`data-launcher-text`). Full list: [Attributes reference](/widget/reference/attributes). For per-slot visual overrides (`data-panel-header-background-color`, etc.) see [Component Styles](/widget/reference/component-styles).
+
+## Add an Ask AI button to the navbar
+
+Sphinx themes differ, so the safest option is to add a small button through your theme template override and bind it with `data-open-selector`.
+
+Example markup:
+
+```html
+<button id="ask-ai" type="button">Ask AI</button>
+```
+
+Then update `_static/knoku.js`:
+
+```js
+script.dataset.openSelector = '#ask-ai'
+script.dataset.launcherHidden = 'true'
+```
+
+The widget watches the DOM, so it binds once the theme renders the button. See [Add an AI button to your header](/widget/setups/custom-trigger) for the full behavior.
+
+If you do not want to override templates, keep the default floating launcher and skip this section.
+
+## CLI behavior
+
+The CLI detects Sphinx when it finds `conf.py` in common Sphinx locations.
+
+| Project layout | Default `KNOKU_DOCS_DIR` |
+| --- | --- |
+| `conf.py` | `./` |
+| `source/conf.py` | `./source/` |
+| `docs/conf.py` | `./docs/` |
+| `docs/source/conf.py` | `./docs/source/` |
+
+The Sphinx adapter maps URLs to `.html` pages. For `usage/install.rst`, the default citation URL is `/usage/install.html`.
+
+When to set `KNOKU_URL_BASE`:
+
+- **Default Sphinx (`.html` URLs)**: leave it unset. `KNOKU_URL_BASE` bypasses the Sphinx adapter and strips the `.html` suffix, which breaks citation links. For one-off overrides on a Markdown/MyST page, use per-file `url:` frontmatter instead.
+- **`dirhtml` builder or other extensionless URL style**: set it only when you also need a subpath prefix (e.g. `/docs`). The adapter does not produce extensionless URLs on its own.
+
+See [CLI configuration](/cli/configuration#url-routing) for the override priority.
+
+## Markdown with MyST
+
+Sphinx projects that use `myst_parser` can push `.md` files too. Knoku indexes `.rst`, `.md`, and `.mdx` files from `KNOKU_DOCS_DIR`.
+
+## Verify
+
+```bash
+npx @knoku/cli@latest doctor
+```
+
+Then build or serve your Sphinx site and check that:
+
+1. `_static/knoku.js` is loaded
+2. `https://cdn.knoku.com/widget.js` is requested
+3. the widget config request returns `200`
+4. answers cite `.html` URLs that exist in your built docs
+
+If the config request returns `403`, add the exact docs host as the project's allowed domain.
+
+## Customize the widget
+
+- [Add an AI button to your header](/widget/setups/custom-trigger)
+- [Match your brand](/widget/setups/branding)
+- [Choose a panel layout](/widget/setups/panel-layout)
+- [Require consent before chat](/widget/setups/consent)
+- [Translate the widget](/widget/setups/localize)
+- [Identify logged-in users](/widget/setups/identify-users)
+- [Attributes reference](/widget/reference/attributes) · [Component Styles](/widget/reference/component-styles) · [Icons](/widget/reference/icons) · [Runtime API](/widget/reference/runtime-api)

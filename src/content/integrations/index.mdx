@@ -1,0 +1,75 @@
+# Integrations
+
+Install Knoku on the documentation framework you already use. Each guide covers two pieces:
+
+- where to load the widget script so it appears on every docs page
+- how the CLI detects the framework and maps source files to citation URLs
+
+## Supported Platforms
+
+| Platform | Widget placement | URL mapping |
+| --- | --- | --- |
+| [Docusaurus](/integrations/docusaurus) | `scripts` in `docusaurus.config.*` | `/docs/<slug>` (follows `routeBasePath`) |
+| [VitePress](/integrations/vitepress) | `head` in `.vitepress/config.*` | `/<slug>` |
+| [MkDocs](/integrations/mkdocs) | `extra_javascript` loader in `mkdocs.yml` | `/<slug>/` |
+| [Nextra](/integrations/nextra) | Next.js root layout or `_app` | `/<slug>` |
+| [Mintlify](/integrations/mintlify) | custom JavaScript file in the content root | `/<slug>` |
+| [Sphinx](/integrations/sphinx) | `html_js_files` in `conf.py` | `/<slug>.html` |
+| [Read the Docs](/integrations/readthedocs) | underlying MkDocs or Sphinx config | follows the underlying adapter |
+| [Custom website](/integrations/custom-website) | global layout, template, or app shell | `/<path-without-extension>` |
+
+For each platform, `KNOKU_DOCS_DIR` is auto-detected from the framework config; override it in `.knoku/.env` when your layout differs. See the platform-specific page for detection rules.
+
+## Common Setup
+
+Before using any framework guide:
+
+1. Create a Knoku project and copy the Project ID.
+2. Add your docs domain under **Project > Settings > Domains**.
+3. Run the CLI from the root of the docs project:
+
+```bash
+npx @knoku/cli@latest init
+npx @knoku/cli@latest push
+```
+
+The widget will not mount on domains that are not allowlisted. The CLI must push your docs before the assistant can answer from your content.
+
+## Widget Configuration
+
+All platforms use the same widget attributes. The only required one is `data-project-id`:
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+></script>
+```
+
+Add optional attributes for copy, color, language, consent, custom triggers, or per-slot styling. See the [Attributes reference](/widget/reference/attributes) and [Component Styles](/widget/reference/component-styles).
+
+## CI Sync
+
+After the first `init`, run `push` in CI after your docs build or before deployment:
+
+```yaml
+- name: Push docs to Knoku
+  env:
+    KNOKU_API_KEY: ${{ secrets.KNOKU_API_KEY }}
+    KNOKU_PROJECT_ID: ${{ secrets.KNOKU_PROJECT_ID }}
+    KNOKU_API_URL: https://api.knoku.com
+  run: npx @knoku/cli@latest push
+```
+
+If your docs are not in the adapter's default directory, also set `KNOKU_DOCS_DIR`. If your site uses a custom URL scheme, set `KNOKU_URL_BASE` or per-file `url:` frontmatter. See [CLI configuration](/cli/configuration#url-routing).
+
+## Verify
+
+After installing the script and pushing docs:
+
+```bash
+npx @knoku/cli@latest doctor
+```
+
+Then open your deployed docs site. The setup is working when the widget appears and answers with source links that point back to the correct docs pages.

@@ -1,0 +1,96 @@
+# Translate the widget
+
+`data-language` switches the built-in UI strings (input placeholder, send button, default consent copy, error messages). Your own strings are not auto-translated.
+
+## Force a specific language
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-language="en"
+  data-greeting="How can I help?"
+  data-launcher-text="Need help?"
+  data-launcher-subtitle="Ask AI"
+  data-suggested-questions="How do I get started?,How does pricing work?"
+></script>
+```
+
+## Auto-detect
+
+When `data-language` is omitted, the widget reads `navigator.language` / `navigator.languages` and picks the first match from the supported list. Unsupported locales fall back to English.
+
+This is the default. Set `data-language` only when you want to force a specific language.
+
+## Supported languages
+
+| Code | Language |
+|---|---|
+| `en` | English |
+| `tr` | Türkçe |
+| `de` | Deutsch |
+| `es` | Español |
+| `fr` | Français |
+| `it` | Italiano |
+| `pt` | Português |
+| `nl` | Nederlands |
+| `ja` | 日本語 |
+| `ko` | 한국어 |
+| `zh` | 中文 |
+| `ru` | Русский |
+| `cs` | Čeština |
+
+Unknown values fall back to browser detection (then English) with a console warning.
+
+## What's auto-translated
+
+When `data-language` is set (or auto-detected), the widget translates:
+
+- Input placeholder, send/attach/close labels, feedback hovers
+- Tool-status strings (`Searching documentation…`, `Found N relevant documents`, `Thinking…`)
+- AI disclaimer line above the composer
+- Default consent screen copy (title, disclaimer, accept, reject) — see [Require consent before chat](/widget/setups/consent#per-language-consent-strings)
+- Connection / error messages
+
+## What's NOT auto-translated
+
+- `data-greeting` (the optional greeting text)
+- `data-suggested-questions` (your question list)
+- `data-launcher-text`, `data-launcher-subtitle` (launcher copy)
+- Panel header label — fixed as `Ask AI` regardless of `data-language`
+- Custom `data-consent-*` overrides — when you set one, that exact string is used regardless of `data-language`
+- Chat answers (driven by your indexed docs)
+
+Provide each in the language you want.
+
+## Multi-language sites
+
+Pick the language from your existing locale state and mount via npm. Calling `initKnokuWidget` again replaces the previous instance, so route changes that swap locales remount cleanly.
+
+```ts
+import { initKnokuWidget } from '@knoku/widget'
+
+await initKnokuWidget({
+  projectId: 'YOUR_PROJECT_ID',
+  language: currentLocale,
+  greeting: dictionary.widgetGreeting,
+  suggestedQuestions: dictionary.widgetSuggestions,
+})
+```
+
+## Suggested questions with commas
+
+`data-suggested-questions` is comma-separated. For questions that contain commas, use the npm path:
+
+```ts
+suggestedQuestions: [
+  'How do I install, configure, and verify the widget?',
+  'What is the pricing model?',
+]
+```
+
+## Related
+
+- [`data-language`](/widget/reference/attributes#behavior)
+- [Identify logged-in users](/widget/setups/identify-users)

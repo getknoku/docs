@@ -1,0 +1,73 @@
+# FAQ
+
+## What file formats does Knoku support?
+
+Markdown (`.md`), MDX (`.mdx`), and reStructuredText (`.rst`). The CLI scans
+your docs folder for these files and uploads them. Other formats like HTML, PDF,
+or plain text are not supported.
+
+## Which documentation platforms work with Knoku?
+
+Docusaurus, VitePress, Nextra, MkDocs, Mintlify, Sphinx, and any custom website.
+Read the Docs works when the project is powered by Sphinx or MkDocs. For other
+platforms, set the docs directory manually.
+
+## How does the AI generate answers?
+
+When a visitor asks a question, Knoku selects the most relevant sections from
+your docs and generates an answer based only on that content. Every response
+includes source references so visitors can verify the answer.
+
+## Can visitors ask questions about topics not in my docs?
+
+Knoku is designed to answer from your indexed documentation. If the answer is not
+in your docs, it should say so rather than making something up.
+
+## How do I keep the index up to date?
+
+Run `npx @knoku/cli@latest push` after each documentation change. For CI workflows,
+add `push` as a step after your docs build so every merge updates the index.
+
+## Can I customize the widget?
+
+Yes. You can set custom accent colors, change the greeting text, and position
+the launcher with script tag attributes.
+
+## Does the widget work with dark mode?
+
+Yes. The widget automatically follows the host site's light/dark mode. Normal
+installs do not need any setting for this.
+
+## What is the free plan limit?
+
+The free plan includes a fixed monthly message allowance; paid plans raise it
+and unlock pay-per-message overage. Check the [pricing page](https://knoku.com/pricing)
+for current limits.
+
+## Is my documentation data private?
+
+Your documentation is stored on Knoku servers and used only to answer questions
+for your project. It is not shared with other projects or used to train models.
+
+## Can I use Knoku on multiple sites?
+
+Yes, two ways depending on what you need:
+
+**Multiple domains in one project.** Add as many hosts as you need under
+**Project > Settings > Allowed Domains**. Common cases: marketing site +
+docs subdomain (`example.com` + `docs.example.com`), staging + production,
+apex + `www`, or locale subdomains (`en.docs.example.com` +
+`de.docs.example.com`). The indexed docs, analytics, and plan limits are
+shared across every listed domain.
+
+**Separate projects.** Create one project per site when you want
+independent analytics, a different set of indexed docs, or separate
+billing per site.
+
+Domains are matched as exact hosts; wildcards like `*.example.com` are not
+supported.
+
+## What happens if I remove the widget?
+
+Remove the script tag from your site. Existing indexed documents stay in your
+project until you delete them from the dashboard.

@@ -1,0 +1,147 @@
+# Docusaurus
+
+Add the Knoku widget to a Docusaurus site.
+
+## Before you start
+
+The widget only works once your project exists and your docs are indexed:
+
+1. Create a project and add your site's domain as the allowed domain. See [Widget installation](/widget/installation#before-you-start).
+2. Sync your docs from the project root with [`knoku init`](/cli/init) and [`knoku push`](/cli/push) so answers come from your own content.
+
+## Add the widget
+
+Add the script to the top-level `scripts` field in `docusaurus.config.*`. Docusaurus injects it on every page.
+
+```js
+// docusaurus.config.js
+export default {
+  // ...
+  scripts: [
+    {
+      src: 'https://cdn.knoku.com/widget.js',
+      'data-project-id': 'YOUR_PROJECT_ID',
+      async: true,
+    },
+  ],
+}
+```
+
+Restart the dev server after saving.
+
+## Widget attributes in `scripts`
+
+Every `data-*` attribute from the widget docs goes into the `scripts` entry as a quoted kebab-case key. Boolean values are passed as strings:
+
+```js
+scripts: [
+  {
+    src: 'https://cdn.knoku.com/widget.js',
+    'data-project-id': 'YOUR_PROJECT_ID',
+    'data-greeting': 'How can I help?',
+    'data-launcher-text': 'Need help?',
+    'data-primary-color-light': '#2e8555',
+    'data-primary-color-dark': '#25c2a0',
+    'data-suggested-questions': 'Get started|rocket,API reference|code,Pricing|card',
+    async: true,
+  },
+],
+```
+
+Same names as the script tag examples in the widget docs, just inside a JS object. Full list: [Attributes reference](/widget/reference/attributes). For per-slot visual overrides (`data-panel-header-background-color`, etc.) see [Component Styles](/widget/reference/component-styles).
+
+## Add an Ask AI button to the navbar
+
+Docusaurus renders the navbar with React, so a button has to be a real component, not raw HTML. The idiomatic path is to register a custom navbar item type by swizzling `NavbarItem/ComponentTypes`.
+
+Create the button component at `src/components/AskAINavbarItem.jsx`:
+
+```jsx
+import React from 'react';
+
+export default function AskAINavbarItem() {
+  return (
+    <button
+      id="ask-ai"
+      type="button"
+      className="navbar__item navbar__link"
+    >
+      Ask AI
+    </button>
+  );
+}
+```
+
+Register the type at `src/theme/NavbarItem/ComponentTypes.js`:
+
+```js
+import ComponentTypes from '@theme-original/NavbarItem/ComponentTypes';
+import AskAINavbarItem from '@site/src/components/AskAINavbarItem';
+
+export default {
+  ...ComponentTypes,
+  'custom-askAI': AskAINavbarItem,
+};
+```
+
+Then add the item to `themeConfig.navbar.items` and tell the widget script which selector opens it:
+
+```js
+// docusaurus.config.js
+themeConfig: {
+  navbar: {
+    items: [
+      { type: 'custom-askAI', position: 'right' },
+      // ...
+    ],
+  },
+},
+scripts: [
+  {
+    src: 'https://cdn.knoku.com/widget.js',
+    'data-project-id': 'YOUR_PROJECT_ID',
+    'data-open-selector': '#ask-ai',
+    async: true,
+  },
+],
+```
+
+The widget watches the DOM, so it binds the click handler once Docusaurus mounts the navbar. To hide the floating launcher and use only this button, add `'data-launcher-hidden': 'true'`. See [Add an AI button to your header](/widget/setups/custom-trigger) for the full attribute list.
+
+## CLI behavior
+
+The CLI detects Docusaurus when it finds `docusaurus.config.js`, `docusaurus.config.ts`, or `docusaurus.config.mjs`.
+
+| Setting | Value |
+| --- | --- |
+| Default `KNOKU_DOCS_DIR` | `./docs/` |
+| Default exclude | `blog/**` |
+| URL style | `/docs/<slug>` by default |
+
+If your Docusaurus config sets `routeBasePath`, the CLI uses that value. For example, `routeBasePath: 'guides'` maps `docs/install.md` to `/guides/install`.
+
+If `routeBasePath` is `/`, `docs/install.md` maps to `/install`.
+
+For custom routing, set per-file `url:` frontmatter or `KNOKU_URL_BASE`. See [CLI configuration](/cli/configuration#url-routing).
+
+## Verify
+
+```bash
+npx @knoku/cli@latest doctor
+```
+
+Then run or deploy your Docusaurus site and check that:
+
+1. the widget script loads once on every docs page
+2. the config request returns `200`
+3. answers cite URLs that match your Docusaurus route base path
+
+## Customize the widget
+
+- [Add an AI button to your header](/widget/setups/custom-trigger)
+- [Match your brand](/widget/setups/branding)
+- [Choose a panel layout](/widget/setups/panel-layout)
+- [Require consent before chat](/widget/setups/consent)
+- [Translate the widget](/widget/setups/localize)
+- [Identify logged-in users](/widget/setups/identify-users)
+- [Attributes reference](/widget/reference/attributes) · [Component Styles](/widget/reference/component-styles) · [Icons](/widget/reference/icons) · [Runtime API](/widget/reference/runtime-api)

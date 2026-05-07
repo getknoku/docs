@@ -1,0 +1,98 @@
+# Introduction
+
+Knoku is an AI assistant for documentation sites. It reads your own docs,
+indexes them, and gives visitors direct answers with sources through an
+embedded chat widget.
+
+Instead of sending users to a search page or making them scan long guides,
+Knoku lets them ask questions in plain language and get an answer grounded in
+your documentation.
+
+## What Knoku Does
+
+Knoku connects three parts of the documentation workflow:
+
+- **Sync your docs** with the Knoku CLI.
+- **Answer visitor questions** through the embedded widget.
+- **Track what users ask** from the dashboard.
+
+The goal is simple: help people find the right answer faster, while giving your
+team visibility into which parts of the documentation are useful, missing, or
+hard to understand.
+
+## How It Works
+
+When you push docs, Knoku parses each file, splits it into sections, and stores
+summaries and source text alongside a search index.
+
+When a visitor asks a question, Knoku finds the relevant sections from your
+project's index, generates an answer grounded in that content, and streams the
+response back with links to the sources it used.
+
+Answers come from your documentation only. If a topic is not covered, the
+assistant says so instead of guessing.
+
+## Main Components
+
+### CLI
+
+The CLI is used by documentation maintainers. It detects supported documentation
+frameworks, stores project configuration, and syncs changed files.
+
+The main CLI actions are `init`, `push`, `status`, and `doctor`. The
+Get Started guide shows the exact command format.
+
+### Widget
+
+The widget is the chat interface that runs on your documentation site. It is
+loaded with a script tag or through the npm package, then renders inside a
+Shadow DOM so it does not interfere with the host site's styles.
+
+It supports streamed answers, source references, automatic light/dark mode,
+custom accent colors, suggested questions, and visitor identity metadata.
+
+### Dashboard
+
+The dashboard is where your team manages projects, API keys, allowed domains,
+billing, and analytics. Widget appearance and behavior are configured in the
+embed code.
+
+Analytics help you understand what users ask, which answers are useful, and
+where documentation coverage may be weak.
+
+## Supported Documentation Sites
+
+Knoku is designed to work with common documentation platforms, static site
+generators, and custom documentation setups.
+
+Supported documentation sources include:
+
+- Docusaurus
+- VitePress
+- Nextra
+- MkDocs
+- Mintlify
+- Sphinx
+- Read the Docs projects powered by Sphinx or MkDocs
+- Custom documentation sites
+
+For custom setups, Knoku can sync Markdown, MDX, or reStructuredText content
+when you provide the docs directory and project configuration manually.
+
+## When To Use Knoku
+
+Knoku is useful when your documentation is large enough that users often need
+help finding the right page, section, option, or workflow.
+
+It works well for:
+
+- SaaS product documentation
+- API documentation
+- Developer guides
+- Open source project docs
+- Internal technical documentation
+
+## Next Step
+
+Start with [Get Started](/overview/get-started) to create a project, sync your
+first docs, and install the widget.

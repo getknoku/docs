@@ -1,0 +1,82 @@
+# Identify logged-in users
+
+`Knoku.identify()` associates the chat session with a known user. By default, sessions are anonymous; only an opaque `web_id` cookie correlates a returning visitor.
+
+```js
+window.Knoku.identify({
+  id: 'user_123',
+  email: 'user@example.com',
+  metadata: { plan: 'pro', company: 'Acme Inc' },
+})
+```
+
+All three fields are optional. Pass `null` to clear:
+
+```js
+window.Knoku?.identify(null)
+```
+
+Identity is in-memory; refresh resets it. Call `identify` again on every load.
+
+## When to call it
+
+- After auth state resolves on initial load
+- After login, before the user opens the panel
+- After logout, with `null`
+
+## Auth-gated docs
+
+The widget mounts asynchronously via the CDN script. Guard against `Knoku` being undefined:
+
+```js
+function whenReady(fn, timeoutMs = 10_000) {
+  if (window.Knoku) return fn()
+  const start = Date.now()
+  const id = setInterval(() => {
+    if (window.Knoku) {
+      clearInterval(id)
+      fn()
+    } else if (Date.now() - start > timeoutMs) {
+      clearInterval(id)
+    }
+  }, 50)
+}
+
+whenReady(() => {
+  window.Knoku.identify({
+    id: currentUser.id,
+    email: currentUser.email,
+    metadata: { plan: currentUser.plan },
+  })
+})
+```
+
+When mounting via npm, `await initKnokuWidget(options)` resolves once the runtime API is ready, so polling isn't needed.
+
+## What gets sent
+
+Each `/api/v1/chat` request body carries:
+
+```json
+{
+  "user": {
+    "web_id": "f1c9463d7e36c5990c5434ce4cfa4011",
+    "id": "user_123",
+    "email": "user@example.com",
+    "metadata": { "plan": "pro" }
+  }
+}
+```
+
+`web_id` is always present. `id`, `email`, and `metadata` only appear after `identify()`.
+
+## Privacy
+
+- Identity is sent over HTTPS to your project's backend.
+- Knoku stores identity per session for analytics. Clearing identity (`identify(null)`) does not delete prior sessions.
+- `metadata` is free-form. Keep it under ~8 KB and don't put sensitive data there.
+
+## Related
+
+- [Runtime API: `Knoku.identify`](/widget/reference/runtime-api#identify)
+- [Add an AI button to your header](/widget/setups/custom-trigger)

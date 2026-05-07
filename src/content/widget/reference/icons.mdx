@@ -1,0 +1,124 @@
+# Icons
+
+The widget ships **25 built-in icons** used by the launcher mark and suggested questions. Pick a name from the table below, or — npm only — pass raw inner SVG content.
+
+Two places use this icon set:
+
+- **Launcher mark** — the icon on the left of the floating button. Default: `book-open`. Override via `data-launcher-icon` (built-in name) or the `launcherIcon` npm option (built-in name OR raw SVG).
+- **Suggested questions** — leading icon next to each suggestion. Default: `sparkle` (when no `|icon-name` suffix). Override via the `|icon-name` suffix in `data-suggested-questions` or the `icon` field on each suggestion object in the npm path.
+
+Unknown names fall back to the default for that surface (`book-open` for launcher, `sparkle` for suggestions).
+
+## Built-in icons
+
+| Name | Typical use |
+|---|---|
+| `sparkle` | default for suggestions; AI / generic |
+| `book-open` | default for launcher; documentation, knowledge |
+| `rocket` | quickstart, getting started |
+| `book` | guides, tutorials |
+| `code` | API, SDK reference |
+| `terminal` | CLI, commands |
+| `package` | installation, libraries |
+| `plug` | integrations, plugins |
+| `key` | API keys, secrets |
+| `shield` | security, permissions |
+| `settings` | configuration |
+| `users` | team, members |
+| `building` | organization, workspace |
+| `card` | credit card, billing |
+| `tag` | pricing, plans |
+| `wallet` | billing overview |
+| `cloud` | deployment, hosting |
+| `database` | data, storage |
+| `globe` | domain, regions, network |
+| `zap` | webhooks, events |
+| `bell` | notifications |
+| `chart` | analytics, metrics |
+| `search` | search, discovery |
+| `mail` | email |
+| `help` | FAQ, support |
+
+Style: 24×24 viewBox, 1.8px stroke, `currentColor` (icon color follows the suggestion-chip text color).
+
+## Launcher icon
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-launcher-icon="rocket"
+></script>
+```
+
+Default is `book-open`. Set `data-launcher-icon="rocket"` (or any built-in name) to swap. For custom SVG, use the npm path with `launcherIcon: '<path d="..."/>'`.
+
+## Suggested questions usage
+
+`|icon-name` after each comma-separated question in `data-suggested-questions`:
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-suggested-questions="Get started|rocket,API reference|code,Authentication|key,Pricing|card"
+></script>
+```
+
+Items without `|` use the `sparkle` icon. Questions containing `,` or `|` cannot be expressed in the script tag; use the npm path with the object form.
+
+## npm path
+
+Each suggestion accepts a string (default `sparkle`) or an object with an explicit `icon`:
+
+```ts
+import { initKnokuWidget } from '@knoku/widget'
+
+await initKnokuWidget({
+  projectId: 'YOUR_PROJECT_ID',
+  launcherIcon: 'rocket',
+  suggestedQuestions: [
+    { text: 'Get started', icon: 'rocket' },
+    { text: 'API reference', icon: 'code' },
+    { text: 'Authentication', icon: 'key' },
+    'How does pricing work?',  // string → sparkle icon
+  ],
+})
+```
+
+## Custom SVG (npm only)
+
+Pass raw inner SVG content as `launcherIcon` or as a suggestion's `icon` — anything that begins with `<` is treated as SVG instead of a built-in name.
+
+```ts
+import { initKnokuWidget } from '@knoku/widget'
+
+await initKnokuWidget({
+  projectId: 'YOUR_PROJECT_ID',
+  launcherIcon: '<path d="M12 2 L22 12 L12 22 L2 12 Z"/>',
+  suggestedQuestions: [
+    {
+      text: 'Custom mark',
+      icon: '<path d="M12 2 L22 12 L12 22 L2 12 Z"/>',
+    },
+  ],
+})
+```
+
+The widget wraps the content in `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">`, so design your shapes for that frame and rely on `currentColor` for stroke/fill.
+
+### Sanitization
+
+Custom SVG content is filtered before render. Rejected content falls back to the surface default (`book-open` for launcher, `sparkle` for suggestions). The following are blocked outright:
+
+- `<script>`, `<style>`, `<foreignObject>`, `<iframe>`, `<image>`, `<animate>`, `<set>` elements
+- Any `on*=` event handler attribute (`onclick`, `onload`, etc.)
+- `xlink:href` and `href` attributes
+- `javascript:` and `data:` URI schemes
+- `url(...)` functional values (external resource references)
+- XML processing instructions (`<?...?>`), `<!DOCTYPE>`, `<!ENTITY>`
+- Inputs longer than 4 KB
+
+Only the script tag path is restricted to built-in names — custom SVG is intentionally not exposed via `data-*` attributes (encoding pitfalls and harder to vet at runtime). Use the npm package when you need a custom icon.

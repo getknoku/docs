@@ -1,0 +1,115 @@
+# MkDocs
+
+Add the Knoku widget to a MkDocs site.
+
+## Before you start
+
+The widget only works once your project exists and your docs are indexed:
+
+1. Create a project and add your site's domain as the allowed domain. See [Widget installation](/widget/installation#before-you-start).
+2. Sync your docs from the MkDocs project root with [`knoku init`](/cli/init) and [`knoku push`](/cli/push) so answers come from your own content.
+
+## Add the widget
+
+MkDocs loads custom JavaScript through `extra_javascript`. Because widget configuration uses `data-*` attributes, add a small loader file inside your docs directory.
+
+Create `docs/javascripts/knoku.js`:
+
+```js
+const script = document.createElement('script')
+script.src = 'https://cdn.knoku.com/widget.js'
+script.async = true
+script.dataset.projectId = 'YOUR_PROJECT_ID'
+document.head.appendChild(script)
+```
+
+Then include it in `mkdocs.yml`:
+
+```yaml
+extra_javascript:
+  - javascripts/knoku.js
+```
+
+If your project sets `docs_dir`, put the loader under that directory instead of `docs/`.
+
+Restart `mkdocs serve` after saving.
+
+## Widget attributes in JavaScript
+
+For script-tag attributes, set `dataset` properties in camelCase:
+
+```js
+const script = document.createElement('script')
+script.src = 'https://cdn.knoku.com/widget.js'
+script.async = true
+script.dataset.projectId = 'YOUR_PROJECT_ID'
+script.dataset.greeting = 'How can I help?'
+script.dataset.launcherText = 'Need help?'
+script.dataset.suggestedQuestions = 'Get started|rocket,API reference|code,Pricing|card'
+document.head.appendChild(script)
+```
+
+The browser serializes camelCase `dataset` keys (e.g. `dataset.launcherText`) as kebab-case `data-*` attributes (`data-launcher-text`). Full list: [Attributes reference](/widget/reference/attributes). For per-slot visual overrides (`data-panel-header-background-color`, etc.) see [Component Styles](/widget/reference/component-styles).
+
+## Add an Ask AI button to the navbar
+
+If you use Material for MkDocs, add a custom partial or theme override for the header button, then bind it with `data-open-selector`.
+
+Example button markup:
+
+```html
+<button id="ask-ai" type="button" class="md-header__button md-icon">
+  Ask AI
+</button>
+```
+
+Then update the loader:
+
+```js
+script.dataset.openSelector = '#ask-ai'
+script.dataset.launcherHidden = 'true'
+```
+
+The widget watches the DOM, so it binds after MkDocs renders the theme. See [Add an AI button to your header](/widget/setups/custom-trigger) for the full behavior.
+
+If you do not want to customize the theme, keep the default floating launcher and skip this section.
+
+## CLI behavior
+
+The CLI detects MkDocs when it finds `mkdocs.yml` or `mkdocs.yaml`.
+
+| Setting | Value |
+| --- | --- |
+| Detected by | `mkdocs.yml` or `mkdocs.yaml` |
+| Default `KNOKU_DOCS_DIR` | `docs_dir` from config, otherwise `./docs/` |
+| Default exclude | `blog/**` |
+| URL style | `/<slug>/` |
+
+For `docs/getting-started/install.md`, the default citation URL is `/getting-started/install/`.
+
+If `use_directory_urls: false` or a custom theme changes your URL format, set per-file `url:` frontmatter or a project-wide `KNOKU_URL_BASE`. See [CLI configuration](/cli/configuration#url-routing).
+
+## Verify
+
+```bash
+npx @knoku/cli@latest doctor
+```
+
+Then run `mkdocs serve` or open the deployed site and check that:
+
+1. `javascripts/knoku.js` is loaded
+2. `https://cdn.knoku.com/widget.js` is requested
+3. the widget config request returns `200`
+4. answers cite URLs with MkDocs trailing slashes
+
+If the config request returns `403`, add the exact production host as the project's allowed domain. Local development with MkDocs usually uses `http://127.0.0.1:8000`, which is allowed when the project has an allowed domain configured.
+
+## Customize the widget
+
+- [Add an AI button to your header](/widget/setups/custom-trigger)
+- [Match your brand](/widget/setups/branding)
+- [Choose a panel layout](/widget/setups/panel-layout)
+- [Require consent before chat](/widget/setups/consent)
+- [Translate the widget](/widget/setups/localize)
+- [Identify logged-in users](/widget/setups/identify-users)
+- [Attributes reference](/widget/reference/attributes) · [Component Styles](/widget/reference/component-styles) · [Icons](/widget/reference/icons) · [Runtime API](/widget/reference/runtime-api)

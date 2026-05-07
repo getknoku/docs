@@ -1,0 +1,80 @@
+# Installation
+
+Add the widget script to every docs page where visitors should be able to ask questions. The only required value is your Project ID.
+
+## Before You Start
+
+1. [Create a Knoku project](https://knoku.com/projects) in the dashboard.
+2. Copy the **Project ID** from the project page — a UUID like `01234567-89ab-cdef-0123-456789abcdef`.
+3. Add the exact host(s) where the widget will run under **Project > Settings > Allowed Domains**. You can list multiple — e.g. `example.com` + `docs.example.com`, or staging + production.
+
+The widget will not mount on a production domain that is not in the list.
+
+If your site uses Content Security Policy, allow the CDN script and API connection:
+
+```txt
+script-src https://cdn.knoku.com
+connect-src https://api.knoku.com
+```
+
+## CDN Script
+
+Add the script to your site's `<head>`. Async loading prevents render blocking, and `<head>` placement ensures the widget initializes as early as possible.
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+></script>
+```
+
+Replace `YOUR_PROJECT_ID` with the UUID you copied. From here, pick a setup based on what you want to do: [add an AI button to your header](/widget/setups/custom-trigger), [match your brand](/widget/setups/branding), [require consent](/widget/setups/consent), [translate the widget](/widget/setups/localize), or [identify logged-in users](/widget/setups/identify-users). For the full attribute list, see the [Attributes reference](/widget/reference/attributes).
+
+## npm
+
+Use the npm package when you mount the widget from an application bundle.
+
+```bash
+npm install @knoku/widget
+```
+
+```ts
+import { initKnokuWidget } from '@knoku/widget'
+
+await initKnokuWidget({
+  projectId: 'YOUR_PROJECT_ID',
+})
+```
+
+For programmatic control after mount (open / close / identify / events), see the [Runtime API](/widget/reference/runtime-api).
+
+## Verify
+
+After adding the script, refresh your site and look for the launcher in the bottom-right corner. If it does not appear, work through this checklist:
+
+1. **Open browser devtools → Network tab.** Find the request to `https://api.knoku.com/api/v1/config/{projectId}`.
+   - **`200` with `{ "active": true, ... }`** → widget will mount.
+   - **`200` with `{ "active": false, "disabled_reason": "project_draft" }`** → switch the project from `draft` to `live` in your dashboard.
+   - **`200` with `{ "active": false, "disabled_reason": "project_paused" }`** → unpause the project.
+   - **`200` with `{ "active": false, "disabled_reason": "monthly free plan limit reached" }`** → free plan exhausted; upgrade or wait for the next billing period.
+   - **`200` with `{ "active": false, "disabled_reason": "monthly plan limit reached; enable overage to continue" }`** → paid plan included messages exhausted; enable overage in billing settings or wait for the next billing period.
+   - **`200` with `{ "active": false, "disabled_reason": "overage spending limit reached" }`** → overage cap reached; raise the cap in billing settings or wait for the next billing period.
+   - **`403`** → the current production host is not the project's allowed domain. Add it as an exact, port-aware host match. Local `localhost` and `127.0.0.1` development are allowed when the project has an allowed domain configured.
+2. **Open browser devtools → Console.** Look for `Knoku:` warnings. Common ones:
+   - `Knoku: data-project-id is required` → attribute missing or empty.
+   - `Knoku: invalid value for data-X, using default` → check the attribute value against the [Attributes reference](/widget/reference/attributes).
+3. **CSP errors in console** → re-check the `script-src` and `connect-src` directives above are present.
+
+## Framework-Specific Guides
+
+If you're using a docs framework, the script tag goes in a different place. Step-by-step guides:
+
+- [Mintlify](/integrations/mintlify)
+- [Nextra](/integrations/nextra)
+- [Docusaurus](/integrations/docusaurus)
+- [VitePress](/integrations/vitepress)
+- [MkDocs](/integrations/mkdocs)
+- [Sphinx](/integrations/sphinx)
+- [ReadTheDocs](/integrations/readthedocs)
+- [Custom website](/integrations/custom-website)

@@ -1,0 +1,50 @@
+# CLI
+
+The Knoku CLI syncs a local documentation folder with a Knoku project. It
+handles project setup, document uploads, and setup diagnostics.
+
+## Install
+
+Run commands directly with `npx`:
+
+```bash
+npx @knoku/cli@latest <command>
+```
+
+Or install globally:
+
+```bash
+npm install -g @knoku/cli
+```
+
+Requires Node.js 20 or later.
+
+## Commands
+
+| Command | Description |
+| --- | --- |
+| [`init`](/cli/init) | Initialize Knoku in your documentation project |
+| [`push`](/cli/push) | Push documentation files to Knoku |
+| [`status`](/cli/status) | Show sync status |
+| [`doctor`](/cli/doctor) | Verify Knoku setup and diagnose issues |
+
+## Typical Workflow
+
+```bash
+npx @knoku/cli@latest init       # set up API key, project ID, docs path
+npx @knoku/cli@latest push       # upload docs
+```
+
+Run `push` again after each documentation change. For CI pipelines, add it as
+a step after your docs build to keep the index up to date on every merge.
+
+## File Types
+
+The CLI uploads `.md`, `.mdx`, and `.rst` files. Other formats are ignored.
+Files inside `node_modules`, `.git`, and `.knoku` directories are excluded
+automatically.
+
+## Configuration
+
+All settings are stored in `.knoku/.env` at your project root. The `init`
+command creates this file. See [Configuration](/cli/configuration) for details.

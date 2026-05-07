@@ -1,0 +1,144 @@
+# VitePress
+
+Add the Knoku widget to a VitePress site.
+
+## Before you start
+
+The widget only works once your project exists and your docs are indexed:
+
+1. Create a project and add your site's domain as the allowed domain. See [Widget installation](/widget/installation#before-you-start).
+2. Sync your docs from the project root with [`knoku init`](/cli/init) and [`knoku push`](/cli/push) so answers come from your own content.
+
+## Add the widget
+
+VitePress injects custom tags via the `head` option in `.vitepress/config.*`. Each entry is a `[tag, attrs, content?]` tuple:
+
+```js
+// .vitepress/config.mjs
+import { defineConfig } from 'vitepress'
+
+export default defineConfig({
+  head: [
+    ['script', {
+      src: 'https://cdn.knoku.com/widget.js',
+      'data-project-id': 'YOUR_PROJECT_ID',
+      async: '',
+    }],
+  ],
+})
+```
+
+Boolean HTML attributes like `async` are written as empty strings; VitePress passes the attribute object straight to the rendered `<script>` tag.
+
+Restart the dev server after saving.
+
+## Widget attributes in `head`
+
+Every `data-*` attribute from the widget docs goes into the second element of the tuple as a quoted kebab-case key. Boolean values are passed as strings:
+
+```js
+head: [
+  ['script', {
+    src: 'https://cdn.knoku.com/widget.js',
+    'data-project-id': 'YOUR_PROJECT_ID',
+    'data-greeting': 'How can I help?',
+    'data-launcher-text': 'Need help?',
+    'data-suggested-questions': 'Get started|rocket,API reference|code,Pricing|card',
+    async: '',
+  }],
+],
+```
+
+Same names as the script tag examples in the widget docs, just inside the tuple's attribute object. Full list: [Attributes reference](/widget/reference/attributes). For per-slot visual overrides (`data-panel-header-background-color`, etc.) see [Component Styles](/widget/reference/component-styles).
+
+## Add an Ask AI button to the navbar
+
+VitePress renders the navbar with Vue, so a button has to be rendered through the theme. Extend the default theme and use the `nav-bar-content-after` layout slot.
+
+Create `.vitepress/theme/Layout.vue`:
+
+```vue
+<script setup>
+import DefaultTheme from 'vitepress/theme'
+const { Layout } = DefaultTheme
+</script>
+
+<template>
+  <Layout>
+    <template #nav-bar-content-after>
+      <button id="ask-ai" type="button" class="VPButton medium brand">
+        Ask AI
+      </button>
+    </template>
+  </Layout>
+</template>
+```
+
+Register the layout at `.vitepress/theme/index.js`:
+
+```js
+import DefaultTheme from 'vitepress/theme'
+import Layout from './Layout.vue'
+
+export default {
+  extends: DefaultTheme,
+  Layout,
+}
+```
+
+Then tell the widget script which selector opens it:
+
+```js
+// .vitepress/config.mjs
+head: [
+  ['script', {
+    src: 'https://cdn.knoku.com/widget.js',
+    'data-project-id': 'YOUR_PROJECT_ID',
+    'data-open-selector': '#ask-ai',
+    async: '',
+  }],
+],
+```
+
+The widget watches the DOM, so it binds the click handler once VitePress mounts the navbar. To hide the floating launcher and use only this button, add `'data-launcher-hidden': 'true'`. See [Add an AI button to your header](/widget/setups/custom-trigger) for the full attribute list.
+
+## CLI behavior
+
+The CLI detects VitePress when it finds `.vitepress/config.*` at the project root or under `docs/`.
+
+| Project layout | Default `KNOKU_DOCS_DIR` |
+| --- | --- |
+| `.vitepress/config.*` | `./` |
+| `docs/.vitepress/config.*` | `./docs/` |
+
+VitePress uses extensionless routes by default. For `guide/install.md`, the default citation URL is `/guide/install`. For `index.md`, it is `/`.
+
+If your site is deployed under a base path, set `KNOKU_URL_BASE`:
+
+```env
+KNOKU_URL_BASE=/docs
+```
+
+Then `guide/install.md` maps to `/docs/guide/install`.
+
+## Verify
+
+```bash
+npx @knoku/cli@latest doctor
+```
+
+Then run or deploy your VitePress site and check that:
+
+1. the widget script loads once on every docs page
+2. the config request returns `200`
+3. answers cite URLs that match your VitePress routes
+
+## Customize the widget
+
+- [Add an AI button to your header](/widget/setups/custom-trigger)
+- [Match your brand](/widget/setups/branding)
+- [Choose a panel layout](/widget/setups/panel-layout)
+- [Require consent before chat](/widget/setups/consent)
+- [Translate the widget](/widget/setups/localize)
+- [Identify logged-in users](/widget/setups/identify-users)
+- [Attributes reference](/widget/reference/attributes) · [Component Styles](/widget/reference/component-styles) · [Icons](/widget/reference/icons) · [Runtime API](/widget/reference/runtime-api)
