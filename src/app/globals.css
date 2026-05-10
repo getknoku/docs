@@ -13,8 +13,37 @@ header.nextra-navbar > nav > div:has(input[type="search"]) {
   order: 100;
 }
 
+/* On mobile (Nextra hides the search and shows a hamburger) the hamburger
+   defaults to source order, which leaves Ask AI on its right. Push the
+   hamburger past Ask AI so it sits at the far end of the navbar. */
+header.nextra-navbar .nextra-hamburger {
+  order: 95;
+}
+
 /* Hover state for the Ask AI button (inline styles can't do hover). */
 header.nextra-navbar a[aria-label="Ask AI"]:hover {
   background-color: rgba(99, 102, 241, 0.14) !important;
   border-color: rgba(99, 102, 241, 0.28) !important;
+}
+
+/* Logo dark/light swap. Tailwind's `dark:hidden` / `hidden dark:block`
+   utilities aren't generated in this project's CSS bundle (Nextra ships its
+   own scoped Tailwind), so the variants no-op and both <img> tags render.
+   Use explicit rules instead. */
+.knoku-logo-light { display: block; }
+.knoku-logo-dark { display: none; }
+.dark .knoku-logo-light { display: none; }
+.dark .knoku-logo-dark { display: block; }
+
+/* Nextra's mobile menu uses `rgb(var(--nextra-bg))` which only resolves
+   when Nextra's <Head> component is rendered to define `--nextra-bg`.
+   This project doesn't use that component (Next.js metadata API is used
+   instead), so the variable is undefined and the bg renders transparent.
+   Define the variable ourselves to match Nextra's defaults
+   (light: 250,250,250 / dark: 17,17,17 — see nextra/dist/client/components/head.js). */
+:root {
+  --nextra-bg: 250, 250, 250;
+}
+.dark {
+  --nextra-bg: 17, 17, 17;
 }
