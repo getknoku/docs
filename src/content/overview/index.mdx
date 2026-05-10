@@ -1,9 +1,10 @@
 # Introduction
 
-Knoku is an AI assistant for documentation sites. Unlike most alternatives,
-Knoku **does not use embeddings or a vector database**. It reads your docs the
-way a human would — as a hierarchical tree of pages, sections, and headings —
-and navigates that structure to answer questions.
+Knoku is an AI assistant for documentation sites. It reads your docs as a
+hierarchical tree of pages, sections, and headings, and navigates that
+structure to answer questions. A vector embedding pre-filter narrows the
+candidate pages on large corpora, but the actual retrieval and citation
+logic walks the tree.
 
 This approach produces more accurate source citations, more predictable
 answers on technical content, and lets a single project serve multiple
@@ -28,21 +29,25 @@ hard to understand.
 
 ## How It Works
 
-Knoku uses **tree-based retrieval** instead of vector similarity search.
+Knoku's retrieval is **tree-based**, with a vector embedding step used only
+as an optional pre-filter on large corpora.
 
 When you push docs, Knoku parses each Markdown, MDX, or reStructuredText
 file and builds a tree from the heading hierarchy — pages become branches,
 sections become nodes. The original source is preserved alongside the tree
-so citations always point to a specific section.
+so citations always point to a specific section. Vector embeddings of each
+section are also generated and stored in PostgreSQL via pgvector to speed
+up candidate selection on larger projects.
 
-When a visitor asks a question, Knoku traverses the tree to select the
-relevant sub-trees structurally, generates an answer grounded only in those
-sections, and streams the response back with links to the sources it used.
+When a visitor asks a question, Knoku narrows the candidate sections
+(using embeddings when helpful), traverses the tree to select the relevant
+sub-trees, generates an answer grounded only in those sections, and streams
+the response back with links to the sources it used.
 
-Because retrieval is structural rather than statistical, answers stay close
-to how your docs are actually organized, and every citation is traceable to
-a specific section. If a topic is not covered, the assistant will say so
-instead of guessing.
+Because the final selection and citation step walks the tree, answers stay
+close to how your docs are actually organized, and every citation is
+traceable to a specific section. If a topic is not covered, the assistant
+will say so instead of guessing.
 
 ## Main Components
 
@@ -79,9 +84,9 @@ It is organized around five areas:
   docs, analytics, and plan limits.
 - **API keys & access** — create keys for the CLI and for CI workflows,
   and manage which teammates can sync, configure, or read analytics.
-- **Analytics** — see which questions visitors ask, which answers
-  resolved the question, which sections of your docs are cited most, and
-  where users hit topics your docs do not cover.
+- **Analytics** — see recurring questions grouped by topic, coverage gaps
+  with content suggestions, and citation health (which sections are cited
+  most and which indexed pages never appear in answers).
 - **Billing & usage** — track monthly message usage against your plan
   limit and manage the subscription.
 

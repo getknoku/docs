@@ -1,0 +1,47 @@
+# Embed the widget on multiple sites
+
+A single Knoku project can power the widget on more than one host — typically an apex marketing site plus a docs subdomain (`example.com` + `docs.example.com`), or staging plus production. Two settings keep links intact when more than one host is in play.
+
+## Allow each host
+
+Open **Project > Settings > Domains** and add every host where the widget will mount. Include the protocol; ports must match exactly when present.
+
+```
+https://example.com
+https://docs.example.com
+http://localhost:3000
+```
+
+The widget refuses to mount on hosts that are not in this list. An empty list disables the widget entirely. Wildcards are not allowed — list each host explicitly.
+
+## Pick the source link domain
+
+When your documentation lives on a different host than the widget (the apex shows marketing, the docs sit on a subdomain), source citations need to resolve to the docs host regardless of where the widget is mounted. Otherwise a citation rendered on `example.com` would link to `example.com/installing` instead of `docs.example.com/installing`.
+
+When two or more domains are listed, the Domains page shows a radio button next to each entry — select the one that hosts your documentation:
+
+```
+( ) https://example.com
+(•) https://docs.example.com
+( ) http://localhost:3000
+```
+
+The widget prefixes every root-relative source path with the selected domain. Both the floating panel and the dashboard's session viewer honor the same setting. With a single domain configured the radio is hidden — that domain is automatically canonical.
+
+If no domain is selected the widget falls back to `window.location.origin`, which only matches the docs host when the widget is mounted on it directly.
+
+## How `url_path` gets stored
+
+The Knoku CLI computes a `url_path` per file when you run `knoku push`. The widget reads that value to build source links. Three inputs, in priority order:
+
+1. Frontmatter `url:` field — per-file override.
+2. `KNOKU_URL_BASE` environment variable — project-wide prefix.
+3. The framework adapter's default routing.
+
+If `KNOKU_URL_BASE` is a full URL (`https://docs.example.com`), `url_path` is stored absolute and the source link domain setting is redundant for those entries. Most projects keep `url_path` root-relative and rely on the dashboard setting instead — the same indexed corpus then works across production, staging, and any embedding host without a re-push.
+
+See [CLI > Configuration](/cli/configuration) for the full URL resolution rules.
+
+## Requirements
+
+The source link domain setting requires widget version **0.2.1** or later. The CDN-hosted widget at `https://cdn.knoku.com/widget.js` is always current; npm consumers should pin `@knoku/widget@^0.2.1`.

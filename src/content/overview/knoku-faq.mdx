@@ -20,10 +20,12 @@ includes source references so visitors can verify the answer.
 
 ## Does Knoku use embeddings or a vector database?
 
-No. Knoku uses **tree-based retrieval**: when you push docs, it builds a
-hierarchical tree from the heading structure (pages → sections → leaves) and
-traverses that tree at query time to find the relevant content. There are no
-embeddings, no vector index, and no similarity search.
+Yes, but only as a pre-filter. Knoku's primary retrieval is **tree-based**:
+when you push docs, it builds a hierarchical tree from the heading
+structure (pages → sections → leaves) and walks that tree at query time to
+pick the sections used in the answer. On larger projects, vector embeddings
+of each section are also stored in PostgreSQL via pgvector and used to
+narrow the candidate pages before the tree walk.
 
 The practical effect is that citations point to specific sections rather
 than similarity-matched chunks, and retrieval behavior stays predictable as
@@ -32,9 +34,10 @@ your docs grow or are reorganized.
 ## Which LLM does Knoku use?
 
 Knoku is **LLM-agnostic**. Answers are generated through commercial LLM
-APIs — currently models from OpenAI, Anthropic, and Google Gemini. Which
-model handles a given question can change over time as better options
-become available, without any change on your side.
+APIs — currently models from Anthropic and OpenAI, accessed directly or
+through routing services such as OpenRouter. Which model handles a given
+question can change over time as better options become available, without
+any change on your side.
 
 Retrieval (the tree traversal) runs on Knoku's own infrastructure
 regardless of which LLM is selected. Only the sections chosen for a given

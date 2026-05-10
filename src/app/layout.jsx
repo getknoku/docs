@@ -1,4 +1,5 @@
 /* eslint-env node */
+import Script from 'next/script'
 import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
@@ -24,14 +25,14 @@ const Logo = () => (
     <img
       src="/dark_logo.svg"
       alt="Knoku"
-      className="dark:hidden"
+      className="knoku-logo-light"
       style={{ height: 24, width: 'auto' }}
     />
     {/* eslint-disable-next-line @next/next/no-img-element */}
     <img
       src="/white_logo.svg"
       alt="Knoku"
-      className="hidden dark:block"
+      className="knoku-logo-dark"
       style={{ height: 24, width: 'auto' }}
     />
   </>
@@ -40,6 +41,7 @@ const Logo = () => (
 const AskAIButton = () => (
   <a
     href="#"
+    data-knoku-trigger
     aria-label="Ask AI"
     style={{
       display: 'inline-flex',
@@ -99,6 +101,16 @@ export default async function RootLayout({ children }) {
         >
           {children}
         </Layout>
+        <Script
+          src="https://cdn.knoku.com/widget.js"
+          strategy="afterInteractive"
+          data-project-id="6365fe85-3915-4ad8-b5f1-35d1a8aefba0"
+          data-language="en"
+          data-consent-required="true"
+          data-layout="push"
+          data-open-selector="[data-knoku-trigger]"
+          data-suggested-questions="How do I add Knoku to my docs?|rocket,How do I sync my docs with the CLI?|terminal,Which frameworks are supported?|plug,How do I customize the widget?|settings"
+        />
       </body>
     </html>
   )

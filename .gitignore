@@ -30,3 +30,6 @@ Thumbs.db
 # Local tool state
 .claude/
 .playwright-mcp/
+
+# Knoku secrets
+.knoku/.env
