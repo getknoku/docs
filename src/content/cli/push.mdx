@@ -19,6 +19,13 @@ knoku push
 
 If nothing changed since the last push, the CLI prints "Everything is up to date." and exits.
 
+## Options
+
+| Flag | Description |
+|---|---|
+| `--include <pattern>` | Additional glob pattern to scan beyond the default `.md`, `.mdx`, and `.rst` files. |
+| `--force` | Re-upload every file, bypassing the checksum diff. Use when the file contents are unchanged but the backend needs to re-process them — for example after a change to how documents are indexed. |
+
 ## Automatic exclusions
 
 The following directories are always excluded:
@@ -38,6 +45,8 @@ The CLI never re-uploads unchanged files. On each push:
 3. Only `changed` files are uploaded; `deleted` files are removed from the index
 
 This keeps pushes fast and avoids unnecessary re-indexing.
+
+`--force` skips this diff and re-uploads every file. The check-changes call still runs, so the `deleted` list and the indexed-pages quota line are unaffected.
 
 ## URL path mapping
 
