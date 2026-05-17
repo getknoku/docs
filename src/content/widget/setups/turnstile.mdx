@@ -1,0 +1,55 @@
+# Protect the widget with Turnstile
+
+The widget endpoint accepts requests from any origin you allowlist on the **Domains** page. That gates the browser side; it doesn't gate someone scripting `curl` against your project ID. To require a verification token on every chat and feedback request, connect your own Cloudflare Turnstile site to your Knoku project.
+
+Knoku does not host Turnstile or bill for it. You bring your own free Cloudflare account; the verification call goes from the Knoku backend to Cloudflare's `siteverify` endpoint with your secret key.
+
+## When you should set this up
+
+Turnstile is optional. The widget works without it. Reasons to turn it on:
+
+- The chat endpoint is hit by traffic you can't explain in analytics.
+- Your usage spikes without matching pageviews — a sign someone is scripting against your project ID.
+- You're approaching your monthly message quota faster than expected.
+
+If you launched recently and traffic is low, you can leave Turnstile off and watch for the signals above.
+
+## Setup
+
+1. Open **Cloudflare Turnstile** in your Cloudflare dashboard. The product is free and lives at <a href="https://dash.cloudflare.com/?to=/:account/turnstile" target="_blank" rel="noopener noreferrer">dash.cloudflare.com → Turnstile</a>. You don't need to move your DNS — Turnstile is account-scoped, not domain-scoped.
+2. Click **Add site**. Pick any name. Leave **Widget mode** on the default (`Managed`).
+3. Under **Hostnames**, list every domain where the Knoku widget is embedded. Match the values on your project's **Domains** page exactly — apex vs. subdomain matters.
+4. Cloudflare returns a **site key** and a **secret key**. Copy both.
+5. In Knoku, open your project → **Settings → Security**. Paste the keys and click **Enable Turnstile**.
+
+The widget bundle picks up the site key on its next reload via `/api/v1/config/{projectId}` and starts attaching a verification token to every chat and feedback request. No code change on your site.
+
+## Verifying it works
+
+Open the widget on your live site and send a message. In your browser's DevTools Network tab, the request to `/api/v1/chat` should carry a `cf-turnstile-response` header.
+
+To confirm the gate is enforced, try the same request without the header — for example with `curl` and your project ID. The response should be `403 {"error":"turnstile_failed"}`.
+
+## Strict CSP sites
+
+If your site sends a Content-Security-Policy header, allow `challenges.cloudflare.com` for the three directives Turnstile loads under:
+
+```
+script-src   https://challenges.cloudflare.com
+frame-src    https://challenges.cloudflare.com
+connect-src  https://challenges.cloudflare.com
+```
+
+Without these, the Turnstile script fails to load and the widget can't issue a token — every chat request will fail.
+
+## Rotating the secret key
+
+Paste a new secret key into **Settings → Security** and save. The previous value is overwritten in place; existing visitors don't need to reload because tokens are short-lived per request.
+
+If you ever lose access to your Cloudflare account, click **Disable Turnstile** on the same page. The project reverts to the legacy widget behavior (no verification gate, origin allowlist only).
+
+## What gets sent to Cloudflare
+
+When Turnstile is enabled, every chat and feedback request from your widget triggers one call to `https://challenges.cloudflare.com/turnstile/v0/siteverify` from the Knoku backend. The request body carries your secret key, the visitor's one-time token, and the visitor's IP. Cloudflare uses this signal to score whether the request is human; the score is not persisted by Knoku.
+
+This is a Cloudflare service governed by their own terms. Reference it in your privacy policy if you keep one — most customers list Cloudflare under "service providers" or "sub-processors".

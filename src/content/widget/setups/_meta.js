@@ -6,4 +6,5 @@ export default {
   consent: 'Require consent before chat',
   localize: 'Translate the widget',
   'identify-users': 'Identify logged-in users',
+  turnstile: 'Protect the widget with Turnstile',
 }
