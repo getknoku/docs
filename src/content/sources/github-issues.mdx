@@ -1,0 +1,53 @@
+# GitHub Issues & PRs
+
+GitHub Issues and Pull Requests sync brings troubleshooting context, workarounds, release notes, and implementation discussions into Knoku.
+
+Use it when important product knowledge lives in GitHub threads rather than formal docs.
+
+## Set up the GitHub App
+
+1. Open **Project -> Settings -> Integrations -> GitHub**.
+2. Click **Install on GitHub**.
+3. Install the Knoku GitHub App and grant access to the repositories you want to read.
+4. Enable **Issues** and/or **Pull requests** per repository and set filters.
+
+This is separate from [GitHub repo sync](/sources/github-repo-sync), which indexes documentation files from **Project -> Sources**.
+
+## Issues
+
+Knoku can index issue titles, descriptions, and comments.
+
+Use filters to control:
+
+- State
+- Labels
+- Age windows
+- Repository visibility
+
+## Pull requests
+
+Knoku can index PR titles, descriptions, and discussion context.
+
+Use PR sync for release behavior, migration notes, bug fixes, and implementation rationale that is useful to support or engineering teams.
+
+## Visibility
+
+| Repo visibility | Default audience |
+| --- | --- |
+| Public repo | Public |
+| Private repo | Internal |
+
+Private GitHub content should not appear in the public widget unless you deliberately expose it and the citation links are usable by readers.
+
+## Sync behavior
+
+GitHub webhooks queue updates when matched threads change. A periodic sync re-checks selected repositories. Use **Re-index** for a manual refresh.
+
+## Plan
+
+GitHub Issues and PRs sync require Open Source or above.
+
+## Related
+
+- [GitHub Discussions](/sources/github-discussions)
+- [Source groups](/sources/source-groups)

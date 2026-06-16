@@ -1,0 +1,40 @@
+# Sessions
+
+Sessions are the conversation records behind every integration: widget, support form deflector, Slack, Discord, and Public API.
+
+Open **Project > Sessions**.
+
+## List view
+
+Use the list view to scan:
+
+- Channel, such as widget, Slack, Discord, deflector, or Public API
+- Intent tag, when classified
+- Time, first message, and latest activity
+- Geographic hint for eligible browser/API sessions when enabled
+
+Filter by channel, intent, and date. Analytics cards often open this page with the relevant filter already applied.
+
+## Detail view
+
+Open a session to review:
+
+- User and assistant messages
+- Citations used by each assistant turn
+- Feedback when the user rated an answer
+
+Use the detail view before editing docs. It shows whether Knoku missed the source, retrieved the wrong source, or answered correctly but the user still needed help.
+
+Deflector button outcomes (resolved vs continued to support) appear in [Deflection analytics](/analytics/deflection), not in the session detail view.
+
+## Geographic data
+
+Widget and Public API sessions can include country or city fields when [geographic precision](/dashboard/privacy) is enabled.
+
+Slack and Discord sessions do not include end-user geo because messages arrive through Knoku's bot infrastructure.
+
+## Related
+
+- [Analytics](/analytics)
+- [Deploy Knoku](/integrations)
+- [Privacy & geographic data](/dashboard/privacy)

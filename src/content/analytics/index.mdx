@@ -1,0 +1,51 @@
+# Analytics
+
+Knoku analytics turns sessions into a doc roadmap: where users come from, which answers worked, what questions keep repeating, and which sources were cited.
+
+Open **Project > Analytics**.
+
+## Analytics views
+
+| View | Use it for | More |
+| --- | --- | --- |
+| Summary | Message volume, sessions, deflection, helpful rate, and channel mix | This page |
+| Traffic | Country and city distribution when geographic collection is enabled | [Traffic](/analytics/traffic) |
+| Deflection | Answered vs needs-support outcomes and support form saves | [Deflection](/analytics/deflection) |
+| Questions | Coverage gaps and frequent question clusters | [Questions](/analytics/questions) |
+| Sources | Documents that were cited, and documents that were not used | [Sources cited](/analytics/sources) |
+
+The period selector applies to every view. Use a longer period when a project has low traffic so clusters and rates have enough volume.
+
+## Summary
+
+The Summary view gives you the operating picture for the selected period:
+
+- Total sessions and messages
+- Deflection rate when turns have intent tags
+- Helpful rate on Business and above, based on widget feedback
+- Channel breakdown by surface
+- Shortcuts into Sessions with filters already applied
+
+Use Summary first, then drill into the view that explains the number.
+
+## Drill into sessions
+
+Most cards link to **Sessions**. For example, a needs-support card opens the matching sessions so you can read the exact questions, citations, and assistant replies behind the metric.
+
+This is the fastest way to decide whether a problem is missing content, stale content, poor source grouping, or a question that should go to support.
+
+## Export and sync
+
+Business and above can export deflection metrics from the Deflection view.
+
+For full conversation sync, use the [Public API](/integrations/public-api) from a trusted backend and paginate `/v1/conversations` and `/v1/messages`.
+
+## Weekly digest
+
+Business and above can enable a weekly email digest from **Settings** (Weekly digest card). The digest summarizes usage, top questions, coverage gaps, and plan usage for workspace admins.
+
+## Related
+
+- [Questions](/analytics/questions)
+- [Deflection](/analytics/deflection)
+- [Sessions](/dashboard/sessions)

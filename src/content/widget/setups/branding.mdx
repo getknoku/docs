@@ -1,10 +1,26 @@
 # Match your brand
 
-Two layers: a primary accent applied to the launcher, submit button, and focus states; and per-slot component styles for everything else.
+The widget has two styling layers:
+
+- A primary accent for common controls
+- Component style attributes for specific UI slots
+
+Use the accent for most installs. Use component styles when you need tighter visual matching.
 
 ## Primary accent
 
-Set one color across both modes, or a light/dark pair.
+Set one color for both themes:
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-primary-color="#0ea5e9"
+></script>
+```
+
+Or set separate colors for light and dark mode:
 
 ```html
 <script
@@ -16,25 +32,28 @@ Set one color across both modes, or a light/dark pair.
 ></script>
 ```
 
-Or a single value for both:
-
-```html
-data-primary-color="#0ea5e9"
-```
-
-Defaults are `#171717` / `#d4d4d4` (Knoku's near-black/near-white from the brand palette). Invalid hex falls back to the default with a console warning.
+The default accent is `#171717` in light mode and `#d4d4d4` in dark mode. Invalid hex values fall back to the default and log a console warning.
 
 ## Launcher copy
 
+Change the launcher label and placement with launcher attributes:
+
 ```html
-data-launcher-text="Ask anything"
-data-launcher-subtitle="Powered by AI"
-data-launcher-align="bottom-right"
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-launcher-text="Ask Docs"
+  data-launcher-subtitle="Search the docs"
+  data-launcher-align="bottom-right"
+></script>
 ```
 
-## Per-slot overrides
+`data-launcher-subtitle` is visible on the `card` launcher style. The default `pill` style uses a single-line label.
 
-Slot + property attributes target one CSS property on one slot. Append `-dark` to scope to dark mode.
+## Component styles
+
+Component style attributes target one CSS property on one widget slot. Add `-dark` to scope an override to dark mode.
 
 ```html
 <script
@@ -48,11 +67,11 @@ Slot + property attributes target one CSS property on one slot. Append `-dark` t
 ></script>
 ```
 
-The full slot list and allowed CSS properties live in [Component Styles](/widget/reference/component-styles).
+See [Component styles](/widget/reference/component-styles) for the full slot and property list.
 
-## Feedback thumbs in your brand color
+## Feedback colors
 
-Defaults are green / red. Override the selected state to a single brand color:
+The default selected feedback colors are green and red. Override them when feedback should stay on-brand:
 
 ```html
 data-feedback-up-color="#0ea5e9"
@@ -61,9 +80,10 @@ data-feedback-up-color-dark="#38bdf8"
 data-feedback-down-color-dark="#38bdf8"
 ```
 
-Only the selected state is overridden; unselected thumbs stay in the placeholder color.
+Only the selected state changes. Unselected feedback buttons keep the neutral placeholder color.
 
 ## Related
 
-- [Color attributes](/widget/reference/attributes#colors)
-- [Component Styles](/widget/reference/component-styles)
+- [Attributes reference](/widget/reference/attributes)
+- [Component styles](/widget/reference/component-styles)
+- [Launcher style](/widget/setups/launcher-style)

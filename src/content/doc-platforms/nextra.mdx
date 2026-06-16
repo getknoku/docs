@@ -7,7 +7,7 @@ Add the Knoku widget to a Nextra site.
 The widget only works once your project exists and your docs are indexed:
 
 1. Create a project and add your site's domain as the allowed domain. See [Widget installation](/widget/installation#before-you-start).
-2. Sync your docs from the project root with [`knoku init`](/cli/init) and [`knoku push`](/cli/push) so answers come from your own content.
+2. Connect [GitHub repo sync](/sources/github-repo-sync) for your docs repository (set **Docs directory** to your Markdown folder) so answers come from your own content.
 
 ## Add the widget with App Router
 
@@ -75,21 +75,21 @@ Most widget options can be passed as normal `data-*` props:
 
 Full list: [Attributes reference](/widget/reference/attributes). For per-slot visual overrides (`data-panel-header-background-color`, etc.) see [Component Styles](/widget/reference/component-styles).
 
-## Add an Ask AI button to the navbar
+## Add an Ask Docs button to the navbar
 
 Nextra renders the navbar from your root layout configuration. Add a button to the navbar area and point the widget at it with `data-open-selector`.
 
 One simple option is to add your own button near the layout and style it with your existing classes:
 
 ```tsx
-<button id="ask-ai" type="button">
-  Ask AI
+<button id="ask-docs" type="button">
+  Ask Docs
 </button>
 
 <Script
   src="https://cdn.knoku.com/widget.js"
   data-project-id="YOUR_PROJECT_ID"
-  data-open-selector="#ask-ai"
+  data-open-selector="#ask-docs"
   data-launcher-hidden="true"
   strategy="afterInteractive"
 />
@@ -97,35 +97,15 @@ One simple option is to add your own button near the layout and style it with yo
 
 For a fully integrated navbar item, render the same button through your Nextra `Navbar` / layout configuration. The important part is that the element has a stable selector. The widget watches the DOM, so it binds after Nextra hydrates.
 
-See [Add an AI button to your header](/widget/setups/custom-trigger) for custom trigger behavior.
+See [Add an Ask Docs button](/widget/setups/custom-trigger) for custom trigger behavior.
 
-## CLI behavior
+## Index your docs
 
-The CLI detects Nextra when it finds a Next.js config and a `nextra` dependency.
+Connect the GitHub repository that contains your Markdown. Set **Docs directory** to the folder your generator uses (often `docs/` or `src/content`). Knoku syncs on each commit and cites files on GitHub. Details: [GitHub repo sync](/sources/github-repo-sync).
 
-| Project layout | Default `KNOKU_DOCS_DIR` |
-| --- | --- |
-| App Router with `src/content` | `./src/content/` |
-| App Router with `content` | `./content/` |
-| Pages Router with `src/pages` | `./src/pages/` |
-| Pages Router with `pages` | `./pages/` |
-| Fallback | `./` |
+Alternatively, [crawl](/sources/website-crawl) your deployed site if you do not index from GitHub.
 
-Nextra uses extensionless routes by default. For `src/content/widget/install.mdx`, the default citation URL is `/widget/install`. For `index.mdx`, it is `/`.
-
-If your docs are served under a subpath, set `KNOKU_URL_BASE`:
-
-```env
-KNOKU_URL_BASE=/docs
-```
-
-## Verify
-
-```bash
-npx @knoku/cli@latest doctor
-```
-
-Then run or deploy your Nextra site and check that:
+Open the deployed site and ask a question. Then run or deploy your Nextra site and check that:
 
 1. the widget script loads once on every docs page
 2. the config request returns `200`
@@ -135,10 +115,13 @@ If the widget does not appear, see the [Widget installation troubleshooting chec
 
 ## Customize the widget
 
-- [Add an AI button to your header](/widget/setups/custom-trigger)
+- [Add an Ask Docs button](/widget/setups/custom-trigger)
 - [Match your brand](/widget/setups/branding)
 - [Choose a panel layout](/widget/setups/panel-layout)
 - [Require consent before chat](/widget/setups/consent)
 - [Translate the widget](/widget/setups/localize)
 - [Identify logged-in users](/widget/setups/identify-users)
-- [Attributes reference](/widget/reference/attributes) · [Component Styles](/widget/reference/component-styles) · [Icons](/widget/reference/icons) · [Runtime API](/widget/reference/runtime-api)
+- [Attributes reference](/widget/reference/attributes)
+- [Component Styles](/widget/reference/component-styles)
+- [Icons](/widget/reference/icons)
+- [Runtime API](/widget/reference/runtime-api)

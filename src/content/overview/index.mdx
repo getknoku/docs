@@ -1,132 +1,49 @@
 # Introduction
 
-Knoku is an AI assistant for documentation sites. It reads your docs as a
-hierarchical tree of pages, sections, and headings, and navigates that
-structure to answer questions. A vector embedding pre-filter narrows the
-candidate pages on large corpora, but the actual retrieval and citation
-logic walks the tree.
+Knoku turns your documentation and support knowledge into cited answers. Index your sources once, then let visitors, community members, support teams, and developer tools ask questions against the same project.
 
-This approach produces more accurate source citations, more predictable
-answers on technical content, and lets a single project serve multiple
-domains (marketing site, docs subdomain, locale subdomains) without
-re-indexing.
+Answers are grounded in the content you connect. When Knoku cannot find a reliable answer, it should say so instead of guessing. Analytics then show what people asked, which pages were cited, and where your docs need work.
 
-Instead of sending users to a search page or making them scan long guides,
-Knoku lets them ask questions in plain language and get an answer grounded in
-your documentation, with links back to the exact sections it used.
+New workspaces start with a 14-day Business trial. You can create a project, connect a source, and embed the widget without adding a card.
 
-## What Knoku Does
+## What Knoku does
 
-Knoku connects three parts of the documentation workflow:
+| Area | What it handles | Start here |
+| --- | --- | --- |
+| Sources | Bring docs, repos, help centers, files, and workspace knowledge into one index | [Sources](/sources) |
+| Deploy Knoku | Put answers where users ask: website, support flows, Slack, Discord, MCP, and API | [Deploy Knoku](/integrations) |
+| Widget | Embed a cited AI assistant on your docs or product | [Website widget](/integrations/website-widget) |
+| Analytics | Find repeated questions, coverage gaps, cited pages, and deflection outcomes | [Analytics](/analytics) |
+| Dashboard | Manage projects, domains, source groups, API keys, security, team access, and billing | [Dashboard](/dashboard) |
 
-- **Sync your docs** with the Knoku CLI.
-- **Answer visitor questions** through the embedded widget.
-- **Track what users ask** from the dashboard.
+## Main workflows
 
-The goal is simple: help people find the right answer faster, while giving your
-team visibility into which parts of the documentation are useful, missing, or
-hard to understand.
+### Add an Ask Docs widget
 
-## How It Works
+Use the [website widget](/integrations/website-widget) to add a chat panel to your docs, marketing site, or product. Visitors ask in natural language and receive answers with citations back to your indexed content.
 
-Knoku's retrieval is **tree-based**, with a vector embedding step used only
-as an optional pre-filter on large corpora.
+### Keep documentation current
 
-When you push docs, Knoku parses each Markdown, MDX, or reStructuredText
-file and builds a tree from the heading hierarchy — pages become branches,
-sections become nodes. The original source is preserved alongside the tree
-so citations always point to a specific section. Vector embeddings of each
-section are also generated and stored in PostgreSQL via pgvector to speed
-up candidate selection on larger projects.
+Sync docs from [GitHub repo sync](/sources/github-repo-sync) or crawl a deployed site with [website crawl](/sources/website-crawl). You can also connect [Notion](/sources/notion), [Confluence](/sources/confluence), [Jira](/sources/jira), [OpenAPI](/sources/openapi), [Zendesk Help Center](/sources/zendesk-help-center), and uploaded files.
 
-When a visitor asks a question, Knoku narrows the candidate sections
-(using embeddings when helpful), traverses the tree to select the relevant
-sub-trees, generates an answer grounded only in those sections, and streams
-the response back with links to the sources it used.
+### Answer in team and community channels
 
-Because the final selection and citation step walks the tree, answers stay
-close to how your docs are actually organized, and every citation is
-traceable to a specific section. If a topic is not covered, the assistant
-will say so instead of guessing.
+Connect [Slack](/integrations/slack) or [Discord](/integrations/discord) so people can ask Knoku from the places they already use. Sessions and feedback still appear in the dashboard.
 
-## Main Components
+### Give agents access to docs
 
-### CLI
+Enable [MCP](/integrations/mcp) to expose your public project index to Cursor, Claude Desktop, and other MCP clients.
 
-The CLI is used by documentation maintainers. It detects supported documentation
-frameworks, stores project configuration, and syncs changed files.
+### Deflect support before ticket creation
 
-The main CLI actions are `init`, `push`, `status`, and `doctor`. The
-Get Started guide shows the exact command format.
+Use the [support form deflector](/integrations/support-form-deflector) to intercept a support form, search your docs first, and track whether the visitor resolved the issue or continued to support.
 
-### Widget
+## Public and internal knowledge
 
-The widget is the chat interface that runs on your documentation site. It is
-loaded with a script tag or through the npm package, then renders inside a
-Shadow DOM so it does not interfere with the host site's styles.
+Every project has source groups. Public content can answer through visitor-facing surfaces like the widget, deflector, MCP, and public API keys. Internal content is for team/support surfaces such as Slack, Zendesk agent tooling, and public API keys configured with internal corpus scope.
 
-It supports streamed answers, source references, automatic light/dark mode,
-custom accent colors, suggested questions, and visitor identity metadata.
+Read [Source groups](/sources/source-groups) before connecting private repositories or workspace tools.
 
-### Dashboard
+## Next step
 
-The dashboard is where your team configures and observes Knoku. Widget
-appearance and behavior themselves are configured in the embed code, while
-the dashboard handles everything around them.
-
-It is organized around five areas:
-
-- **Projects** — create one project per product or per independent docs
-  surface. Each project has its own indexed docs and analytics.
-- **Allowed Domains** — list every host the widget is allowed to load on.
-  A single project can serve multiple domains (e.g. `example.com`,
-  `docs.example.com`, locale subdomains, staging) and they share indexed
-  docs, analytics, and plan limits.
-- **API keys & access** — create keys for the CLI and for CI workflows,
-  and manage which teammates can sync, configure, or read analytics.
-- **Analytics** — see recurring questions grouped by topic, coverage gaps
-  with content suggestions, and citation health (which sections are cited
-  most and which indexed pages never appear in answers).
-- **Billing & usage** — track monthly message usage against your plan
-  limit and manage the subscription.
-
-## Supported Documentation Sites
-
-Knoku is designed to work with common documentation platforms, static site
-generators, and custom documentation setups.
-
-Supported documentation sources include:
-
-- Docusaurus
-- VitePress
-- Nextra
-- MkDocs
-- Mintlify
-- Sphinx
-- Read the Docs (Sphinx/MkDocs)
-- Custom documentation sites
-
-For custom setups, Knoku can sync Markdown, MDX, or reStructuredText content
-when you provide the docs directory and project configuration manually.
-
-## When To Use Knoku
-
-Knoku is useful when your documentation is large enough that users often need
-help finding the right page, section, option, or workflow.
-
-It works well for:
-
-- SaaS product documentation
-- API documentation
-- Developer guides
-- Open source project docs
-- Internal technical documentation
-
-## Next Step
-
-Start with [Get Started](/overview/get-started) to create a project, sync your
-first docs, and install the widget — the free plan is enough to try the full
-flow on a real site.
-
-See [pricing](https://knoku.com/pricing) for plan limits and message
-allowances.
+Follow [Get started](/overview/get-started) to create a project, connect the first source, embed the widget, and verify citations.

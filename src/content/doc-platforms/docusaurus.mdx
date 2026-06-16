@@ -7,7 +7,7 @@ Add the Knoku widget to a Docusaurus site.
 The widget only works once your project exists and your docs are indexed:
 
 1. Create a project and add your site's domain as the allowed domain. See [Widget installation](/widget/installation#before-you-start).
-2. Sync your docs from the project root with [`knoku init`](/cli/init) and [`knoku push`](/cli/push) so answers come from your own content.
+2. Connect [GitHub repo sync](/sources/github-repo-sync) for your docs repository (set **Docs directory** to your Markdown folder) so answers come from your own content.
 
 ## Add the widget
 
@@ -50,23 +50,23 @@ scripts: [
 
 Same names as the script tag examples in the widget docs, just inside a JS object. Full list: [Attributes reference](/widget/reference/attributes). For per-slot visual overrides (`data-panel-header-background-color`, etc.) see [Component Styles](/widget/reference/component-styles).
 
-## Add an Ask AI button to the navbar
+## Add an Ask Docs button to the navbar
 
 Docusaurus renders the navbar with React, so a button has to be a real component, not raw HTML. The idiomatic path is to register a custom navbar item type by swizzling `NavbarItem/ComponentTypes`.
 
-Create the button component at `src/components/AskAINavbarItem.jsx`:
+Create the button component at `src/components/AskDocsNavbarItem.jsx`:
 
 ```jsx
 import React from 'react';
 
-export default function AskAINavbarItem() {
+export default function AskDocsNavbarItem() {
   return (
     <button
-      id="ask-ai"
+      id="ask-docs"
       type="button"
       className="navbar__item navbar__link"
     >
-      Ask AI
+      Ask Docs
     </button>
   );
 }
@@ -76,11 +76,11 @@ Register the type at `src/theme/NavbarItem/ComponentTypes.js`:
 
 ```js
 import ComponentTypes from '@theme-original/NavbarItem/ComponentTypes';
-import AskAINavbarItem from '@site/src/components/AskAINavbarItem';
+import AskDocsNavbarItem from '@site/src/components/AskDocsNavbarItem';
 
 export default {
   ...ComponentTypes,
-  'custom-askAI': AskAINavbarItem,
+  'custom-askDocs': AskDocsNavbarItem,
 };
 ```
 
@@ -91,7 +91,7 @@ Then add the item to `themeConfig.navbar.items` and tell the widget script which
 themeConfig: {
   navbar: {
     items: [
-      { type: 'custom-askAI', position: 'right' },
+      { type: 'custom-askDocs', position: 'right' },
       // ...
     ],
   },
@@ -100,37 +100,21 @@ scripts: [
   {
     src: 'https://cdn.knoku.com/widget.js',
     'data-project-id': 'YOUR_PROJECT_ID',
-    'data-open-selector': '#ask-ai',
+    'data-open-selector': '#ask-docs',
     async: true,
   },
 ],
 ```
 
-The widget watches the DOM, so it binds the click handler once Docusaurus mounts the navbar. To hide the floating launcher and use only this button, add `'data-launcher-hidden': 'true'`. See [Add an AI button to your header](/widget/setups/custom-trigger) for the full attribute list.
+The widget watches the DOM, so it binds the click handler once Docusaurus mounts the navbar. To hide the floating launcher and use only this button, add `'data-launcher-hidden': 'true'`. See [Add an Ask Docs button](/widget/setups/custom-trigger) for the full attribute list.
 
-## CLI behavior
+## Index your docs
 
-The CLI detects Docusaurus when it finds `docusaurus.config.js`, `docusaurus.config.ts`, or `docusaurus.config.mjs`.
+Connect the GitHub repository that contains your Markdown. Set **Docs directory** to the folder your generator uses (often `docs/` or `src/content`). Knoku syncs on each commit and cites files on GitHub. Details: [GitHub repo sync](/sources/github-repo-sync).
 
-| Setting | Value |
-| --- | --- |
-| Default `KNOKU_DOCS_DIR` | `./docs/` |
-| Default exclude | `blog/**` |
-| URL style | `/docs/<slug>` by default |
+Alternatively, [crawl](/sources/website-crawl) your deployed site if you do not index from GitHub.
 
-If your Docusaurus config sets `routeBasePath`, the CLI uses that value. For example, `routeBasePath: 'guides'` maps `docs/install.md` to `/guides/install`.
-
-If `routeBasePath` is `/`, `docs/install.md` maps to `/install`.
-
-For custom routing, set per-file `url:` frontmatter or `KNOKU_URL_BASE`. See [CLI configuration](/cli/configuration#url-routing).
-
-## Verify
-
-```bash
-npx @knoku/cli@latest doctor
-```
-
-Then run or deploy your Docusaurus site and check that:
+Open the deployed site and ask a question. Then run or deploy your Docusaurus site and check that:
 
 1. the widget script loads once on every docs page
 2. the config request returns `200`
@@ -138,10 +122,13 @@ Then run or deploy your Docusaurus site and check that:
 
 ## Customize the widget
 
-- [Add an AI button to your header](/widget/setups/custom-trigger)
+- [Add an Ask Docs button](/widget/setups/custom-trigger)
 - [Match your brand](/widget/setups/branding)
 - [Choose a panel layout](/widget/setups/panel-layout)
 - [Require consent before chat](/widget/setups/consent)
 - [Translate the widget](/widget/setups/localize)
 - [Identify logged-in users](/widget/setups/identify-users)
-- [Attributes reference](/widget/reference/attributes) · [Component Styles](/widget/reference/component-styles) · [Icons](/widget/reference/icons) · [Runtime API](/widget/reference/runtime-api)
+- [Attributes reference](/widget/reference/attributes)
+- [Component Styles](/widget/reference/component-styles)
+- [Icons](/widget/reference/icons)
+- [Runtime API](/widget/reference/runtime-api)

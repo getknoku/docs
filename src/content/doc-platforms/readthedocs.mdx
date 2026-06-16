@@ -1,0 +1,104 @@
+# Read the Docs
+
+Add Knoku to documentation hosted on Read the Docs.
+
+Read the Docs builds your project with an underlying documentation framework. Use the guide that matches your project:
+
+- [Sphinx](/doc-platforms/sphinx) for projects with `conf.py`
+- [MkDocs](/doc-platforms/mkdocs) for projects with `mkdocs.yml` or `mkdocs.yaml`
+
+This page covers Read the Docs-specific deployment and domain details.
+
+## Before you start
+
+The widget only works once your project exists and your docs are indexed:
+
+1. Create a project.
+2. Add your Read the Docs host under [Domains](/dashboard/domains).
+3. Connect [GitHub repo sync](/sources/github-repo-sync) or [website crawl](/sources/website-crawl).
+
+The allowed domain must match the host exactly. The backend checks the request origin host, not the path, so use the host without any path or version segment:
+
+- `https://PROJECT.readthedocs.io` for default-hosted projects
+- your custom docs domain, such as `https://docs.example.com`
+
+Do not include `/en/latest` or other path segments. They are not part of the host check and will not match.
+
+## Sphinx projects
+
+Add the widget through `html_js_files` in `conf.py`:
+
+```python
+html_static_path = ['_static']
+html_js_files = [
+    'knoku.js',
+]
+```
+
+Create `_static/knoku.js` next to `conf.py`:
+
+```js
+const script = document.createElement('script')
+script.src = 'https://cdn.knoku.com/widget.js'
+script.async = true
+script.dataset.projectId = 'YOUR_PROJECT_ID'
+document.head.appendChild(script)
+```
+
+For full Sphinx details, see [Sphinx](/doc-platforms/sphinx).
+
+## MkDocs projects
+
+Add a loader file under your MkDocs `docs_dir`, usually `docs/javascripts/knoku.js`:
+
+```js
+const script = document.createElement('script')
+script.src = 'https://cdn.knoku.com/widget.js'
+script.async = true
+script.dataset.projectId = 'YOUR_PROJECT_ID'
+document.head.appendChild(script)
+```
+
+Then include it in `mkdocs.yml`:
+
+```yaml
+extra_javascript:
+  - javascripts/knoku.js
+```
+
+For full MkDocs details, see [MkDocs](/doc-platforms/mkdocs).
+
+## Index Read the Docs content
+
+Choose the source based on the citation you want:
+
+| Source | Use when | Citation behavior |
+| --- | --- | --- |
+| [GitHub repo sync](/sources/github-repo-sync) | The repository files are the source of truth | Answers cite GitHub file URLs |
+| [Website crawl](/sources/website-crawl) | Visitors should open Read the Docs pages from citations | Answers cite live Read the Docs URLs |
+
+Website crawl is usually the best fit for versioned Read the Docs sites because it captures the published URL structure, including language or version prefixes.
+
+## Verify
+
+Open the published Read the Docs site and check that:
+
+1. The loader file is present in the built HTML.
+2. `https://cdn.knoku.com/widget.js` is requested.
+3. The widget config request returns `200`.
+4. Answers cite sources that match your intended source path, either GitHub files or live Read the Docs pages.
+
+If the config request returns `403`, add the exact Read the Docs host or custom domain as the project's allowed domain.
+
+## Customize the widget
+
+- [Add an Ask Docs button](/widget/setups/custom-trigger)
+- [Match your brand](/widget/setups/branding)
+- [Choose a panel layout](/widget/setups/panel-layout)
+- [Require consent before chat](/widget/setups/consent)
+- [Translate the widget](/widget/setups/localize)
+- [Identify logged-in users](/widget/setups/identify-users)
+- [Attributes reference](/widget/reference/attributes)
+- [Component Styles](/widget/reference/component-styles)
+- [Icons](/widget/reference/icons)
+- [Runtime API](/widget/reference/runtime-api)

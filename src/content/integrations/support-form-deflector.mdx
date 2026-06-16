@@ -1,0 +1,62 @@
+# Support form deflector
+
+The support form deflector searches your public docs before a visitor submits a support form. It is designed to reduce avoidable tickets without blocking the visitor from contacting support.
+
+Deflector answers use the Public source group, the same public corpus as the website widget.
+
+## How it works
+
+1. A visitor fills out your support form.
+2. Knoku intercepts the submit event.
+3. The widget opens in deflector mode and asks from the subject/body fields.
+4. The visitor chooses **This answered my question** or **Continue to support**.
+5. Knoku records the outcome for analytics.
+
+If the visitor continues, the original form submission proceeds.
+
+## Dashboard setup
+
+Use the dashboard when possible:
+
+1. Open **Project -> Channels -> Support form**.
+2. Enter CSS selectors for the form, subject field, and body field.
+3. Copy the generated snippet and paste it on your support page.
+
+The dashboard generates the required `data-mode="deflector"` snippet.
+
+## Manual embed
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-mode="deflector"
+  data-form-selector="#support-form"
+  data-subject-selector="#subject"
+  data-body-selector="#message"
+></script>
+```
+
+`data-form-selector` is required in deflector mode. Subject and body selectors are optional but recommended; without them, the deflector has less useful context.
+
+## Analytics
+
+Deflector sessions appear in [Sessions](/dashboard/sessions) with source `deflector`.
+
+[Deflection analytics](/analytics/deflection) shows:
+
+- Intercepts
+- Resolved outcomes
+- Continued-to-support outcomes
+- Needs-support classifications
+
+## Plan
+
+Support form deflector requires Business or above and is included in the 14-day Business trial.
+
+## Related
+
+- [Website widget](/integrations/website-widget)
+- [Deflection analytics](/analytics/deflection)
+- [Widget attributes](/widget/reference/attributes)

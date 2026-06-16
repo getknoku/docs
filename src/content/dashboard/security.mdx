@@ -1,0 +1,40 @@
+# Security
+
+Project security settings protect browser traffic and credentials.
+
+Open **Project > Settings > Security**.
+
+## Cloudflare Turnstile
+
+Turnstile adds bot protection before widget chat and feedback requests.
+
+To enable it:
+
+1. Create a Turnstile widget in Cloudflare.
+2. Add the same hostnames you allow in Knoku.
+3. Paste the site key and secret key in Knoku.
+4. Save.
+
+The widget reads the site key from project config. You do not need to add a Turnstile attribute to the embed script.
+
+Full setup: [Protect the widget with Turnstile](/widget/setups/turnstile).
+
+## What Turnstile protects
+
+Turnstile applies to browser widget chat and feedback traffic.
+
+It does not protect Public API requests. Public API requests use bearer keys and should be sent from a trusted backend.
+
+## Public API keys
+
+Manage Public API keys under **Project > API Keys**.
+
+Public API keys authorize `/v1/*` endpoints such as chat, conversations, messages, health, and OpenAPI docs. Keys can be scoped to Public or Internal corpus access when created.
+
+See [Public API](/integrations/public-api) for auth headers, corpus scope, and rotation behavior.
+
+## Related
+
+- [Domains](/dashboard/domains)
+- [Widget installation](/widget/installation)
+- [Public API](/integrations/public-api)

@@ -1,0 +1,44 @@
+# Privacy & geographic data
+
+Geographic analytics are optional and controlled per project.
+
+Open **Project > Settings > Privacy**.
+
+## Geographic precision
+
+When a session starts, Knoku can derive approximate location from the client IP, store the selected geographic fields, and discard the raw IP from the session record.
+
+| Setting | Stored on sessions | Used for |
+| --- | --- | --- |
+| Off | Nothing | No geographic analytics |
+| Country | Continent and country code | Country-level traffic |
+| City | Country, city, and approximate city centroid | City-level traffic |
+
+Country is the default for new projects.
+
+## Where it appears
+
+Geographic fields can appear in:
+
+- [Traffic analytics](/analytics/traffic)
+- Session rows and details
+- Public API conversation objects, when present
+
+See `GET /v1/conversations` in the [API reference](https://api.knoku.com/v1/docs) for response fields.
+
+## Channel behavior
+
+Browser widget and Public API sessions can include geographic fields when the setting is enabled.
+
+Slack and Discord sessions do not include end-user geography. The incoming request comes from Knoku's bot service, not directly from the person asking in the workspace.
+
+## Data source
+
+Geo lookup uses MaxMind GeoLite2 City on the server. It is approximate and should not be treated as exact user location.
+
+For broader privacy questions about documents and visitor messages, see the [FAQ](/overview/knoku-faq).
+
+## Related
+
+- [Traffic](/analytics/traffic)
+- [Sessions](/dashboard/sessions)

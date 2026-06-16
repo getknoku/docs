@@ -1,0 +1,33 @@
+# Traffic
+
+Traffic shows where widget and Public API conversations originate when geographic collection is enabled.
+
+Open **Project > Analytics > Traffic**.
+
+## Requirements
+
+Traffic uses the project's geographic precision setting:
+
+| Setting | Traffic view |
+| --- | --- |
+| Off | Empty state; no geographic data is collected |
+| Country | Country distribution |
+| City | Country and city distribution |
+
+Configure this under [Privacy & geographic data](/dashboard/privacy).
+
+## What is included
+
+Traffic applies to browser and API conversations where Knoku can derive location at session start.
+
+Slack and Discord do not carry end-user geography. Those requests come from Knoku's bot infrastructure, not from the person asking in the workspace.
+
+## Legacy URL
+
+`/analytics/geographic` redirects to this view.
+
+## Related
+
+- [Analytics overview](/analytics)
+- [Sessions](/dashboard/sessions)
+- [Privacy & geographic data](/dashboard/privacy)

@@ -1,11 +1,9 @@
 export default {
   index: 'Overview',
-  docusaurus: 'Docusaurus',
-  vitepress: 'VitePress',
-  mkdocs: 'MkDocs',
-  nextra: 'Nextra',
-  mintlify: 'Mintlify',
-  sphinx: 'Sphinx',
-  readthedocs: 'Read the Docs',
-  'custom-website': 'Custom Website'
+  'website-widget': 'Website widget',
+  'support-form-deflector': 'Support form deflector',
+  slack: 'Slack',
+  discord: 'Discord',
+  mcp: 'MCP',
+  'public-api': 'Public API',
 }

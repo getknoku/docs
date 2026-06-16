@@ -1,0 +1,79 @@
+# Choose a launcher style
+
+The widget launcher has two styles:
+
+- `pill`: compact, single-line, and the default
+- `card`: legacy two-line launcher with subtitle support
+
+## Pill
+
+Pill is the default. It shows `Ask Docs` with the `book-open` icon.
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+></script>
+```
+
+Customize the label, icon, and icon position:
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-launcher-text="Ask Docs"
+  data-launcher-icon="sparkle"
+  data-launcher-icon-position="left"
+></script>
+```
+
+## Card
+
+Card shows a title, optional subtitle, icon, and arrow affordance.
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-launcher-style="card"
+  data-launcher-text="Need help?"
+  data-launcher-subtitle="Ask Docs"
+></script>
+```
+
+If you switch to `card` without custom copy, the fallback card text is `Need help?` and `Ask AI`.
+
+## Icon position
+
+`data-launcher-icon-position` controls where the icon sits relative to the label.
+
+| Value | Pill | Card |
+| --- | --- | --- |
+| `right` | Label, then icon | Text block, icon, then arrow |
+| `left` | Icon, then label | Icon, then text block, then arrow |
+
+Corner placement is controlled by `data-launcher-align`.
+
+## npm path
+
+```ts
+import { initKnokuWidget } from '@knoku/widget'
+
+await initKnokuWidget({
+  projectId: 'YOUR_PROJECT_ID',
+  launcherStyle: 'pill',
+  launcherText: 'Ask Docs',
+  launcherIcon: 'book-open',
+  launcherIconPosition: 'right',
+})
+```
+
+## Related
+
+- [Behavior attributes](/widget/reference/attributes#behavior)
+- [Built-in icons](/widget/reference/icons)
+- [Panel layout](/widget/setups/panel-layout)

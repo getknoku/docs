@@ -1,0 +1,58 @@
+# Analytics FAQ
+
+## What does Needs support mean?
+
+Needs support means a turn was tagged as `deflection_failure`: Knoku could not answer confidently from the indexed sources.
+
+That usually means the content is missing, restricted to the wrong [source group](/sources/source-groups), stale, or not specific enough for the user's question. The assistant is designed to say the docs do not cover something instead of inventing an answer.
+
+## How is deflection rate calculated?
+
+Deflection rate uses tagged turns in the selected period:
+
+```text
+deflection_success / (deflection_success + deflection_failure)
+```
+
+It is an estimate of likely resolution. Support form button outcomes are separate because they measure a direct visitor action in the deflector flow.
+
+## Why are some projects empty?
+
+Several analytics views need enough traffic in the selected period. New projects, low-volume projects, or projects with a short time range can show empty states until more conversations arrive.
+
+Try a longer period first. Then check that the integration is actually receiving traffic in [Sessions](/dashboard/sessions).
+
+## How are question clusters generated?
+
+Knoku groups similar user questions into themes for the selected period.
+
+| Cluster type | Source |
+| --- | --- |
+| Gaps | Needs-support or weak-answer turns |
+| Frequent | All questions |
+
+Each cluster includes a short label, summary, sample questions, count, and a recommendation when it is a gap.
+
+## What is the difference between Questions and Sources?
+
+Questions answers "what are people asking?"
+
+Sources answers "which documents were used to answer?"
+
+Use them together: a repeated gap tells you what to write, and cited-source data tells you whether existing pages are carrying the support load.
+
+## Can analytics be filtered by language?
+
+Not today. Analytics views do not currently filter by the language of the user's question.
+
+## How do I export data?
+
+Business and above can export deflection CSVs.
+
+For full conversation exports, use the [Public API](/integrations/public-api) from a trusted backend and paginate `/v1/conversations` and `/v1/messages`.
+
+## Related
+
+- [Deflection](/analytics/deflection)
+- [Questions](/analytics/questions)
+- [Sources cited](/analytics/sources)

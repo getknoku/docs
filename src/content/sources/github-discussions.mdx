@@ -1,0 +1,52 @@
+# GitHub Discussions
+
+GitHub Discussions sync turns answered community threads into searchable knowledge.
+
+Use it when useful support answers live in GitHub Discussions but have not been promoted into formal docs yet.
+
+## Set up the GitHub App
+
+1. Open **Project -> Settings -> Integrations -> GitHub**.
+2. Click **Install on GitHub**.
+3. Install the Knoku GitHub App on the owner or organization.
+4. Turn on syncing and grant access to the repositories you want Knoku to read.
+5. Enable **Discussions** per repository and set filters (answer required, minimum upvotes).
+
+After installation, connected repos appear on **Project -> Sources** once syncing starts.
+
+## What gets indexed
+
+Knoku indexes discussions that match your filters and contain an accepted or marked answer when **Answer required** is enabled.
+
+Each synced thread becomes a `github_discussion` document. Citations link to the GitHub discussion permalink.
+
+## Filters
+
+Use filters to keep the corpus useful:
+
+- Repositories (enable Discussions per repo)
+- **Answer required** — skip threads without an accepted or marked answer
+- **Minimum upvotes** — ignore low-signal threads
+- Public/private repository visibility
+
+Avoid importing noisy threads that do not contain durable answers.
+
+## Visibility
+
+Public repository discussions usually belong in Public. Private repository discussions stay Internal.
+
+Review [Source groups](/sources/source-groups) before exposing community content to the widget.
+
+## Sync behavior
+
+GitHub webhooks queue updates when matching discussions change. A periodic sync also re-checks selected repositories. Use **Re-index** for a manual refresh.
+
+## Plan
+
+GitHub Discussions sync requires Open Source or above.
+
+## Related
+
+- [GitHub Issues & PRs](/sources/github-issues)
+- [GitHub repo sync](/sources/github-repo-sync)
+- [Discord](/integrations/discord)

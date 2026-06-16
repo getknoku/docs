@@ -1,0 +1,41 @@
+# File uploads
+
+File uploads add standalone documents to a project when the content does not live in a repository, website, or connected workspace.
+
+Use uploads for handbooks, policies, onboarding guides, support PDFs, and one-off reference material.
+
+## Supported files
+
+| Type | Notes |
+| --- | --- |
+| PDF | Requires an embedded text layer. Scanned PDFs without extractable text are not indexed. |
+| DOCX | Converted to Markdown. Page count is estimated and may require confirmation. |
+| Markdown | Indexed directly. |
+| Plain text | Indexed directly. |
+
+## Upload a file
+
+1. Open **Project -> Sources** or **Project -> Documents**.
+2. Choose **Upload**.
+3. Select the file.
+4. Wait for extraction, page-count validation when needed, and indexing.
+
+The extracted text becomes a document and counts toward the indexed-page limit.
+
+## Visibility
+
+Uploads are treated as internal knowledge. They do not have public hosted URLs that visitors can open from a citation, so they should not be used for public widget answers.
+
+Use uploads for team, support, or internal API workflows. If a file should answer public visitor questions, publish it as documentation and index it with [GitHub repo sync](/sources/github-repo-sync) or [website crawl](/sources/website-crawl).
+
+## Replace or delete
+
+Uploads are static. Re-upload a new version when the file changes, or delete the old document from **Documents**.
+
+## Citation quality
+
+Markdown and text files usually produce cleaner titles and sections. PDFs and DOCX files depend on extraction quality, so test common questions after upload and inspect the cited snippets in **Sessions**.
+
+## Plan
+
+File upload is a Business source.

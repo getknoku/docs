@@ -1,0 +1,84 @@
+# Website widget
+
+The website widget adds a cited AI assistant to your docs, marketing site, help center, or product. Visitors ask questions in a chat panel and receive answers from the project's Public source group.
+
+Use it when you want Knoku to answer on a page you control.
+
+## Before you start
+
+1. Create a project.
+2. Index at least one public source. See [Sources](/sources).
+3. Add the site host under [Domains](/dashboard/domains).
+4. Confirm the source documents belong to the **Public** source group.
+
+The widget will not mount on a host that is not allowlisted.
+
+## Add the script
+
+Paste the widget script once in the global layout that renders on every docs page:
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+></script>
+```
+
+Framework-specific placement: [Doc platforms](/doc-platforms).
+
+## Configure the widget
+
+| Need | Guide |
+| --- | --- |
+| Dashboard setup without hand-editing attributes | [Widget builder](/widget/widget-builder) |
+| Full script attribute list | [Attributes](/widget/reference/attributes) |
+| Per-slot style overrides | [Component styles](/widget/reference/component-styles) |
+| Programmatic open/close/ask/identify | [Runtime API](/widget/reference/runtime-api) |
+
+Common options:
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-greeting="How can I help?"
+  data-launcher-text="Ask Docs"
+  data-layout="modal"
+  data-suggested-questions="Get started|rocket,API reference|code,Pricing|card"
+></script>
+```
+
+## What users see
+
+- Streaming answers
+- Source citations
+- Suggested questions
+- Feedback buttons
+- Optional consent screen
+- Light/dark theme matching
+- Localized UI strings
+
+Widget sessions appear in [Sessions](/dashboard/sessions) and [Analytics](/analytics).
+
+## Security
+
+Widget traffic is protected by:
+
+- Project ID plus allowed-domain origin checks
+- Optional [Cloudflare Turnstile](/widget/setups/turnstile)
+- Public source group enforcement
+
+If you need server-side bearer-token auth or internal corpus access, use the [Public API](/integrations/public-api) from a trusted backend instead.
+
+## Plan
+
+The website widget is available on all plans. Branding and some analytics capabilities depend on plan.
+
+## Related
+
+- [Widget installation](/widget/installation)
+- [Widget builder](/widget/widget-builder)
+- [Widget setups](/widget)
+- [Source groups](/sources/source-groups)

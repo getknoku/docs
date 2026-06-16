@@ -1,0 +1,62 @@
+# Website crawl
+
+Website crawl indexes published HTML pages. Use it when your docs are already live and the rendered site is the easiest source of truth.
+
+## Create a crawl
+
+1. Open **Project -> Sources**.
+2. Choose **Website crawl**.
+3. Enter the root URL and set path scope (all pages, include only, or exclude paths).
+4. Run **Preview** to see discovered URLs and deselect pages you do not want.
+5. Start the job.
+
+The job runs in the background and shows progress on the Sources page.
+
+## Discovery
+
+Knoku discovers pages in this order:
+
+1. `sitemap.xml` (and nested sitemaps)
+2. sitemap entries listed in `robots.txt`
+3. links from the root page
+4. vendor `/map` endpoints and deeper crawl when sitemap and root links are not enough
+
+`robots.txt` is always respected. Static assets such as images, fonts, and build artifacts are skipped.
+
+## Options
+
+| Option | What it controls |
+| --- | --- |
+| Root URL | Starting URL for discovery |
+| Path scope | All pages, include-only paths, or exclude paths |
+| Page selection | Deselect URLs after preview before indexing |
+
+There is no dashboard control for max pages or robots.txt — robots are always honored, and page caps are applied automatically during discovery.
+
+Conflict handling is not a crawl-start option in the dashboard. New crawls always flag clashes instead of auto-overwriting.
+
+## After indexing
+
+Crawled pages become `web_page` documents. Citations use the live page URL.
+
+Use **Re-crawl page** from a document row when a single page changes. Use **Re-crawl** on the crawl source when the site structure changes.
+
+## Conflicts
+
+If a crawled URL matches a document from GitHub repo sync or another source, the crawl job marks those pages as conflicts instead of silently overwriting.
+
+When a job finishes with conflicts, open **Project -> Sources**, find the crawl job, and click **resolve**. Choose one action for every conflict in that job:
+
+- **Skip** — keep the existing document; drop the crawled page.
+- **Replace** — soft-delete the existing document and ingest the crawled page.
+
+The CLI and Public API still accept `conflict_resolution: error | replace | skip` on each request if you automate crawls outside the dashboard.
+
+## Plan
+
+Website crawl is available on all plans. Business+ projects can enable automatic crawl refresh.
+
+## Related
+
+- [GitHub repo sync](/sources/github-repo-sync)
+- [Source groups](/sources/source-groups)

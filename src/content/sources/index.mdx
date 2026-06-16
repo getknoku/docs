@@ -1,0 +1,71 @@
+# Sources
+
+Sources are how content enters a Knoku project. Once indexed, the same project can answer from that content through the widget, bots, MCP, API, support workflows, and dashboard tools.
+
+Open **Project -> Sources** to add website crawls, GitHub repositories, and file uploads, and to monitor connected sources. Third-party connectors (GitHub App, Notion, Confluence, Jira, OpenAPI, Zendesk Help Center) are configured under **Project -> Settings -> Integrations**; synced documents still appear in **Documents** and on **Sources** once connected.
+
+## Choose a source
+
+| Source | Best for | Setup |
+| --- | --- | --- |
+| [GitHub repo sync](/sources/github-repo-sync) | Markdown docs in a GitHub repository | Sources -> Add GitHub repository |
+| [Website crawl](/sources/website-crawl) | Public HTML docs where the live site is the source of truth | Sources -> Add website crawl |
+| [GitHub Discussions](/sources/github-discussions) | Accepted community answers | Settings -> Integrations -> GitHub |
+| [GitHub Issues & PRs](/sources/github-issues) | Workarounds, release context, troubleshooting threads | Settings -> Integrations -> GitHub |
+| [Notion](/sources/notion) | Team notes, runbooks, internal knowledge | Settings -> Integrations -> Notion |
+| [Confluence](/sources/confluence) | Workspace wiki pages and runbooks | Settings -> Integrations -> Confluence |
+| [Jira](/sources/jira) | Known issues and reusable ticket context | Settings -> Integrations -> Jira |
+| [OpenAPI](/sources/openapi) | Endpoint, parameter, and schema reference | Settings -> Integrations -> OpenAPI |
+| [File uploads](/sources/uploads) | PDF, DOCX, Markdown, and text files | Sources -> Upload |
+| [Zendesk Help Center](/sources/zendesk-help-center) | Public support articles by section | Settings -> Integrations -> Zendesk Help Center |
+
+Most projects start with GitHub repo sync or website crawl. Add workspace and support sources after the public docs are working.
+
+## GitHub has two source paths
+
+| Path | What it indexes | Where to configure | Guide |
+| --- | --- | --- | --- |
+| GitHub repo sync | Documentation files from a repository | **Sources** | [GitHub repo sync](/sources/github-repo-sync) |
+| GitHub App integration | Discussions, Issues, and Pull Requests | **Settings -> Integrations -> GitHub** | [Discussions](/sources/github-discussions), [Issues & PRs](/sources/github-issues) |
+
+Use repo sync for formal docs. Use the GitHub App when valuable answers live in community or engineering threads.
+
+## Public and internal groups
+
+Every document belongs to one or more source groups. Source groups decide which surfaces can use a document.
+
+| Group | Typical content | Reaches |
+| --- | --- | --- |
+| Public | Public docs, crawled pages, help center articles, public GitHub community answers | Widget, support form deflector, MCP, Public API keys with public scope |
+| Internal | Private repos, Notion, Confluence, Jira, uploaded files, restricted Zendesk articles | Team/support surfaces and Public API keys with internal scope |
+
+Read [Source groups](/sources/source-groups) before connecting private or internal sources.
+
+## Citation URLs
+
+Citations are only useful when they open a real page:
+
+- GitHub repo sync cites the GitHub file URL.
+- Website crawl cites the live page URL.
+- GitHub Discussions, Issues, and PRs cite GitHub permalinks.
+- Workspace sources cite the source page, issue, or article when available.
+- Uploaded files do not have public visitor URLs and should stay internal.
+
+If visitors should open a public page from a citation, index content from a public repository or a published website.
+
+## Keeping content current
+
+| Source type | Refresh behavior |
+| --- | --- |
+| GitHub repo sync | Background sync follows the configured branch; **Sync** is available from the source row |
+| Website crawl | Manual **Re-crawl**; Business and above can enable automatic refresh |
+| Connected workspace/support sources | **Re-index** or save filters to sync; background workers keep sources current |
+| Uploads | Static until replaced or deleted |
+
+## Next steps
+
+- [Get started](/overview/get-started)
+- [GitHub repo sync](/sources/github-repo-sync)
+- [Website crawl](/sources/website-crawl)
+- [Source groups](/sources/source-groups)
+- [Deploy Knoku](/integrations)

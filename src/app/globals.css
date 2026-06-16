@@ -3,10 +3,10 @@ header.nextra-navbar > nav {
   gap: 0.5rem !important;
 }
 
-/* Position the custom navbar button (Ask AI) to the left of the search input.
+/* Position the custom navbar button (Ask Docs) to the left of the search input.
    Nextra renders Navbar children after the search wrapper in source order;
    flex `order` re-positions them visually without DOM changes. */
-header.nextra-navbar a[aria-label="Ask AI"] {
+header.nextra-navbar a[aria-label="Ask Docs"] {
   order: 90;
 }
 header.nextra-navbar > nav > div:has(input[type="search"]) {
@@ -14,14 +14,14 @@ header.nextra-navbar > nav > div:has(input[type="search"]) {
 }
 
 /* On mobile (Nextra hides the search and shows a hamburger) the hamburger
-   defaults to source order, which leaves Ask AI on its right. Push the
-   hamburger past Ask AI so it sits at the far end of the navbar. */
+   defaults to source order, which leaves Ask Docs on its right. Push the
+   hamburger past Ask Docs so it sits at the far end of the navbar. */
 header.nextra-navbar .nextra-hamburger {
   order: 95;
 }
 
-/* Hover state for the Ask AI button (inline styles can't do hover). */
-header.nextra-navbar a[aria-label="Ask AI"]:hover {
+/* Hover state for the Ask Docs button (inline styles can't do hover). */
+header.nextra-navbar a[aria-label="Ask Docs"]:hover {
   background-color: rgba(99, 102, 241, 0.14) !important;
   border-color: rgba(99, 102, 241, 0.28) !important;
 }
@@ -34,6 +34,104 @@ header.nextra-navbar a[aria-label="Ask AI"]:hover {
 .knoku-logo-dark { display: none; }
 .dark .knoku-logo-light { display: none; }
 .dark .knoku-logo-dark { display: block; }
+
+/* --- Docs tables: left-aligned headers, readable spacing --- */
+main th,
+[data-pagefind-body] th {
+  text-align: left !important;
+}
+
+main table,
+[data-pagefind-body] table {
+  width: 100%;
+  margin: 1rem 0 1.5rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+main td,
+main th,
+[data-pagefind-body] td,
+[data-pagefind-body] th {
+  vertical-align: top;
+}
+
+main td code,
+[data-pagefind-body] td code {
+  font-size: 0.8125rem;
+  white-space: nowrap;
+}
+
+/* --- API reference blocks --- */
+.api-endpoint {
+  margin: 2rem 0 1.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid rgb(229 231 235);
+  border-radius: 0.5rem;
+  background: rgb(250 250 250);
+}
+
+.dark .api-endpoint {
+  border-color: rgb(64 64 64);
+  background: rgb(23 23 23);
+}
+
+.api-endpoint-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.api-endpoint-path {
+  font-size: 0.9rem;
+  word-break: break-all;
+}
+
+.api-endpoint-desc {
+  margin-top: 0.75rem;
+  font-size: 0.925rem;
+  line-height: 1.55;
+}
+
+.api-response {
+  margin: 1.25rem 0;
+}
+
+.api-response-status {
+  margin: 0 0 0.5rem;
+  font-weight: 600;
+}
+
+/* --- Code blocks: readable in docs + widget embed --- */
+main pre,
+[data-pagefind-body] pre {
+  font-size: 0.8125rem !important;
+  line-height: 1.6 !important;
+  overflow-x: auto;
+  tab-size: 2;
+}
+
+main pre code,
+[data-pagefind-body] pre code {
+  font-size: inherit;
+  line-height: inherit;
+}
+
+/* SSE / plain-text examples without Shiki wrapper */
+main pre:not([class*='language-']),
+[data-pagefind-body] pre:not([class*='language-']) {
+  padding: 1rem 1.15rem;
+  border-radius: 0.375rem;
+  border: 1px solid rgb(229 231 235);
+  background: rgb(250 250 250);
+}
+
+.dark main pre:not([class*='language-']),
+.dark [data-pagefind-body] pre:not([class*='language-']) {
+  border-color: rgb(64 64 64);
+  background: rgb(10 10 10);
+}
 
 /* Nextra's mobile menu uses `rgb(var(--nextra-bg))` which only resolves
    when Nextra's <Head> component is rendered to define `--nextra-bg`.

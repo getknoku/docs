@@ -1,25 +1,28 @@
 # Installation
 
-Add the widget script to every docs page where visitors should be able to ask questions. The only required value is your Project ID.
+Add the widget once in the global layout that renders on every page where visitors should ask questions.
 
-## Before You Start
+Only `data-project-id` is required.
 
-1. [Create a Knoku project](https://knoku.com/projects) in the dashboard.
-2. Copy the **Project ID** from the project page — a UUID like `01234567-89ab-cdef-0123-456789abcdef`.
-3. Add the exact host(s) where the widget will run under **Project > Settings > Allowed Domains**. You can list multiple — e.g. `example.com` + `docs.example.com`, or staging + production.
+## Before you start
 
-The widget will not mount on a production domain that is not in the list.
+1. Create a Knoku project.
+2. Copy the **Project ID** from the dashboard.
+3. Add the site host under **Project -> Settings -> Domains**.
+4. Index at least one Public source.
 
-If your site uses Content Security Policy, allow the CDN script and API connection:
+Allowed domain entries may be bare hosts (`docs.example.com`) or origins with scheme and port (`https://docs.example.com`, `http://localhost:3000`). Match the host visitors actually use. Wildcards are not supported.
+
+If your site uses Content Security Policy, allow the widget script and API calls:
 
 ```txt
 script-src https://cdn.knoku.com
 connect-src https://api.knoku.com
 ```
 
-## CDN Script
+If Turnstile is enabled, also allow Cloudflare. See [Turnstile CSP](/widget/setups/turnstile#strict-csp-sites).
 
-Add the script to your site's `<head>`. Async loading prevents render blocking, and `<head>` placement ensures the widget initializes as early as possible.
+## CDN script
 
 ```html
 <script
@@ -29,11 +32,11 @@ Add the script to your site's `<head>`. Async loading prevents render blocking, 
 ></script>
 ```
 
-Replace `YOUR_PROJECT_ID` with the UUID you copied. From here, pick a setup based on what you want to do: [add an AI button to your header](/widget/setups/custom-trigger), [match your brand](/widget/setups/branding), [require consent](/widget/setups/consent), [translate the widget](/widget/setups/localize), or [identify logged-in users](/widget/setups/identify-users). For the full attribute list, see the [Attributes reference](/widget/reference/attributes).
+The CDN bundle self-initializes from the script tag attributes. Add optional attributes from the [Attributes reference](/widget/reference/attributes) to customize copy, layout, color, language, consent, and behavior.
 
 ## npm
 
-Use the npm package when you mount the widget from an application bundle.
+Use the npm package when your app controls widget mounting from JavaScript.
 
 ```bash
 npm install @knoku/widget
@@ -47,34 +50,52 @@ await initKnokuWidget({
 })
 ```
 
-For programmatic control after mount (open / close / identify / events), see the [Runtime API](/widget/reference/runtime-api).
+`initKnokuWidget()` resolves after the widget has mounted. It also sets `window.Knoku` for runtime control. See [Runtime API](/widget/reference/runtime-api).
 
 ## Verify
 
-After adding the script, refresh your site and look for the launcher in the bottom-right corner. If it does not appear, work through this checklist:
+Open the site and check the browser network tab for:
 
-1. **Open browser devtools → Network tab.** Find the request to `https://api.knoku.com/api/v1/config/{projectId}`.
-   - **`200` with `{ "active": true, ... }`** → widget will mount.
-   - **`200` with `{ "active": false, "disabled_reason": "project_draft" }`** → switch the project from `draft` to `live` in your dashboard.
-   - **`200` with `{ "active": false, "disabled_reason": "project_paused" }`** → unpause the project.
-   - **`200` with `{ "active": false, "disabled_reason": "monthly free plan limit reached" }`** → free plan exhausted; upgrade or wait for the next billing period.
-   - **`200` with `{ "active": false, "disabled_reason": "monthly plan limit reached; enable overage to continue" }`** → paid plan included messages exhausted; enable overage in billing settings or wait for the next billing period.
-   - **`200` with `{ "active": false, "disabled_reason": "overage spending limit reached" }`** → overage cap reached; raise the cap in billing settings or wait for the next billing period.
-   - **`403`** → the current production host is not the project's allowed domain. Add it as an exact, port-aware host match. Local `localhost` and `127.0.0.1` development are allowed when the project has an allowed domain configured.
-2. **Open browser devtools → Console.** Look for `Knoku:` warnings. Common ones:
-   - `Knoku: data-project-id is required` → attribute missing or empty.
-   - `Knoku: invalid value for data-X, using default` → check the attribute value against the [Attributes reference](/widget/reference/attributes).
-3. **CSP errors in console** → re-check the `script-src` and `connect-src` directives above are present.
+```txt
+GET https://api.knoku.com/api/v1/config/{projectId}
+```
 
-## Framework-Specific Guides
+| Response | Meaning | Fix |
+| --- | --- | --- |
+| `200` with `"active": true` | Config loaded and the widget can mount | If no launcher appears, check the console |
+| `200` with `"active": false` | Project or billing state blocks chat | Read `disabled_reason` |
+| `403` | Origin not allowed | Add the exact host/origin under **Settings -> Domains** |
+| `404` | Project not found | Check `data-project-id` |
 
-If you're using a docs framework, the script tag goes in a different place. Step-by-step guides:
+Common disabled reasons:
 
-- [Mintlify](/integrations/mintlify)
-- [Nextra](/integrations/nextra)
-- [Docusaurus](/integrations/docusaurus)
-- [VitePress](/integrations/vitepress)
-- [MkDocs](/integrations/mkdocs)
-- [Sphinx](/integrations/sphinx)
-- [ReadTheDocs](/integrations/readthedocs)
-- [Custom website](/integrations/custom-website)
+| Reason | What to do |
+| --- | --- |
+| `project_draft` | Set the project live |
+| `project_paused` | Unpause the project |
+| `monthly free plan limit reached` | Upgrade or wait for the next billing period |
+| `monthly trial limit reached` | Add a payment method before trial ends or wait for the next period |
+| `monthly plan limit reached` | Upgrade or wait for the next billing period |
+| `monthly plan limit reached; enable overage to continue` | Enable overage or wait for the next period |
+| `overage spending limit reached` | Raise the overage cap or wait for the next period |
+| `organization is not active` | Fix workspace billing or status |
+
+## Console checks
+
+| Message | Meaning |
+| --- | --- |
+| `Knoku: data-project-id is required` | The script is missing `data-project-id` |
+| `Knoku: invalid value for data-X, using default` | An enum, hex color, or language value is invalid |
+| `Knoku: support form deflector requires a Business plan` | `data-mode="deflector"` is configured but the project is not eligible |
+| `Knoku: data-form-selector is required for data-mode="deflector"` | Deflector mode needs a form selector |
+
+## Platform guides
+
+- [Docusaurus](/doc-platforms/docusaurus)
+- [VitePress](/doc-platforms/vitepress)
+- [MkDocs](/doc-platforms/mkdocs)
+- [Nextra](/doc-platforms/nextra)
+- [Mintlify](/doc-platforms/mintlify)
+- [Sphinx](/doc-platforms/sphinx)
+- [Read the Docs](/doc-platforms/readthedocs)
+- [Custom website](/doc-platforms/custom-website)

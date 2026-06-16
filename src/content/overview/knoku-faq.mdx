@@ -1,118 +1,58 @@
 # FAQ
 
-## What file formats does Knoku support?
+## What can Knoku index?
 
-Markdown (`.md`), MDX (`.mdx`), and reStructuredText (`.rst`). The CLI scans
-your docs folder for these files and uploads them. Other formats like HTML, PDF,
-or plain text are not supported.
+Knoku can index Markdown/MDX/RST files, crawled HTML pages, GitHub Discussions, GitHub Issues and PRs, Notion pages, Confluence pages, Jira issues, OpenAPI operations, Zendesk Help Center articles, and uploaded files. See [Sources](/sources).
 
-## Which documentation platforms work with Knoku?
+## What file uploads are supported?
 
-Docusaurus, VitePress, Nextra, MkDocs, Mintlify, Sphinx, and any custom website.
-Read the Docs works when the project is powered by Sphinx or MkDocs. For other
-platforms, set the docs directory manually.
+Uploads support PDF, DOCX, Markdown, and plain text. PDFs need an embedded text layer; scanned PDFs without extractable text are rejected. DOCX page counts are estimated and may need confirmation before indexing.
 
-## How does the AI generate answers?
+## Which documentation platforms work?
 
-When a visitor asks a question, Knoku selects the most relevant sections from
-your docs and generates an answer based only on that content. Every response
-includes source references so visitors can verify the answer.
+Docusaurus, VitePress, MkDocs, Nextra, Mintlify, Sphinx, Read the Docs, and custom websites all work. See [Doc platforms](/doc-platforms).
 
-## Does Knoku use embeddings or a vector database?
+## How does Knoku answer a question?
 
-Yes, but only as a pre-filter. Knoku's primary retrieval is **tree-based**:
-when you push docs, it builds a hierarchical tree from the heading
-structure (pages → sections → leaves) and walks that tree at query time to
-pick the sections used in the answer. On larger projects, vector embeddings
-of each section are also stored in PostgreSQL via pgvector and used to
-narrow the candidate pages before the tree walk.
+Knoku searches the project's index, reads the most relevant chunks and pages, then generates a cited answer. The answer should stay grounded in indexed sources. When the sources do not cover the question, Knoku should say that instead of inventing details.
 
-The practical effect is that citations point to specific sections rather
-than similarity-matched chunks, and retrieval behavior stays predictable as
-your docs grow or are reorganized.
+## How do I keep content current?
 
-## Which LLM does Knoku use?
+It depends on the source:
 
-Knoku is **LLM-agnostic**. Answers are generated through commercial LLM
-APIs — currently models from Anthropic and OpenAI, accessed directly or
-through routing services such as OpenRouter. Which model handles a given
-question can change over time as better options become available, without
-any change on your side.
+- GitHub repo sync follows the configured branch.
+- Website crawl can be rerun; Business+ projects can use automatic crawl refresh.
+- Connected sources such as Notion, Confluence, Jira, OpenAPI, and Zendesk Help Center support manual sync and background refresh.
+- Uploads are static until replaced or deleted.
 
-Retrieval (the tree traversal) runs on Knoku's own infrastructure
-regardless of which LLM is selected. Only the sections chosen for a given
-question, plus the question itself, are sent to the LLM — your full corpus
-is never sent.
+## Where can users ask questions?
 
-## Can visitors ask questions about topics not in my docs?
+Users can ask from the [website widget](/integrations/website-widget), [support form deflector](/integrations/support-form-deflector), [Slack](/integrations/slack), [Discord](/integrations/discord), [MCP clients](/integrations/mcp), and the [Public API](/integrations/public-api).
 
-Knoku is designed to answer from your indexed documentation. If the answer is not
-in your docs, it will say so rather than making something up.
+## What is public vs internal content?
 
-## How do I keep the index up to date?
-
-Run `npx @knoku/cli@latest push` after each documentation change. For CI workflows,
-add `push` as a step after your docs build so every merge updates the index. See
-[CLI > push](/cli/push) for the full command reference and CI examples.
+Public content is available to visitor-facing surfaces such as the widget, support form deflector, MCP, and public-scope API keys. Internal content is reserved for team/support surfaces and API keys configured with internal corpus scope. See [Source groups](/sources/source-groups).
 
 ## Can I customize the widget?
 
-Yes — accent colors, greeting text, launcher position, panel layout, custom
-trigger button, multilingual UI, consent gating, and visitor identity. See
-[Widget setup guides](/widget) for the full list.
+Yes. Use the [widget builder](/widget/widget-builder), script attributes, or the [`@knoku/widget`](/widget/installation) npm package. Start with [Widget](/widget), then use [Attributes](/widget/reference/attributes), [Component styles](/widget/reference/component-styles), [Icons](/widget/reference/icons), and [Runtime API](/widget/reference/runtime-api).
 
-## Does the widget work with dark mode?
+## Does the widget support dark mode?
 
-Yes. The widget automatically follows the host site's light/dark mode. Normal
-installs do not need any setting for this.
+Yes. The default `auto` theme follows `<html class="dark">`, `<html data-theme="dark">`, and the browser's `prefers-color-scheme`. You can also force `light` or `dark`. See [Attributes](/widget/reference/attributes#behavior).
 
-## What is the free plan limit?
+## Can one project power multiple sites?
 
-The free plan includes a fixed monthly message allowance; paid plans raise it
-and unlock pay-per-message overage. Check the [pricing page](https://knoku.com/pricing)
-for current limits.
+Yes. Add each host under [Domains](/dashboard/domains). See [Embed on multiple sites](/widget/setups/multi-site-embedding).
 
-## Is my documentation data private?
+## Is data private?
 
-Your documentation is stored on Knoku servers and used only to answer questions
-for your project. It is not shared with other Knoku projects.
-
-## Where is my data stored?
-
-Indexed documentation, project configuration, and analytics are hosted on
-Knoku's managed infrastructure in **Frankfurt, Germany (EU)**. For other
-data-residency requirements, contact support@knoku.com before onboarding.
-
-## Is Knoku GDPR-compliant?
-
-Knoku acts as a data processor for documentation content, visitor questions,
-and any visitor identity metadata you choose to pass through the widget. For
-specific compliance requirements, contact support@knoku.com.
+Knoku indexes only the sources you connect. Use source groups to keep private repositories, internal wikis, support runbooks, and uploaded files away from public visitor-facing answers.
 
 ## Can Knoku be self-hosted?
 
-No. Knoku is offered only as a managed service. This lets us ship retrieval
-and model improvements continuously without upgrade work on your side.
+Not today.
 
-If your concern is data residency, see "Where is my data stored?" above.
+## What happens if I remove the widget script?
 
-## Can I use Knoku on multiple sites?
-
-Yes, two ways depending on what you need:
-
-**Multiple domains in one project.** Add hosts under **Project > Settings >
-Allowed Domains**. Each host must be listed explicitly — domains are
-matched as exact hosts, so wildcards like `*.example.com` are not
-supported. Common cases: marketing site + docs subdomain (`example.com` +
-`docs.example.com`), staging + production, apex + `www`, or locale
-subdomains (`en.docs.example.com` + `de.docs.example.com`). The indexed
-docs, analytics, and plan limits are shared across every listed domain.
-
-**Separate projects.** Create one project per site when you want
-independent analytics, a different set of indexed docs, or separate
-billing per site.
-
-## What happens if I remove the widget?
-
-Remove the script tag from your site. Existing indexed documents stay in your
-project until you delete them from the dashboard.
+The site stops creating widget sessions. The project, indexed documents, analytics history, API keys, and other integrations remain until you disable or delete them from the dashboard.

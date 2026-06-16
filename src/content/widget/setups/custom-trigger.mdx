@@ -1,27 +1,29 @@
-# Add an AI button to your header
+# Add an Ask Docs button
 
-`data-open-selector` lets any element on your page open the widget. Pass a CSS selector; the widget binds click listeners to every match.
+Use `data-open-selector` to open the widget from your own button, link, search box, or navigation item.
 
-## Both buttons
+## Keep the floating launcher
 
-Keep the floating launcher and add a second opener.
+This adds a header button while keeping the default floating launcher.
 
 ```html
 <header>
-  <button id="ask-ai">Ask AI</button>
+  <button id="ask-docs" type="button">Ask Docs</button>
 </header>
 
 <script
   async
   src="https://cdn.knoku.com/widget.js"
   data-project-id="YOUR_PROJECT_ID"
-  data-open-selector="#ask-ai"
+  data-open-selector="#ask-docs"
 ></script>
 ```
 
-## Only your button
+The selector can match one element or many elements.
 
-Add `data-launcher-hidden="true"` to hide the floating launcher.
+## Hide the floating launcher
+
+Use `data-launcher-hidden="true"` when your own UI should be the only visible trigger.
 
 ```html
 <script
@@ -29,45 +31,47 @@ Add `data-launcher-hidden="true"` to hide the floating launcher.
   src="https://cdn.knoku.com/widget.js"
   data-project-id="YOUR_PROJECT_ID"
   data-launcher-hidden="true"
-  data-open-selector="#ask-ai"
+  data-open-selector="#ask-docs"
 ></script>
 ```
 
-The runtime API still works, only the visible launcher is gone.
+The runtime API still works when the launcher is hidden.
 
-## SPA and dynamically rendered triggers
+## Dynamic navigation
 
-`data-open-selector` works whether the matching element is in the static HTML or rendered later by a framework (React, Vue, Svelte) or injected by another script. The widget watches the DOM and binds the click handler when a match appears, so navbar items in Docusaurus, VitePress, or any client-side router are picked up automatically. Keep using the same attribute, no extra setup required.
+`data-open-selector` works with static HTML and elements rendered later by frameworks such as React, Vue, Svelte, Docusaurus, VitePress, and client-side routers.
+
+The widget watches the page and binds the click handler when a matching element appears.
 
 ## Search input or keyboard shortcut
 
-`data-open-selector` accepts any selector, including search inputs:
+Selectors can target any element, including a search input:
 
 ```html
-<input id="search" placeholder="Search docs or ask AI" />
+<input id="docs-search" placeholder="Search docs or ask" />
 
 <script
   async
   src="https://cdn.knoku.com/widget.js"
   data-project-id="YOUR_PROJECT_ID"
-  data-open-selector="#search"
+  data-open-selector="#docs-search"
 ></script>
 ```
 
-For keyboard shortcuts, call the runtime API directly:
+For keyboard shortcuts, call the runtime API:
 
 ```js
-document.addEventListener('keydown', (e) => {
-  if ((e.metaKey || e.ctrlKey) && e.key === 'i') {
-    e.preventDefault()
+document.addEventListener('keydown', (event) => {
+  if ((event.metaKey || event.ctrlKey) && event.key === 'i') {
+    event.preventDefault()
     window.Knoku?.open()
   }
 })
 ```
 
-## Pre-fill a question
+## Submit a question directly
 
-`Knoku.ask(question)` opens the panel and submits the question in one call.
+`Knoku.ask(question)` opens the widget and sends a question in one call:
 
 ```js
 document.getElementById('pricing-question').addEventListener('click', () => {
@@ -75,9 +79,9 @@ document.getElementById('pricing-question').addEventListener('click', () => {
 })
 ```
 
-If consent is required and not yet accepted, the panel opens on the consent screen first; the question is submitted after the user accepts. See [Require consent before chat](/widget/setups/consent).
+If consent is required, the question is submitted after the visitor accepts. See [Require consent before chat](/widget/setups/consent).
 
 ## Related
 
-- [`data-launcher-hidden`, `data-open-selector`](/widget/reference/attributes#behavior)
+- [Behavior attributes](/widget/reference/attributes#behavior)
 - [Runtime API](/widget/reference/runtime-api)

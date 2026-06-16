@@ -12,7 +12,7 @@ export const metadata = {
     template: '%s — Knoku Docs'
   },
   description:
-    'Knoku is an AI chat assistant for documentation sites. Sync your docs with the CLI and embed the widget to answer visitor questions from your own content.',
+    'Knoku indexes your docs and answers with citations — widget, Slack, Discord, MCP, and API. Start a 14-day trial and connect a GitHub repo in minutes.',
   applicationName: 'Knoku Docs',
   appleWebApp: {
     title: 'Knoku Docs'
@@ -38,45 +38,9 @@ const Logo = () => (
   </>
 )
 
-const AskAIButton = () => (
-  <a
-    href="#"
-    data-knoku-trigger
-    aria-label="Ask AI"
-    style={{
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '6px',
-      padding: '5px 10px',
-      marginRight: '8px',
-      borderRadius: '6px',
-      fontSize: '13px',
-      fontWeight: 500,
-      color: 'inherit',
-      textDecoration: 'none',
-      backgroundColor: 'rgba(99, 102, 241, 0.08)',
-      border: '1px solid rgba(99, 102, 241, 0.15)',
-      transition: 'background-color 0.15s, border-color 0.15s',
-    }}>
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="#6366f1"
-      strokeWidth="2"
-      strokeLinejoin="round">
-      <path d="M12 2.75l2.45 6.8L21.25 12l-6.8 2.45L12 21.25l-2.45-6.8L2.75 12l6.8-2.45L12 2.75z" />
-    </svg>
-    Ask AI
-  </a>
-)
-
 export default async function RootLayout({ children }) {
   const navbar = (
-    <Navbar logo={<Logo />}>
-      <AskAIButton />
-    </Navbar>
+    <Navbar logo={<Logo />} />
   )
   const pageMap = await getPageMap()
   return (
@@ -88,7 +52,7 @@ export default async function RootLayout({ children }) {
             <Footer>
               © {new Date().getFullYear()} Knoku · Built with Nextra ·{' '}
               <a
-                href="/integrations/nextra"
+                href="/doc-platforms/nextra"
                 style={{ textDecoration: 'underline' }}>
                 Add Knoku to your Nextra site →
               </a>
@@ -106,10 +70,14 @@ export default async function RootLayout({ children }) {
           strategy="afterInteractive"
           data-project-id="6365fe85-3915-4ad8-b5f1-35d1a8aefba0"
           data-language="en"
+          data-layout="modal"
+          data-launcher-style="pill"
+          data-launcher-align="bottom-right"
+          data-launcher-show-icon="false"
+          data-launcher-text="Ask Docs"
           data-consent-required="true"
-          data-layout="push"
-          data-open-selector="[data-knoku-trigger]"
-          data-suggested-questions="How do I add Knoku to my docs?|rocket,How do I sync my docs with the CLI?|terminal,Which frameworks are supported?|plug,How do I customize the widget?|settings"
+          data-greeting="Ask about sources, integrations, the widget, or the dashboard."
+          data-suggested-questions="What sources can I connect to Knoku?|plug,Can I combine multiple sources in one project?|package,How are Public and Internal sources separated?|shield"
         />
       </body>
     </html>

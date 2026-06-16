@@ -1,0 +1,115 @@
+# Custom Website
+
+Add Knoku to a custom documentation site, static site generator, or framework that does not have a dedicated guide.
+
+## Before you start
+
+The widget only works once your project exists and your docs are indexed:
+
+1. Create a project.
+2. Add your site's domain under [Domains](/dashboard/domains).
+3. Connect either [GitHub repo sync](/sources/github-repo-sync) or [website crawl](/sources/website-crawl).
+
+Use GitHub repo sync when the docs source lives in a GitHub repository. Use website crawl when the published HTML site is the source of truth or when citation URLs should point to the live pages.
+
+## Add the widget
+
+Put the widget script in the global HTML template, layout, app shell, or base page that renders every documentation page:
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+></script>
+```
+
+Common locations:
+
+| Site type | Place the script in |
+| --- | --- |
+| Static HTML | shared `<head>` or footer partial |
+| Next.js | root layout or `_app` with `next/script` |
+| Astro | base layout component |
+| Eleventy | base Nunjucks/Liquid layout |
+| Hugo | base template or partial included by every page |
+| Jekyll | `_layouts/default.html` or an included partial |
+
+The script can live in `<head>` or near the end of `<body>`. Use `async` so it does not block rendering.
+
+## Configure the widget
+
+Add optional `data-*` attributes to the same script:
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-greeting="How can I help?"
+  data-launcher-text="Need help?"
+  data-suggested-questions="Get started|rocket,API reference|code,Pricing|card"
+></script>
+```
+
+Full list: [Attributes reference](/widget/reference/attributes). For per-slot visual overrides, see [Component Styles](/widget/reference/component-styles).
+
+## Add an Ask Docs button
+
+Add any button or link on your page and point `data-open-selector` at it:
+
+```html
+<button id="ask-docs" type="button">Ask Docs</button>
+
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-open-selector="#ask-docs"
+></script>
+```
+
+To use only your button and hide the floating launcher:
+
+```html
+data-launcher-hidden="true"
+```
+
+The widget watches the DOM, so this also works when your framework renders the button after page load. See [Add an Ask Docs button](/widget/setups/custom-trigger).
+
+## Index your content
+
+Choose one source of truth:
+
+| Source | Use when | Citation behavior |
+| --- | --- | --- |
+| [GitHub repo sync](/sources/github-repo-sync) | Docs files live in GitHub | Answers cite the GitHub file URL |
+| [Website crawl](/sources/website-crawl) | The deployed site is the source of truth | Answers cite the live page URL |
+
+For most public custom sites, website crawl gives the cleanest visitor-facing citations because it indexes the rendered pages users can open.
+
+If you use GitHub repo sync, set the branch and docs directory in the dashboard source settings.
+
+## Verify
+
+Open the deployed site and ask a question. Check that:
+
+1. `https://cdn.knoku.com/widget.js` loads.
+2. `https://api.knoku.com/api/v1/config/{projectId}` returns `200`.
+3. The widget appears on every docs page.
+4. Answers cite sources that your users can access.
+
+If the config request returns `403`, add the exact production host as the project's allowed domain.
+
+## Customize the widget
+
+- [Add an Ask Docs button](/widget/setups/custom-trigger)
+- [Match your brand](/widget/setups/branding)
+- [Choose a panel layout](/widget/setups/panel-layout)
+- [Require consent before chat](/widget/setups/consent)
+- [Translate the widget](/widget/setups/localize)
+- [Identify logged-in users](/widget/setups/identify-users)
+- [Attributes reference](/widget/reference/attributes)
+- [Component Styles](/widget/reference/component-styles)
+- [Icons](/widget/reference/icons)
+- [Runtime API](/widget/reference/runtime-api)

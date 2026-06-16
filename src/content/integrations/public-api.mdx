@@ -1,0 +1,90 @@
+# Public API
+
+The Public API lets you build your own Knoku-powered UI, backend workflow, or internal tool. Use it when the hosted widget is not the right surface.
+
+Full endpoint reference: [api.knoku.com/v1/docs](https://api.knoku.com/v1/docs)
+
+## Authentication
+
+Create a key under **Project -> API Keys**.
+
+Use the key as a bearer token:
+
+```bash
+curl https://api.knoku.com/v1/health
+```
+
+For authenticated endpoints:
+
+```bash
+curl https://api.knoku.com/v1/chat \
+  -H "Authorization: Bearer sk_live_pub_..." \
+  -H "Content-Type: application/json" \
+  -d '{"question":"How do I get started?"}'
+```
+
+Use a Public API key for `/v1/*` endpoints. Do not expose internal-scope keys in browsers, mobile apps, or public repositories.
+
+## Chat
+
+`POST /v1/chat` sends a question to the same answering pipeline used by the widget.
+
+By default, chat streams Server-Sent Events. To receive one JSON response, send `?stream=false` or request JSON:
+
+```bash
+curl "https://api.knoku.com/v1/chat?stream=false" \
+  -H "Authorization: Bearer sk_live_pub_..." \
+  -H "Content-Type: application/json" \
+  -d '{"question":"How does authentication work?"}'
+```
+
+Synchronous responses have a 60-second server deadline. If generation times out, Knoku returns the partial answer with `stop_reason="timeout"` instead of dropping the response.
+
+## Corpus scope
+
+When creating a Public API key, choose:
+
+| Scope | Search behavior |
+| --- | --- |
+| Public | Public source group only |
+| Internal | Public and Internal source groups |
+
+Use internal-scope keys only from trusted server-side code. Do not expose them in browsers, mobile apps, or public repositories.
+
+## Sessions API
+
+Use the sessions endpoints to sync conversations into your own tools:
+
+| Endpoint | Purpose |
+| --- | --- |
+| `GET /v1/conversations` | List conversations for the project |
+| `GET /v1/messages?session_id=...` | Read messages in a conversation |
+
+These endpoints are useful for warehouse sync, customer support review, or custom analytics.
+
+## Idempotency
+
+For retryable chat requests, send an `Idempotency-Key` header. Reusing the same key with a different body returns a conflict. Reusing a completed key also returns a conflict so callers do not accidentally duplicate a conversation turn.
+
+## Key rotation
+
+Rotate or revoke keys under **Project -> API Keys**. Rotation creates a replacement key and gives you time to update production systems before removing the old one.
+
+## Widget vs API
+
+| | Website widget | Public API |
+| --- | --- | --- |
+| Auth | Project ID + allowed domain | Bearer API key |
+| UI | Hosted Knoku panel | You build the UI |
+| Corpus | Public | Public or Internal, depending on key scope |
+| Best for | Docs sites and product pages | Custom apps, internal tools, backend automations |
+
+## Plan
+
+The Public API is available on all plans. Message limits and indexed-page limits still apply.
+
+## Related
+
+- [API reference](https://api.knoku.com/v1/docs)
+- [Source groups](/sources/source-groups)
+- [Widget vs API](/integrations/website-widget)

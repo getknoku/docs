@@ -1,0 +1,42 @@
+# Jira
+
+Jira sync turns selected issues into searchable knowledge.
+
+Use it for known issues, workarounds, escalation notes, and resolved support tickets that help teams answer repeat questions.
+
+## Connect Jira
+
+1. Open **Project -> Settings -> Integrations -> Jira**.
+2. Complete the Atlassian OAuth flow.
+3. Choose the Jira project and filters.
+4. Sync.
+
+Indexed issues appear on **Project -> Sources** and in **Documents** with source type `jira_issue`.
+
+## What to index
+
+Prefer issues that contain reusable knowledge:
+
+- Resolved incidents
+- Known workarounds
+- Publicly documented limitations
+- Repeated support answers
+
+Avoid noisy backlog items and internal planning tickets that do not help answer user questions.
+
+## Visibility
+
+Jira issues default to Internal. Do not expose Jira content to the public widget unless the issue and citation link are safe for visitors.
+
+## Sync behavior
+
+Use **Re-index** after changing filters. Background sync keeps selected issues current.
+
+## Plan
+
+Jira is a Business source.
+
+## Related
+
+- [Confluence](/sources/confluence)
+- [Source groups](/sources/source-groups)

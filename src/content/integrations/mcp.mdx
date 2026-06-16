@@ -1,0 +1,72 @@
+# MCP
+
+MCP exposes a Knoku project to IDE agents through the Model Context Protocol. Agents can search your public docs without copying content into the editor.
+
+MCP is a public-corpus surface. It searches the same Public source group used by the website widget.
+
+## Configure the project
+
+Open **Project -> Settings -> MCP**.
+
+1. Pick a slug.
+2. Save the slug.
+3. Enable the MCP server.
+4. Copy the generated client config.
+
+The endpoint is:
+
+```txt
+https://{slug}.mcp.knoku.com/mcp
+```
+
+Slug rules:
+
+- 2 to 30 characters
+- lowercase letters, numbers, and hyphens
+- starts and ends with a letter or number
+- unique across Knoku
+
+Some infrastructure and product slugs are reserved.
+
+## Client configuration
+
+The dashboard shows ready-made snippets for common clients. The config shape is:
+
+```json
+{
+  "mcpServers": {
+    "my-product": {
+      "url": "https://my-product.mcp.knoku.com/mcp"
+    }
+  }
+}
+```
+
+Paste the snippet into your MCP client, restart the client, and complete the OAuth flow on first connection.
+
+## Available tools
+
+The first tool is:
+
+| Tool | What it does |
+| --- | --- |
+| `search_docs` | Searches the project's Public source group and returns excerpts with citations |
+
+More tools may be added later, but clients should not assume write access.
+
+## Slug changes
+
+When you change a project slug, Knoku keeps the old slug as a temporary alias for 30 days. Update IDE configs during that window.
+
+## Disable MCP
+
+Turn off MCP in **Settings -> MCP**. Existing clients stop working on the next request.
+
+## Plan
+
+MCP requires a plan with MCP enabled, typically Open Source or above.
+
+## Related
+
+- [Source groups](/sources/source-groups)
+- [Deploy Knoku](/integrations)

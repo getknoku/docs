@@ -7,7 +7,7 @@ Add the Knoku widget to a Mintlify site.
 The widget only works once your project exists and your docs are indexed:
 
 1. Create a project and add your site's domain as the allowed domain. See [Widget installation](/widget/installation#before-you-start).
-2. Sync your docs from the Mintlify repository root with [`knoku init`](/cli/init) and [`knoku push`](/cli/push) so answers come from your own content.
+2. Connect [GitHub repo sync](/sources/github-repo-sync) for your docs repository (set **Docs directory** to your Markdown folder) so answers come from your own content.
 
 ## Add the widget
 
@@ -45,46 +45,26 @@ document.head.appendChild(script)
 
 The browser serializes `dataset.primaryColorLight` as `data-primary-color-light`. Full list: [Attributes reference](/widget/reference/attributes). For per-slot visual overrides (`data-panel-header-background-color`, etc.) see [Component Styles](/widget/reference/component-styles).
 
-## Add an Ask AI button to the topbar
+## Add an Ask Docs button to the topbar
 
 The most reliable approach is to add your own button (or React component) with a stable ID and point `data-open-selector` at it. Mintlify allows custom React components in the topbar.
 
 ```js
-script.dataset.openSelector = '#ask-ai'
+script.dataset.openSelector = '#ask-docs'
 script.dataset.launcherHidden = 'true'
 ```
 
-Pair this with a button somewhere in your Mintlify content or layout that carries `id="ask-ai"`. The widget watches the DOM, so it binds the click handler once the element is rendered. See [Add an AI button to your header](/widget/setups/custom-trigger) for the full behavior.
+Pair this with a button somewhere in your Mintlify content or layout that carries `id="ask-docs"`. The widget watches the DOM, so it binds the click handler once the element is rendered. See [Add an Ask Docs button](/widget/setups/custom-trigger) for the full behavior.
 
 If you do not want to customize the topbar, keep the default floating launcher and skip this section.
 
-## CLI behavior
+## Index your docs
 
-The CLI detects Mintlify when it finds `docs.json` or `mint.json` at the project root.
+Connect the GitHub repository that contains your Markdown. Set **Docs directory** to the folder your generator uses (often `docs/` or `src/content`). Knoku syncs on each commit and cites files on GitHub. Details: [GitHub repo sync](/sources/github-repo-sync).
 
-| Setting | Value |
-| --- | --- |
-| Detected by | `docs.json` or `mint.json` |
-| Default `KNOKU_DOCS_DIR` | `./` |
-| URL style | `/<path-without-extension>` |
+Alternatively, [crawl](/sources/website-crawl) your deployed site if you do not index from GitHub.
 
-For a file like `guides/install.mdx`, the default citation URL is `/guides/install`. For `index.mdx`, it is `/`.
-
-If your Mintlify docs are served under a subpath, set `KNOKU_URL_BASE`:
-
-```env
-KNOKU_URL_BASE=/docs
-```
-
-Then `guides/install.mdx` maps to `/docs/guides/install`.
-
-## Verify
-
-```bash
-npx @knoku/cli@latest doctor
-```
-
-Then open your Mintlify site and check browser devtools:
+Open the deployed site and ask a question. Then open your Mintlify site and check browser devtools:
 
 1. `knoku.js` is loaded by Mintlify.
 2. `https://cdn.knoku.com/widget.js` is requested.
@@ -94,10 +74,13 @@ If the config request returns `403`, add the exact Mintlify domain or custom dom
 
 ## Customize the widget
 
-- [Add an AI button to your header](/widget/setups/custom-trigger)
+- [Add an Ask Docs button](/widget/setups/custom-trigger)
 - [Match your brand](/widget/setups/branding)
 - [Choose a panel layout](/widget/setups/panel-layout)
 - [Require consent before chat](/widget/setups/consent)
 - [Translate the widget](/widget/setups/localize)
 - [Identify logged-in users](/widget/setups/identify-users)
-- [Attributes reference](/widget/reference/attributes) · [Component Styles](/widget/reference/component-styles) · [Icons](/widget/reference/icons) · [Runtime API](/widget/reference/runtime-api)
+- [Attributes reference](/widget/reference/attributes)
+- [Component Styles](/widget/reference/component-styles)
+- [Icons](/widget/reference/icons)
+- [Runtime API](/widget/reference/runtime-api)

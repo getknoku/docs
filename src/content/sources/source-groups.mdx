@@ -1,0 +1,68 @@
+# Source groups
+
+Source groups control which indexed documents each answer surface can use. They are the safety boundary between public documentation and private team knowledge.
+
+Every project has two system groups: **Public** and **Internal**.
+
+## Public vs Internal
+
+| Group | Typical content | Used by |
+| --- | --- | --- |
+| Public | Public docs, crawled pages, public help center articles, public GitHub community answers | Website widget, support form deflector, MCP, Public API keys with public corpus scope |
+| Internal | Private repositories, Notion, Confluence, Jira, uploaded files, restricted Zendesk articles | Slack/team workflows, Zendesk agent tooling, Public API keys with internal corpus scope, dashboard internal search |
+
+The website widget, support form deflector, and MCP use the public corpus. They do not become internal just because you pass an attribute or change the embed code.
+
+## Default assignment
+
+Knoku assigns source groups when a document is ingested:
+
+| Source | Default group |
+| --- | --- |
+| Website crawl, public GitHub repo files | Public |
+| GitHub Discussions, Issues, PRs from public repos | Public |
+| GitHub content from private repos | Internal |
+| Notion, Confluence, Jira | Internal unless exposed to widget |
+| Zendesk Help Center articles | Public unless marked restricted |
+| File uploads | Internal |
+| OpenAPI operations | Public |
+
+Some sources include an audience or **In widget** setting. When enabled, the document can belong to both Public and Internal.
+
+## Change groups manually
+
+Open **Project -> Documents**, select one or more rows, and use **Set source groups**. Use this when a document was indexed correctly but its audience is wrong.
+
+Common changes:
+
+- Move a private repo document to Internal.
+- Expose a selected Notion or Confluence page to Public after review.
+- Remove a stale public page from Public while keeping it available internally.
+
+## Public API corpus scope
+
+When creating a Public API key, choose a corpus scope:
+
+| Scope | Behavior |
+| --- | --- |
+| Public | Searches Public documents only |
+| Internal | Searches Public and Internal documents |
+
+Use internal scope only for trusted backends or internal tools. Do not ship an internal-scope key to a browser or mobile app.
+
+See [Public API](/integrations/public-api).
+
+## Review checklist
+
+Before enabling a public surface:
+
+1. Open **Documents**.
+2. Filter by Internal and Public groups.
+3. Confirm private repos, uploads, Notion, Confluence, Jira, and restricted Zendesk content are not accidentally Public.
+4. Ask a widget question that should not be answered from private content.
+
+## Related
+
+- [Sources overview](/sources)
+- [Public API](/integrations/public-api)
+- [Widget attributes](/widget/reference/attributes#behavior)

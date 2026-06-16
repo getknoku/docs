@@ -1,6 +1,7 @@
 export default {
-  'custom-trigger': 'Add an AI button to your header',
+  'custom-trigger': 'Add an Ask Docs button',
   branding: 'Match your brand',
+  'launcher-style': 'Choose a launcher style',
   'panel-layout': 'Choose a panel layout',
   'multi-site-embedding': 'Embed on multiple sites',
   consent: 'Require consent before chat',

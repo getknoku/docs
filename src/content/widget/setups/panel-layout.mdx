@@ -1,13 +1,18 @@
 # Choose a panel layout
 
-`data-layout` controls how the chat panel sits relative to your site content. Two modes:
+`data-layout` controls how the chat panel opens on desktop.
 
-- **`overlay`** (default) — panel floats above the existing layout. Site content does not move.
-- **`push`** — adds a right margin to the page body while the panel is open, so site content shifts left and the panel looks embedded next to it.
+| Layout | Behavior | Best for |
+| --- | --- | --- |
+| `modal` | Centered dialog with backdrop | Marketing pages, pricing pages, focused help flows |
+| `overlay` | Right-side panel over the page | Docs sites with sidebars or table-of-contents columns |
+| `push` | Right-side panel that shifts page content left | Single-column docs and long-form pages |
 
-## Overlay (default)
+All layouts become a full-screen sheet on small screens.
 
-Nothing to set; this is the default.
+## Modal
+
+Modal is the default. It locks page scroll, dims the page, and opens the widget in the center.
 
 ```html
 <script
@@ -17,9 +22,24 @@ Nothing to set; this is the default.
 ></script>
 ```
 
-Best for sites that already use the right edge of the viewport — fixed sidebar, right-aligned table of contents, sticky header. The panel covers a vertical strip on the right; existing layout is untouched.
+## Overlay
+
+Overlay keeps your page layout in place and covers the right side of the viewport.
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+  data-layout="overlay"
+></script>
+```
+
+Use it when fixed sidebars, sticky headers, or docs navigation make page shifting risky.
 
 ## Push
+
+Push adds a right margin to the page while the panel is open.
 
 ```html
 <script
@@ -30,30 +50,24 @@ Best for sites that already use the right edge of the viewport — fixed sidebar
 ></script>
 ```
 
-Best for full-width or centered content layouts (long-form docs, marketing pages, blog posts) where shifting content left avoids the panel covering it.
-
-While open, the widget injects this style into the document head:
+On desktop, the widget injects:
 
 ```css
-body { margin-right: 440px; transition: margin-right 0.2s ease; }
+body {
+  margin-right: 380px;
+  transition: margin-right 280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
 ```
 
-The style is removed on close and on widget destroy.
+On wide viewports the margin increases to `560px`. The style is removed when the widget closes or is destroyed. The margin is suppressed below `640px` width.
 
-## Mobile
+## Choosing a layout
 
-Both modes render full-width on screens below 640px. The push margin is suppressed automatically so mobile users always see the panel as a full-screen sheet.
+Start with `modal` unless you know the widget should feel like part of the page.
 
-## When to pick which
+Use `overlay` when your site has complex fixed positioning. Use `push` when content should remain visible next to the panel.
 
-| Layout type | Recommended |
-|---|---|
-| Fixed sidebar / TOC docs (Docusaurus, VitePress, MkDocs default themes) | `overlay` |
-| Centered max-width content with side gutters | `overlay` |
-| Single-column long-form (Mintlify, blog, marketing pages) | `push` |
-| Full-bleed app-style UI (admin dashboards) | `push` |
-
-Try both in your dev environment before shipping — refresh with `data-layout="push"` and watch how your specific layout reacts (sticky elements, overflow, fixed-position elements often need adjustment in push mode).
+Test `push` in your real layout before shipping, especially if the site has sticky elements or horizontal overflow.
 
 ## npm path
 
@@ -62,10 +76,11 @@ import { initKnokuWidget } from '@knoku/widget'
 
 await initKnokuWidget({
   projectId: 'YOUR_PROJECT_ID',
-  layout: 'push',  // or 'overlay' (default)
+  layout: 'modal',
 })
 ```
 
 ## Related
 
-- [`data-layout` in the attributes reference](/widget/reference/attributes#behavior)
+- [Behavior attributes](/widget/reference/attributes#behavior)
+- [Installation](/widget/installation)

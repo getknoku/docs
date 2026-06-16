@@ -21,6 +21,31 @@ export default withNextra({
         source: '/documentation/:path*',
         destination: '/:path*',
         permanent: true
+      },
+      {
+        source: '/integrations/github-discussions',
+        destination: '/sources/github-discussions',
+        permanent: true
+      },
+      {
+        source: '/integrations/github-issues',
+        destination: '/sources/github-issues',
+        permanent: true
+      },
+      {
+        source: '/integrations/widget-builder',
+        destination: '/widget/widget-builder',
+        permanent: true
+      },
+      {
+        source: '/api',
+        destination: 'https://api.knoku.com/v1/docs',
+        permanent: false
+      },
+      {
+        source: '/api/:path*',
+        destination: 'https://api.knoku.com/v1/docs',
+        permanent: false
       }
     ]
   }

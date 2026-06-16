@@ -7,7 +7,7 @@ Add the Knoku widget to a VitePress site.
 The widget only works once your project exists and your docs are indexed:
 
 1. Create a project and add your site's domain as the allowed domain. See [Widget installation](/widget/installation#before-you-start).
-2. Sync your docs from the project root with [`knoku init`](/cli/init) and [`knoku push`](/cli/push) so answers come from your own content.
+2. Connect [GitHub repo sync](/sources/github-repo-sync) for your docs repository (set **Docs directory** to your Markdown folder) so answers come from your own content.
 
 ## Add the widget
 
@@ -51,7 +51,7 @@ head: [
 
 Same names as the script tag examples in the widget docs, just inside the tuple's attribute object. Full list: [Attributes reference](/widget/reference/attributes). For per-slot visual overrides (`data-panel-header-background-color`, etc.) see [Component Styles](/widget/reference/component-styles).
 
-## Add an Ask AI button to the navbar
+## Add an Ask Docs button to the navbar
 
 VitePress renders the navbar with Vue, so a button has to be rendered through the theme. Extend the default theme and use the `nav-bar-content-after` layout slot.
 
@@ -66,8 +66,8 @@ const { Layout } = DefaultTheme
 <template>
   <Layout>
     <template #nav-bar-content-after>
-      <button id="ask-ai" type="button" class="VPButton medium brand">
-        Ask AI
+      <button id="ask-docs" type="button" class="VPButton medium brand">
+        Ask Docs
       </button>
     </template>
   </Layout>
@@ -94,40 +94,21 @@ head: [
   ['script', {
     src: 'https://cdn.knoku.com/widget.js',
     'data-project-id': 'YOUR_PROJECT_ID',
-    'data-open-selector': '#ask-ai',
+    'data-open-selector': '#ask-docs',
     async: '',
   }],
 ],
 ```
 
-The widget watches the DOM, so it binds the click handler once VitePress mounts the navbar. To hide the floating launcher and use only this button, add `'data-launcher-hidden': 'true'`. See [Add an AI button to your header](/widget/setups/custom-trigger) for the full attribute list.
+The widget watches the DOM, so it binds the click handler once VitePress mounts the navbar. To hide the floating launcher and use only this button, add `'data-launcher-hidden': 'true'`. See [Add an Ask Docs button](/widget/setups/custom-trigger) for the full attribute list.
 
-## CLI behavior
+## Index your docs
 
-The CLI detects VitePress when it finds `.vitepress/config.*` at the project root or under `docs/`.
+Connect the GitHub repository that contains your Markdown. Set **Docs directory** to the folder your generator uses (often `docs/` or `src/content`). Knoku syncs on each commit and cites files on GitHub. Details: [GitHub repo sync](/sources/github-repo-sync).
 
-| Project layout | Default `KNOKU_DOCS_DIR` |
-| --- | --- |
-| `.vitepress/config.*` | `./` |
-| `docs/.vitepress/config.*` | `./docs/` |
+Alternatively, [crawl](/sources/website-crawl) your deployed site if you do not index from GitHub.
 
-VitePress uses extensionless routes by default. For `guide/install.md`, the default citation URL is `/guide/install`. For `index.md`, it is `/`.
-
-If your site is deployed under a base path, set `KNOKU_URL_BASE`:
-
-```env
-KNOKU_URL_BASE=/docs
-```
-
-Then `guide/install.md` maps to `/docs/guide/install`.
-
-## Verify
-
-```bash
-npx @knoku/cli@latest doctor
-```
-
-Then run or deploy your VitePress site and check that:
+Open the deployed site and ask a question. Then run or deploy your VitePress site and check that:
 
 1. the widget script loads once on every docs page
 2. the config request returns `200`
@@ -135,10 +116,13 @@ Then run or deploy your VitePress site and check that:
 
 ## Customize the widget
 
-- [Add an AI button to your header](/widget/setups/custom-trigger)
+- [Add an Ask Docs button](/widget/setups/custom-trigger)
 - [Match your brand](/widget/setups/branding)
 - [Choose a panel layout](/widget/setups/panel-layout)
 - [Require consent before chat](/widget/setups/consent)
 - [Translate the widget](/widget/setups/localize)
 - [Identify logged-in users](/widget/setups/identify-users)
-- [Attributes reference](/widget/reference/attributes) · [Component Styles](/widget/reference/component-styles) · [Icons](/widget/reference/icons) · [Runtime API](/widget/reference/runtime-api)
+- [Attributes reference](/widget/reference/attributes)
+- [Component Styles](/widget/reference/component-styles)
+- [Icons](/widget/reference/icons)
+- [Runtime API](/widget/reference/runtime-api)

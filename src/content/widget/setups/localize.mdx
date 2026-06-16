@@ -1,8 +1,8 @@
 # Translate the widget
 
-`data-language` switches the built-in UI strings (input placeholder, send button, default consent copy, error messages). Your own strings are not auto-translated.
+Use `data-language` to set the widget UI language. Built-in UI strings change automatically; your custom strings do not.
 
-## Force a specific language
+## Set a language
 
 ```html
 <script
@@ -11,62 +11,58 @@
   data-project-id="YOUR_PROJECT_ID"
   data-language="en"
   data-greeting="How can I help?"
-  data-launcher-text="Need help?"
-  data-launcher-subtitle="Ask AI"
+  data-launcher-text="Ask Docs"
   data-suggested-questions="How do I get started?,How does pricing work?"
 ></script>
 ```
 
-## Auto-detect
-
-When `data-language` is omitted, the widget reads `navigator.language` / `navigator.languages` and picks the first match from the supported list. Unsupported locales fall back to English.
-
-This is the default. Set `data-language` only when you want to force a specific language.
+When `data-language` is omitted, the widget reads the browser language and picks the first supported match. Unsupported languages fall back to English.
 
 ## Supported languages
 
 | Code | Language |
-|---|---|
+| --- | --- |
 | `en` | English |
-| `tr` | Türkçe |
-| `de` | Deutsch |
-| `es` | Español |
-| `fr` | Français |
-| `it` | Italiano |
-| `pt` | Português |
-| `nl` | Nederlands |
-| `ja` | 日本語 |
-| `ko` | 한국어 |
-| `zh` | 中文 |
-| `ru` | Русский |
-| `cs` | Čeština |
+| `tr` | Turkish |
+| `de` | German |
+| `es` | Spanish |
+| `fr` | French |
+| `it` | Italian |
+| `pt` | Portuguese |
+| `nl` | Dutch |
+| `ja` | Japanese |
+| `ko` | Korean |
+| `zh` | Chinese |
+| `ru` | Russian |
+| `cs` | Czech |
 
-Unknown values fall back to browser detection (then English) with a console warning.
+## Auto-translated strings
 
-## What's auto-translated
+The widget translates built-in UI strings such as:
 
-When `data-language` is set (or auto-detected), the widget translates:
-
-- Input placeholder, send/attach/close labels, feedback hovers
-- Tool-status strings (`Searching documentation…`, `Found N relevant documents`, `Thinking…`)
+- Input placeholder and send label
+- Close and attachment labels
+- Feedback hover labels
+- Tool status text
 - AI disclaimer line above the composer
-- Default consent screen copy (title, disclaimer, accept, reject) — see [Require consent before chat](/widget/setups/consent#per-language-consent-strings)
-- Connection / error messages
+- Default consent copy
+- Connection and error messages
 
-## What's NOT auto-translated
+## Strings you provide yourself
 
-- `data-greeting` (the optional greeting text)
-- `data-suggested-questions` (your question list)
-- `data-launcher-text`, `data-launcher-subtitle` (launcher copy)
-- Panel header label — fixed as `Ask AI` regardless of `data-language`
-- Custom `data-consent-*` overrides — when you set one, that exact string is used regardless of `data-language`
-- Chat answers (driven by your indexed docs)
+These values are used exactly as you provide them:
 
-Provide each in the language you want.
+- `data-greeting`
+- `data-suggested-questions`
+- `data-launcher-text`
+- `data-launcher-subtitle`
+- Custom `data-consent-*` overrides
+
+The panel header label is currently fixed as `Ask AI`.
 
 ## Multi-language sites
 
-Pick the language from your existing locale state and mount via npm. Calling `initKnokuWidget` again replaces the previous instance, so route changes that swap locales remount cleanly.
+Use the npm package when language, greeting, and suggestions come from app state:
 
 ```ts
 import { initKnokuWidget } from '@knoku/widget'
@@ -79,9 +75,11 @@ await initKnokuWidget({
 })
 ```
 
+Calling `initKnokuWidget()` again replaces the previous instance, which works well for locale route changes.
+
 ## Suggested questions with commas
 
-`data-suggested-questions` is comma-separated. For questions that contain commas, use the npm path:
+The CDN attribute is comma-separated. If a suggested question itself contains commas, use npm:
 
 ```ts
 suggestedQuestions: [
@@ -92,5 +90,6 @@ suggestedQuestions: [
 
 ## Related
 
-- [`data-language`](/widget/reference/attributes#behavior)
-- [Identify logged-in users](/widget/setups/identify-users)
+- [Attributes reference](/widget/reference/attributes#behavior)
+- [Consent](/widget/setups/consent)
+- [npm installation](/widget/installation#npm)

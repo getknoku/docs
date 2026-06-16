@@ -1,73 +1,70 @@
-# Get Started
+# Get started
 
-Shortest path from an existing documentation project to a working Knoku widget.
+This guide takes a new project from empty to a working docs assistant.
 
-## 1. Create a Project
+## 1. Create a project
 
-Sign up at [knoku.com](https://knoku.com) and create a new project from the
-dashboard. Once created, you will see:
+Sign up at [knoku.com/signup](https://knoku.com/signup), create a project, and keep the project ID nearby. The CDN script tag and [`@knoku/widget`](/widget/installation) npm package both use that ID to fetch the project's public configuration.
 
-- **Project ID**: a UUID, e.g. `01234567-89ab-cdef-0123-456789abcdef`
-- **API key**: starts with `sk_live_`, found under **Project > Settings > API Keys**
+Before embedding the widget in production, open **Project settings -> Domains** and add every host where the widget will run. Knoku rejects widget traffic from hosts that are not allowlisted.
 
-Add your documentation site's domain under **Project > Settings > Allowed Domains**.
-The widget only loads on that allowed domain in production.
+## 2. Connect a source
 
-## 2. Initialize the CLI
+Start with the source that best matches how your docs are maintained.
 
-Run this from the root of your documentation project:
+| Source | Use it when | Guide |
+| --- | --- | --- |
+| GitHub repo sync | Docs live as Markdown or MDX in a GitHub repository | [GitHub repo sync](/sources/github-repo-sync) |
+| Website crawl | Your docs are already published as HTML | [Website crawl](/sources/website-crawl) |
 
-```bash
-npx @knoku/cli@latest init
-```
+After the first source is indexed, open **Documents** and confirm the titles, source URLs, and source groups look right.
 
-The command asks for your API key and project ID, then writes a local config
-file at `.knoku/.env`.
+## 3. Embed the widget
 
-Check `KNOKU_DOCS_DIR` in that file before continuing. It must point to the
-folder that contains your documentation files.
+The fastest path is the [widget builder](/widget/widget-builder):
 
-## 3. Sync Your Docs
+1. Open **Project -> Widgets**.
+2. Create a widget configuration.
+3. Copy the generated script tag from the **Embed** step.
+4. Paste it into the layout that renders on every docs page.
 
-Push the first version of your documentation:
-
-```bash
-npx @knoku/cli@latest push
-```
-
-This uploads all `.md`, `.mdx`, and `.rst` files from `KNOKU_DOCS_DIR` to Knoku.
-
-## 4. Install the Widget
-
-Add the widget script to your documentation site:
+For a minimal manual install:
 
 ```html
 <script
+  async
   src="https://cdn.knoku.com/widget.js"
   data-project-id="YOUR_PROJECT_ID"
-  async
 ></script>
 ```
 
-Replace `YOUR_PROJECT_ID` with your project ID from step 1.
+Use [Doc platforms](/doc-platforms) for framework-specific placement, or [Widget installation](/widget/installation) for the full install checklist.
 
-Place the script in a layout or template file so the widget appears on every
-documentation page. See [Integrations](/integrations) for platform-specific
-instructions.
+## 4. Ask a real question
 
-## 5. Verify
+Open the deployed site and ask a question that should be answerable from your docs. Check three things:
 
-Run the CLI diagnostics:
+- The widget appears only on allowed hosts.
+- The answer cites your indexed documents.
+- Source links open real pages.
 
-```bash
-npx @knoku/cli@latest doctor
-```
+Then ask something your docs do not cover. A good setup should return a limited, honest answer instead of inventing details.
 
-Then open your documentation site and ask a question. The setup is working when
-the widget returns an answer with source references from your docs.
+## 5. Deploy to more surfaces
 
-## Next Steps
+Once the widget works, connect the channels that match your workflow:
 
-- [CLI](/cli): command reference, CI usage
-- [Widget](/widget): script attributes, theming, runtime API
-- [Integrations](/integrations): per-platform installation guides
+| Need | Surface |
+| --- | --- |
+| Team or community Q&A | [Slack](/integrations/slack), [Discord](/integrations/discord) |
+| IDE and agent access | [MCP](/integrations/mcp) |
+| Custom product UI | [Public API](/integrations/public-api) |
+| Support form triage | [Support form deflector](/integrations/support-form-deflector) |
+
+## 6. Monitor quality
+
+Use [Analytics](/analytics) and [Sessions](/dashboard/sessions) after real traffic starts:
+
+- [Questions](/analytics/questions) shows repeated questions and coverage gaps.
+- [Sources cited](/analytics/sources) shows which documents are actually used.
+- [Deflection](/analytics/deflection) estimates answered vs needs-support outcomes.

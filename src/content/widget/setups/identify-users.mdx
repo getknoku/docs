@@ -1,48 +1,63 @@
 # Identify logged-in users
 
-`Knoku.identify()` associates the chat session with a known user. By default, sessions are anonymous; only an opaque `web_id` cookie correlates a returning visitor.
+Use `Knoku.identify()` to attach your authenticated user to widget sessions.
+
+By default, widget sessions are anonymous and use an opaque `web_id` cookie to recognize a returning browser.
+
+## Basic usage
 
 ```js
-window.Knoku.identify({
+window.Knoku?.identify({
   id: 'user_123',
   email: 'user@example.com',
-  metadata: { plan: 'pro', company: 'Acme Inc' },
+  metadata: {
+    plan: 'pro',
+    company: 'Acme Inc',
+  },
 })
 ```
 
-All three fields are optional. Pass `null` to clear:
+All fields are optional. Use the stable user ID from your own system when possible.
+
+Clear identity on logout:
 
 ```js
 window.Knoku?.identify(null)
 ```
 
-Identity is in-memory; refresh resets it. Call `identify` again on every load.
+Identity is kept in memory. Call `identify()` again on each page load after your auth state is known.
 
 ## When to call it
 
+Call `identify()`:
+
 - After auth state resolves on initial load
-- After login, before the user opens the panel
+- After login, before the user opens the widget
 - After logout, with `null`
 
-## Auth-gated docs
+## Wait for the CDN runtime
 
-The widget mounts asynchronously via the CDN script. Guard against `Knoku` being undefined:
+The CDN script loads asynchronously. Guard against `window.Knoku` not being ready yet:
 
 ```js
-function whenReady(fn, timeoutMs = 10_000) {
-  if (window.Knoku) return fn()
+function whenKnokuReady(callback, timeoutMs = 10000) {
+  if (window.Knoku) {
+    callback()
+    return
+  }
+
   const start = Date.now()
-  const id = setInterval(() => {
+  const timer = setInterval(() => {
     if (window.Knoku) {
-      clearInterval(id)
-      fn()
+      clearInterval(timer)
+      callback()
     } else if (Date.now() - start > timeoutMs) {
-      clearInterval(id)
+      clearInterval(timer)
     }
   }, 50)
 }
 
-whenReady(() => {
+whenKnokuReady(() => {
   window.Knoku.identify({
     id: currentUser.id,
     email: currentUser.email,
@@ -51,11 +66,11 @@ whenReady(() => {
 })
 ```
 
-When mounting via npm, `await initKnokuWidget(options)` resolves once the runtime API is ready, so polling isn't needed.
+When you use the npm package, `await initKnokuWidget(options)` resolves after the runtime API is ready.
 
-## What gets sent
+## What is sent
 
-Each `/api/v1/chat` request body carries:
+Chat requests include the anonymous `web_id` and any identity you set:
 
 ```json
 {
@@ -68,15 +83,16 @@ Each `/api/v1/chat` request body carries:
 }
 ```
 
-`web_id` is always present. `id`, `email`, and `metadata` only appear after `identify()`.
+`web_id` is always present. `id`, `email`, and `metadata` appear only after `identify()`.
 
-## Privacy
+## Privacy notes
 
-- Identity is sent over HTTPS to your project's backend.
-- Knoku stores identity per session for analytics. Clearing identity (`identify(null)`) does not delete prior sessions.
-- `metadata` is free-form. Keep it under ~8 KB and don't put sensitive data there.
+- Identity is sent over HTTPS with widget chat requests.
+- Knoku stores identity on the session for analytics and review.
+- `identify(null)` affects future requests; it does not delete previous sessions.
+- Keep `metadata` small and non-sensitive.
 
 ## Related
 
-- [Runtime API: `Knoku.identify`](/widget/reference/runtime-api#identify)
-- [Add an AI button to your header](/widget/setups/custom-trigger)
+- [Runtime API](/widget/reference/runtime-api#identify)
+- [Sessions](/dashboard/sessions)

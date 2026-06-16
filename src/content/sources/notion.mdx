@@ -1,0 +1,36 @@
+# Notion
+
+Notion sync indexes pages shared with your Notion internal integration.
+
+Use it for team runbooks, product notes, support playbooks, and internal knowledge that has not been published as docs.
+
+## Connect Notion
+
+1. Create a Notion [internal integration](https://www.notion.so/help/create-integrations-with-the-notion-api) and copy the integration secret.
+2. Open **Project -> Settings -> Integrations -> Notion**.
+3. Paste the integration secret and connect.
+4. Share the pages or databases you want Knoku to read with that integration in Notion.
+5. Open the Notion source on **Project -> Sources** and set sync filters (pages, databases, updated-after rules).
+6. Save the filter to start indexing.
+
+Connected pages appear in **Documents** after the first sync.
+
+## Visibility
+
+Notion pages default to Internal. Use the **In widget** toggle on the source row only after reviewing the content and citation URL.
+
+If a Notion page has a public URL and is safe for visitors, enable widget exposure. Otherwise keep it internal for team/support use.
+
+## Sync behavior
+
+Use **Re-index** after changing filters or when you need a fresh pull. Background sync keeps matched pages current.
+
+## Plan
+
+Notion is a Business source.
+
+## Related
+
+- [Source groups](/sources/source-groups)
+- [Slack](/integrations/slack)
+- [Public API](/integrations/public-api)

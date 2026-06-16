@@ -1,0 +1,48 @@
+# Deflection
+
+Deflection shows whether Knoku likely answered a question or the user still needed human help.
+
+Open **Project > Analytics > Deflection**.
+
+## What gets measured
+
+| Metric | Meaning |
+| --- | --- |
+| Answered | Turns classified as `deflection_success` |
+| Needs support | Turns classified as `deflection_failure` |
+| Deflection rate | `answered / (answered + needs support)` for tagged turns |
+| Deflector intercepts | Support form submissions Knoku intercepted before ticket creation |
+| Resolved / continued | Visitor outcome buttons in the support form deflector flow |
+
+Intent tags are applied automatically after assistant turns. Your team does not tag them manually.
+
+## Deflector outcomes
+
+When the [support form deflector](/integrations/support-form-deflector) is active, this view also tracks the form flow:
+
+- **Intercepted**: the user tried to submit a support form and Knoku answered first.
+- **Resolved**: the user accepted the answer and did not continue to support.
+- **Continued**: the user continued to the original form submit.
+- **Pending**: the answer was shown, but no final outcome was recorded yet.
+
+Use these numbers separately from intent-based deflection. Intent estimates answer quality across channels; button outcomes measure the support form path directly.
+
+## Helpful rate
+
+On Business and above, widget feedback contributes to helpful rate. It is the share of rated answers marked helpful.
+
+Helpful rate is not the same as deflection. A user can mark an answer helpful even when they still need a human follow-up, and an unrated answer can still count as deflected.
+
+## Export
+
+Business and above can export deflection data from the Deflection header. Use the CSV for weekly reporting or to compare documentation changes over time.
+
+## Review the source conversations
+
+Click an Answered or Needs support count to open **Sessions** with the matching intent filter. Read the actual turns before changing docs; the label tells you where to look, not the full reason.
+
+## Related
+
+- [Support form deflector](/integrations/support-form-deflector)
+- [Analytics FAQ](/analytics/faq)
+- [Sessions](/dashboard/sessions)

@@ -1,0 +1,31 @@
+# Confluence
+
+Confluence sync indexes Confluence Cloud pages that match your sync filters.
+
+Use it for internal runbooks, team wikis, release notes, troubleshooting guides, and support knowledge.
+
+## Connect Confluence
+
+1. Open **Project -> Settings -> Integrations -> Confluence**.
+2. Complete the Atlassian OAuth flow.
+3. Open the Confluence source on **Project -> Sources** and set sync filters (spaces, pages, updated-after rules).
+4. Save the filter to start indexing.
+
+Synced pages appear in **Documents** with source type `confluence_page`.
+
+## Visibility
+
+Confluence pages default to Internal. Use the **In widget** toggle only when a page is safe for visitor-facing answers and the citation link is usable by the reader.
+
+## Sync behavior
+
+Use **Re-index** after changing filters. Background sync refreshes matched pages about every six hours.
+
+## Plan
+
+Confluence is a Business source.
+
+## Related
+
+- [Jira](/sources/jira)
+- [Source groups](/sources/source-groups)

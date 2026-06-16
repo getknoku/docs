@@ -7,7 +7,7 @@ Add the Knoku widget to a Sphinx documentation site.
 The widget only works once your project exists and your docs are indexed:
 
 1. Create a project and add your site's domain as the allowed domain. See [Widget installation](/widget/installation#before-you-start).
-2. Sync your docs from the Sphinx project root with [`knoku init`](/cli/init) and [`knoku push`](/cli/push) so answers come from your own content.
+2. Connect [GitHub repo sync](/sources/github-repo-sync) for your docs repository (set **Docs directory** to the folder your generator uses) so answers come from your own content.
 
 ## Add the widget
 
@@ -53,58 +53,34 @@ document.head.appendChild(script)
 
 The browser serializes camelCase `dataset` keys (e.g. `dataset.launcherText`) as kebab-case `data-*` attributes (`data-launcher-text`). Full list: [Attributes reference](/widget/reference/attributes). For per-slot visual overrides (`data-panel-header-background-color`, etc.) see [Component Styles](/widget/reference/component-styles).
 
-## Add an Ask AI button to the navbar
+## Add an Ask Docs button to the navbar
 
 Sphinx themes differ, so the safest option is to add a small button through your theme template override and bind it with `data-open-selector`.
 
 Example markup:
 
 ```html
-<button id="ask-ai" type="button">Ask AI</button>
+<button id="ask-docs" type="button">Ask Docs</button>
 ```
 
 Then update `_static/knoku.js`:
 
 ```js
-script.dataset.openSelector = '#ask-ai'
+script.dataset.openSelector = '#ask-docs'
 script.dataset.launcherHidden = 'true'
 ```
 
-The widget watches the DOM, so it binds once the theme renders the button. See [Add an AI button to your header](/widget/setups/custom-trigger) for the full behavior.
+The widget watches the DOM, so it binds once the theme renders the button. See [Add an Ask Docs button](/widget/setups/custom-trigger) for the full behavior.
 
 If you do not want to override templates, keep the default floating launcher and skip this section.
 
-## CLI behavior
+## Index your docs
 
-The CLI detects Sphinx when it finds `conf.py` in common Sphinx locations.
+Connect the GitHub repository that contains your Markdown. Set **Docs directory** to the folder your generator uses (often `docs/` or `src/content`). Knoku syncs on each commit and cites files on GitHub. Details: [GitHub repo sync](/sources/github-repo-sync).
 
-| Project layout | Default `KNOKU_DOCS_DIR` |
-| --- | --- |
-| `conf.py` | `./` |
-| `source/conf.py` | `./source/` |
-| `docs/conf.py` | `./docs/` |
-| `docs/source/conf.py` | `./docs/source/` |
+Alternatively, [crawl](/sources/website-crawl) your deployed site if you do not index from GitHub.
 
-The Sphinx adapter maps URLs to `.html` pages. For `usage/install.rst`, the default citation URL is `/usage/install.html`.
-
-When to set `KNOKU_URL_BASE`:
-
-- **Default Sphinx (`.html` URLs)**: leave it unset. `KNOKU_URL_BASE` bypasses the Sphinx adapter and strips the `.html` suffix, which breaks citation links. For one-off overrides on a Markdown/MyST page, use per-file `url:` frontmatter instead.
-- **`dirhtml` builder or other extensionless URL style**: set it only when you also need a subpath prefix (e.g. `/docs`). The adapter does not produce extensionless URLs on its own.
-
-See [CLI configuration](/cli/configuration#url-routing) for the override priority.
-
-## Markdown with MyST
-
-Sphinx projects that use `myst_parser` can push `.md` files too. Knoku indexes `.rst`, `.md`, and `.mdx` files from `KNOKU_DOCS_DIR`.
-
-## Verify
-
-```bash
-npx @knoku/cli@latest doctor
-```
-
-Then build or serve your Sphinx site and check that:
+Open the deployed site and ask a question. Then build or serve your Sphinx site and check that:
 
 1. `_static/knoku.js` is loaded
 2. `https://cdn.knoku.com/widget.js` is requested
@@ -115,10 +91,13 @@ If the config request returns `403`, add the exact docs host as the project's al
 
 ## Customize the widget
 
-- [Add an AI button to your header](/widget/setups/custom-trigger)
+- [Add an Ask Docs button](/widget/setups/custom-trigger)
 - [Match your brand](/widget/setups/branding)
 - [Choose a panel layout](/widget/setups/panel-layout)
 - [Require consent before chat](/widget/setups/consent)
 - [Translate the widget](/widget/setups/localize)
 - [Identify logged-in users](/widget/setups/identify-users)
-- [Attributes reference](/widget/reference/attributes) · [Component Styles](/widget/reference/component-styles) · [Icons](/widget/reference/icons) · [Runtime API](/widget/reference/runtime-api)
+- [Attributes reference](/widget/reference/attributes)
+- [Component Styles](/widget/reference/component-styles)
+- [Icons](/widget/reference/icons)
+- [Runtime API](/widget/reference/runtime-api)

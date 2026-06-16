@@ -1,0 +1,52 @@
+# Widget builder
+
+The widget builder is the dashboard path for configuring the [website widget](/integrations/website-widget). Use it when you want a production-ready embed snippet without writing every `data-*` attribute by hand.
+
+This page is linked from the website widget docs, but it is not a separate deployment surface.
+
+## Create a widget
+
+1. Open **Project -> Widgets**.
+2. Click **New widget**.
+3. Set the name, copy, layout, colors, consent, language, and trigger behavior.
+4. Open the **Embed** step.
+5. Copy the generated script tag into your site layout.
+
+Widget names are for your team only. Visitors do not see them.
+
+## What the builder covers
+
+| Area | Examples |
+| --- | --- |
+| Branding | Accent colors, light/dark colors, launcher copy |
+| Layout | Modal, overlay, or push panel |
+| Behavior | Floating launcher, custom trigger, hidden launcher |
+| Content | Greeting and suggested questions |
+| Privacy | Consent screen copy |
+| Localization | Built-in widget language |
+
+For advanced per-slot styling, extend the generated tag with [Component styles](/widget/reference/component-styles).
+
+## Multiple widgets
+
+A project can have more than one saved widget configuration. Common patterns:
+
+- Production docs and staging docs with different domains
+- Marketing site and documentation site with different launcher text
+- Locale-specific pages with different greeting and suggested questions
+
+All widget configs still answer from the same project index and source groups.
+
+## Domains
+
+The generated snippet works only on hosts listed in [Domains](/dashboard/domains). Add production, staging, preview, and local hosts before testing.
+
+## Turnstile
+
+If [Turnstile](/widget/setups/turnstile) is enabled for the project, the widget picks up the site key from project config. You do not need to add a Turnstile attribute to the snippet.
+
+## Related
+
+- [Website widget](/integrations/website-widget)
+- [Widget installation](/widget/installation)
+- [Attributes](/widget/reference/attributes)

@@ -1,37 +1,41 @@
 # Widget
 
-The Knoku widget is an embeddable AI chat panel for documentation sites. Visitors ask questions and get answers with citations linking back to your docs.
+The Knoku widget is an embeddable chat panel for websites and web apps. It runs in a Shadow DOM, follows the host site's theme, and answers from the project's Public source group.
 
-The widget renders inside a Shadow DOM, so your site's CSS doesn't leak in and Knoku's styles don't leak out. Dark mode follows your site automatically.
+Use this section for installation, common setup patterns, and the full technical reference.
 
-## Get started
+## Start here
 
-1. **[Install](/widget/installation)**: add the script tag (or npm package) and verify it mounts.
-2. **Pick a setup**: start from a real scenario below, copy the snippet, adjust.
-3. **Reference**: when you need the full attribute list or the runtime API.
+1. [Install the widget](/widget/installation).
+2. Add your site under [Domains](/dashboard/domains).
+3. Confirm the documents you want visitors to see are in the [Public source group](/sources/source-groups).
+4. Ask a real question and check citations.
 
 ## Common setups
 
-Each setup is one focused page with a working example. Most sites combine two or three.
+| Setup | Use it for |
+| --- | --- |
+| [Add an Ask Docs button](/widget/setups/custom-trigger) | Open the panel from your own button, search input, or keyboard shortcut |
+| [Match your brand](/widget/setups/branding) | Set accent colors and per-slot style overrides |
+| [Choose a launcher style](/widget/setups/launcher-style) | Use the default pill launcher or the legacy card launcher |
+| [Choose a panel layout](/widget/setups/panel-layout) | Pick modal, overlay, or push layout |
+| [Embed on multiple sites](/widget/setups/multi-site-embedding) | Use one project across production, staging, docs, and marketing hosts |
+| [Require consent before chat](/widget/setups/consent) | Show an accept/reject screen before the first question |
+| [Translate the widget](/widget/setups/localize) | Use built-in UI translations and your own localized copy |
+| [Identify logged-in users](/widget/setups/identify-users) | Attach known user IDs and emails to sessions |
+| [Protect the widget with Turnstile](/widget/setups/turnstile) | Require a Cloudflare Turnstile token on widget traffic |
 
-- **[Add an AI button to your header](/widget/setups/custom-trigger)**: open chat from your own button, search bar, or a keyboard shortcut. Hide the default launcher when you want a single branded entry.
-- **[Match your brand](/widget/setups/branding)**: set your accent color, override panel header, suggestion chips, hover states, and dark variants.
-- **[Choose a panel layout](/widget/setups/panel-layout)**: panel floats above your content (default) or pushes the page over while open — pick what fits your site.
-- **[Require consent before chat](/widget/setups/consent)**: show a consent screen before the first question; held questions resume after acceptance.
-- **[Translate the widget](/widget/setups/localize)**: pick from 13 built-in languages or auto-detect from the browser; provide your own greeting and suggested questions in any language.
-- **[Identify logged-in users](/widget/setups/identify-users)**: associate chat sessions with known users for auth-gated docs and richer analytics.
+Prefer a dashboard flow? Use the [widget builder](/widget/widget-builder).
 
 ## Reference
 
-When you've outgrown the setups and need the full surface area:
-
-- **[Attributes](/widget/reference/attributes)**: every `data-*` attribute and its `initKnokuWidget()` equivalent.
-- **[Component Styles](/widget/reference/component-styles)**: per-slot, per-property visual overrides (panel, launcher, bubbles, chips, hover, dark variants).
-- **[Icons](/widget/reference/icons)**: the 24 built-in suggestion icons and how to pass custom SVG via the npm path.
-- **[Runtime API](/widget/reference/runtime-api)**: `window.Knoku.open() / close() / toggle() / ask() / identify()`, custom events, response listeners.
+| Reference | What it covers |
+| --- | --- |
+| [Attributes](/widget/reference/attributes) | Every supported `data-*` script attribute and npm option |
+| [Component styles](/widget/reference/component-styles) | Named style slots, allowed CSS properties, hover/focus/active/dark variants |
+| [Icons](/widget/reference/icons) | Built-in icons and npm-only custom SVG |
+| [Runtime API](/widget/reference/runtime-api) | `window.Knoku`, custom events, response events, teardown |
 
 ## Framework guides
 
-If your docs run on a known framework, the script tag goes in a different place. See:
-
-- [Mintlify](/integrations/mintlify) · [Nextra](/integrations/nextra) · [Docusaurus](/integrations/docusaurus) · [VitePress](/integrations/vitepress) · [MkDocs](/integrations/mkdocs) · [Sphinx](/integrations/sphinx) · [ReadTheDocs](/integrations/readthedocs) · [Custom website](/integrations/custom-website)
+Use [Doc platforms](/doc-platforms) for placement in Docusaurus, VitePress, MkDocs, Nextra, Mintlify, Sphinx, Read the Docs, or a custom website.

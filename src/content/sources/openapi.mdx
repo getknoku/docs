@@ -1,0 +1,34 @@
+# OpenAPI
+
+OpenAPI sync indexes a hosted OpenAPI or Swagger specification.
+
+Use it when users ask about endpoints, authentication, parameters, request bodies, response fields, or error behavior.
+
+## Connect a spec
+
+1. Open **Project -> Settings -> Integrations -> OpenAPI**.
+2. Enter a reachable spec URL.
+3. Sync.
+
+Knoku validates that the URL can be fetched and parsed before saving the source. Operations appear in **Documents** after indexing. Use **Re-index spec** to refresh.
+
+## What gets indexed
+
+Operations, parameters, schemas, and descriptions become `openapi_operation` documents. Good operation summaries and descriptions make better answers.
+
+## Keep the URL stable
+
+Use a URL that always points to the current production spec. If the URL changes, update the source and sync again.
+
+## Visibility
+
+OpenAPI operations default to Public. Use **Set source groups** on indexed operations if the API reference should stay internal.
+
+## Plan
+
+OpenAPI sync requires Open Source or above.
+
+## Related
+
+- [Public API](/integrations/public-api)
+- [Source groups](/sources/source-groups)

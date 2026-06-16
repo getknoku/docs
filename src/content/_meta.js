@@ -1,6 +1,13 @@
 export default {
   overview: 'Overview',
-  cli: 'CLI',
+  sources: 'Sources',
+  integrations: 'Deploy Knoku',
   widget: 'Widget',
-  integrations: 'Integrations'
+  analytics: 'Analytics',
+  dashboard: 'Dashboard',
+  'doc-platforms': 'Doc platforms',
+  'public-api': {
+    title: 'API',
+    href: 'https://api.knoku.com/v1/docs',
+  },
 }

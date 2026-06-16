@@ -1,0 +1,41 @@
+# Zendesk Help Center
+
+Zendesk Help Center sync indexes Help Center articles that match your sync filters.
+
+Use it when your public support articles should answer in the widget, bots, MCP, or API.
+
+This is separate from Zendesk agent tooling. Help Center sync indexes articles as source documents.
+
+## Connect Zendesk Help Center
+
+1. Open **Project -> Settings -> Integrations -> Zendesk Help Center**.
+2. Enter the Zendesk subdomain and credentials.
+3. Open the Help Center source on **Project -> Sources** and set filters (categories, sections, keywords).
+4. Save the filter to start indexing.
+
+Matched articles appear in **Documents** with source type `zendesk_article`.
+
+## Filters
+
+Use category, section, and keyword filters to keep the imported article set focused.
+
+Restricted Zendesk articles should remain Internal.
+
+## Visibility
+
+Public Help Center articles usually belong in Public. Restricted articles should stay Internal.
+
+Review filters before enabling visitor-facing integrations.
+
+## Sync behavior
+
+Use **Re-index** after changing filters. Background sync keeps matched articles current.
+
+## Plan
+
+Zendesk Help Center sync requires Business or above.
+
+## Related
+
+- [Support form deflector](/integrations/support-form-deflector)
+- [Source groups](/sources/source-groups)

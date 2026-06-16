@@ -1,0 +1,57 @@
+# Slack
+
+Connect Slack so teammates can ask Knoku from a workspace. Slack is a team surface and can answer from both Public and Internal source groups.
+
+Use Slack for internal support, engineering enablement, sales engineering, and team knowledge lookup.
+
+## Install
+
+1. Open **Project -> Channels -> Slack**.
+2. Click **Add to Slack**.
+3. Approve the OAuth flow.
+4. Invite the bot to the channels where it should answer.
+
+Each Slack installation is tied to one project.
+
+## Ask a question
+
+Mention the bot in an allowed channel:
+
+```txt
+@Knoku how do I install the widget?
+```
+
+Knoku replies in the thread with an answer and source links when available.
+
+The `/knoku` slash command is also supported.
+
+## Channel controls
+
+Use **Allowed channels** to restrict where the bot responds. Enter Slack channel IDs, separated by commas. Leave the list empty to allow all channels where the bot is present.
+
+The slash command can either ignore the channel filter or respect the same allowlist, depending on the setting in the channel configuration.
+
+## Curated ingest
+
+Slack can also become a source. Enable curated ingest and choose the reaction emoji that marks a useful thread for indexing. When an approved message is marked, Knoku imports the thread as a document.
+
+Use this for durable answers that start in Slack and should be searchable later.
+
+## Sessions and feedback
+
+Slack questions appear in [Sessions](/dashboard/sessions). Feedback actions are recorded for analytics.
+
+## Remove Slack
+
+Disconnect the installation from **Project -> Channels -> Slack**. Past sessions remain in the dashboard.
+
+## Plan
+
+Slack requires Open Source or above.
+
+## Related
+
+- [Widget installation](/widget/installation)
+- [Source groups](/sources/source-groups)
+- [Analytics](/analytics)
+- [Discord](/integrations/discord)

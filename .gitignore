@@ -33,3 +33,4 @@ Thumbs.db
 
 # Knoku secrets
 .knoku/.env
+public/widget.js

@@ -1,0 +1,60 @@
+# GitHub repo sync
+
+GitHub repo sync pulls documentation files from a GitHub repository and keeps them indexed in Knoku.
+
+Use it when the docs source of truth is Markdown or MDX in GitHub and you want Knoku to refresh from the repository automatically.
+
+## When to use it
+
+- Your docs live in a GitHub repo.
+- You want citations to point at GitHub file URLs.
+- You want Knoku to refresh from the configured branch.
+- You want a dashboard-managed source without adding build or deploy steps.
+
+For public HTML docs without a repo path, use [website crawl](/sources/website-crawl).
+
+## Connect a repo
+
+1. Open **Project -> Sources**.
+2. Choose **GitHub repository**.
+3. Enter the repository URL.
+4. Choose the branch and docs directory.
+5. Add exclude globs if needed.
+6. Choose visibility: Public or Internal.
+7. Review the file preview, then start the sync.
+
+Private repositories require a token with read access to repository contents.
+
+## What gets indexed
+
+Knoku fetches Markdown/MDX-style documentation files from the configured directory and stores them as `repo_file` documents.
+
+Citation URLs point to the file in GitHub at the synced commit/branch.
+
+## Visibility
+
+| Visibility | Result |
+| --- | --- |
+| Public | Available to widget, deflector, MCP, and public API keys with public scope |
+| Internal | Available only to internal/team surfaces and internal-scope API keys |
+
+Private repo content should usually stay Internal unless the linked GitHub files are accessible to the people reading the answer.
+
+## Sync behavior
+
+Knoku checks the configured branch for changes. When the commit changes, it fetches the repo and re-indexes changed files. You can also click **Sync** from the source row.
+
+Manual sync has a five-minute cooldown to avoid unnecessary GitHub traffic.
+
+## Remove a repo
+
+Deleting the source stops future syncs and removes documents owned by that repo source.
+
+## Plan
+
+GitHub repo sync is available on all plans, including Free.
+
+## Related
+
+- [GitHub Discussions](/sources/github-discussions)
+- [Source groups](/sources/source-groups)

@@ -1,0 +1,61 @@
+# Domains
+
+Allowed domains protect the browser widget. The widget only loads project config from hosts you approve.
+
+Open **Project > Settings > Domains**.
+
+## Add a domain
+
+Enter the hostname visitors see in the browser:
+
+```text
+docs.example.com
+```
+
+Do not include a path. `https://docs.example.com/docs` will not match as a host.
+
+You can enter either a bare hostname or full origin when adding it, but Knoku stores and checks the hostname. Wildcards are not supported, so add `example.com` and `www.example.com` separately when both serve the widget.
+
+## What domains affect
+
+Allowed domains apply to:
+
+- Widget config requests
+- Browser chat requests from the widget
+- Support form deflector usage on the page
+
+They do not apply to the Public API. Public API requests use bearer tokens and should be sent from a trusted backend.
+
+## Multiple hosts
+
+A single project can allow multiple hosts. They share the same:
+
+- Sources and indexed documents
+- Widget configuration
+- Sessions and analytics
+- Message limits
+
+This is useful for docs plus marketing sites, production plus staging, or locale subdomains that should answer from the same knowledge base.
+
+## Source link fallback
+
+There is no separate "primary domain" setting. Most sources store absolute URLs at index time (website crawls, GitHub repo sync, and similar connectors).
+
+When a source only has a relative path, Knoku falls back to the **first allowed domain** in your list, then to your latest crawl root URL if the list is empty. Put the docs host first when the widget runs on a different host (for example marketing on `example.com`, docs on `docs.example.com`).
+
+For npm embeds, you can also pass `primaryDomain` in [`initKnokuWidget()`](/widget/reference/attributes#npm-only-options).
+
+## Verify
+
+Open your site from the allowed host and check the widget config request:
+
+```text
+https://api.knoku.com/api/v1/config/YOUR_PROJECT_ID
+```
+
+A `200` means the host is allowed and the project is active. A `403` usually means the hostname is missing, the domain is entered with the wrong subdomain, or the project is not active.
+
+## Related
+
+- [Widget installation](/widget/installation)
+- [Support form deflector](/integrations/support-form-deflector)

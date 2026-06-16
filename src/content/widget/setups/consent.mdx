@@ -1,34 +1,36 @@
 # Require consent before chat
 
-`data-consent-required="true"` shows a consent screen the first time a visitor opens the panel. The decision is stored in a project-scoped cookie (`knoku_consent`).
+Use consent mode when visitors must accept a short notice before sending their first message.
 
 ```html
 <script
   async
   src="https://cdn.knoku.com/widget.js"
   data-project-id="YOUR_PROJECT_ID"
-  data-language="en"
   data-consent-required="true"
   data-consent-title="AI chat consent"
-  data-consent-disclaimer="Your question is sent to our AI to generate an answer."
+  data-consent-disclaimer="Your question is sent to our AI service to generate an answer."
   data-consent-accept-text="Continue"
   data-consent-reject-text="Cancel"
 ></script>
 ```
 
-Without the `data-consent-*` text attributes, the widget uses translated defaults from `data-language`.
+If you omit the custom consent text, the widget uses the built-in strings for the active language.
 
 ## Flow
 
-1. Visitor opens the panel → consent screen.
-2. Accept → cookie set, panel goes to chat. Subsequent opens skip the screen.
-3. Reject → panel closes. Consent reappears next time.
+1. The visitor opens the widget.
+2. The consent screen appears before chat.
+3. Accept stores a project-scoped `knoku_consent` cookie and opens chat.
+4. Reject closes the widget. Consent appears again on the next open.
 
-The cookie is project-scoped: a visitor who consented on one Knoku project will see consent again on a different project hosted on the same site.
+Consent is scoped by Knoku project. A visitor who accepts on one project will still see consent on another project hosted on the same site.
 
-## Holding `Knoku.ask()` until accept
+## `Knoku.ask()` behavior
 
-When consent is required, `Knoku.ask(question)` opens the panel on the consent screen first. The question is held and submitted automatically when the user accepts. Reject discards the question.
+When consent is required, `Knoku.ask(question)` opens the widget on the consent screen first. The question is held and submitted after the visitor accepts.
+
+If the visitor rejects, the held question is discarded.
 
 ```js
 document.getElementById('pricing-question').addEventListener('click', () => {
@@ -36,9 +38,9 @@ document.getElementById('pricing-question').addEventListener('click', () => {
 })
 ```
 
-## Per-language consent strings
+## Language defaults
 
-The widget ships built-in consent translations for all 13 supported languages (`en`, `tr`, `de`, `es`, `fr`, `it`, `pt`, `nl`, `ja`, `ko`, `zh`, `ru`, `cs`). When you set `data-language` and omit the `data-consent-*` text attributes, the consent screen renders in that language automatically:
+Consent text follows `data-language` when you do not provide custom `data-consent-*` strings.
 
 ```html
 <script
@@ -50,33 +52,38 @@ The widget ships built-in consent translations for all 13 supported languages (`
 ></script>
 ```
 
-To customize a single line in one language while keeping the rest of the built-in translation, override only what you need (the missing fields fall back to the language default):
+To override one line and keep the rest translated, set only that attribute:
 
 ```html
 data-consent-required="true"
-data-consent-title="Custom title overrides the German default"
+data-consent-title="Custom consent title"
 ```
 
-For multi-language sites where the language is computed at runtime, use the npm path so all consent fields can be set together:
+## npm path
+
+Use the npm package when language and consent copy come from your application state:
 
 ```ts
 import { initKnokuWidget } from '@knoku/widget'
 
-const lang = document.documentElement.lang.startsWith('de') ? 'de' : 'en'
-
 await initKnokuWidget({
   projectId: 'YOUR_PROJECT_ID',
-  language: lang,
+  language: currentLocale,
   consent: {
     required: true,
-    // omit title/disclaimer/acceptText/rejectText to use the built-in translations
   },
 })
 ```
 
-## Branding the consent screen
+## Style the consent screen
 
-Slot names: `consent-screen`, `consent-accept-button`, `consent-reject-button`.
+Relevant component slots:
+
+- `consent-screen`
+- `consent-accept-button`
+- `consent-reject-button`
+
+Example:
 
 ```html
 data-consent-accept-button-background-color="#0ea5e9"
@@ -86,5 +93,5 @@ data-consent-reject-button-color="#64748b"
 ## Related
 
 - [Consent attributes](/widget/reference/attributes#consent)
-- [`Knoku.ask()`](/widget/reference/runtime-api#ask)
+- [Runtime API](/widget/reference/runtime-api)
 - [Translate the widget](/widget/setups/localize)

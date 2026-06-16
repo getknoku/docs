@@ -1,6 +1,6 @@
 # Knoku Docs
 
-The official documentation site for [Knoku](https://knoku.com) — an AI chat assistant that answers visitor questions from your own documentation.
+The official documentation site for [Knoku](https://knoku.com) — cited AI answers from your documentation, GitHub repos, and connected sources.
 
 Live site: [docs.knoku.com](https://docs.knoku.com)
 
@@ -8,10 +8,13 @@ Built with [Next.js](https://nextjs.org) and [Nextra](https://nextra.site).
 
 ## Contents
 
-- **Overview** — what Knoku is and how to get started
-- **CLI** — commands for syncing your docs (`init`, `push`, `status`, `doctor`, configuration)
-- **Widget** — embedding and configuring the chat widget
-- **Integrations** — guides for Docusaurus, Mintlify, MkDocs, Nextra, Read the Docs, Sphinx, VitePress, and custom sites
+- **Overview** — product introduction, get started, FAQ
+- **Sources** — GitHub repo sync, crawl, integrations (Notion, Confluence, GitHub App, …)
+- **Deploy Knoku** — widget, Slack, Discord, MCP, Public API, support form deflector
+- **Analytics** — deflection, questions, sources cited, traffic
+- **Dashboard** — domains, security, privacy, workspace, sessions
+- **Widget** — installation, setups, reference
+- **Doc platforms** — Docusaurus, Mintlify, MkDocs, Nextra, and more
 
 Content lives under [`src/content`](src/content) as MDX files.
 

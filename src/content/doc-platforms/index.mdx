@@ -1,0 +1,57 @@
+# Doc platforms
+
+These guides cover widget placement and content indexing for common documentation stacks.
+
+Each page shows where to put the Knoku script so it loads on every page, and how to get your Markdown into the index.
+
+## Index your content first
+
+Before embedding the widget, connect a source:
+
+| Approach | When to use |
+| --- | --- |
+| [GitHub repo sync](/sources/github-repo-sync) | Docs live as Markdown in a GitHub repo (recommended) |
+| [Website crawl](/sources/website-crawl) | Docs are already published as HTML |
+
+## Supported platforms
+
+| Platform | Widget placement guide |
+| --- | --- |
+| [Docusaurus](/doc-platforms/docusaurus) | `scripts` in `docusaurus.config.*` |
+| [VitePress](/doc-platforms/vitepress) | `head` in `.vitepress/config.*` |
+| [MkDocs](/doc-platforms/mkdocs) | `extra_javascript` in `mkdocs.yml` |
+| [Nextra](/doc-platforms/nextra) | Next.js root layout |
+| [Mintlify](/doc-platforms/mintlify) | custom JavaScript in content root |
+| [Sphinx](/doc-platforms/sphinx) | `html_js_files` in `conf.py` |
+| [Read the Docs](/doc-platforms/readthedocs) | underlying MkDocs or Sphinx config |
+| [Custom website](/doc-platforms/custom-website) | global layout or app shell |
+
+## Before any platform guide
+
+1. Create a project and copy the project ID.
+2. Add your docs hostname under [Domains](/dashboard/domains).
+3. Connect a [source](/sources) - GitHub repo sync or crawl.
+
+The widget will not mount on hosts that are not allowlisted. Content must be indexed before the assistant can answer.
+
+## Widget attributes
+
+All platforms share the same script attributes. Only `data-project-id` is required:
+
+```html
+<script
+  async
+  src="https://cdn.knoku.com/widget.js"
+  data-project-id="YOUR_PROJECT_ID"
+></script>
+```
+
+Optional branding, consent, language, and trigger options: [Widget reference](/widget/reference/attributes).
+
+Configure visually in the [widget builder](/widget/widget-builder) and paste the generated tag.
+
+## Verify
+
+Open the deployed site. A working setup shows the widget and answers with links back to real doc URLs.
+
+See [Get started](/overview/get-started) for the full first-run checklist.

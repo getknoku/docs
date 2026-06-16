@@ -1,85 +1,118 @@
-# Attributes Reference
+# Attributes
 
-Every option you can set on the `<script>` tag and its `initKnokuWidget()` equivalent. For the full visual override surface (per-slot, per-property), see [Component Styles](/widget/reference/component-styles). For programmatic control, see [Runtime API](/widget/reference/runtime-api).
+This page lists every script-tag attribute the CDN widget reads and the matching npm option where one exists.
 
-Only `data-project-id` is required. Invalid values for enums, hex colors, and `data-language` are dropped with a console warning and the default takes over.
+Only `data-project-id` is required. Invalid enum, language, and hex color values are ignored with a console warning.
 
 ## Identity
 
-| Attribute | npm option | Type | Default |
-|---|---|---|---|
-| `data-project-id` | `projectId` | UUID | **required** |
+| Script attribute | npm option | Type | Default |
+| --- | --- | --- | --- |
+| `data-project-id` | `projectId` | UUID | Required |
 
 ## Behavior
 
-| Attribute | npm option | Type | Default |
-|---|---|---|---|
-| `data-theme` | `theme` | `auto` \| `light` \| `dark` | `auto` |
-| `data-language` | `language` | `en`, `tr`, `de`, `es`, `fr`, `it`, `pt`, `nl`, `ja`, `ko`, `zh`, `ru`, `cs` | browser-detected → `en` |
-| `data-layout` | `layout` | `overlay` \| `push` | `overlay` |
-| `data-launcher-align` | `launcherAlign` | `bottom-right` \| `bottom-left` | `bottom-right` |
-| `data-launcher-hidden` | `launcherHidden` | `true` \| `false` | `false` |
-| `data-launcher-icon` | `launcherIcon` | built-in icon name (see [Icons](/widget/reference/icons)) or — npm only — raw SVG content starting with `<` | `book-open` |
-| `data-open-selector` | `openSelector` | CSS selector | none |
+| Script attribute | npm option | Type | Default |
+| --- | --- | --- | --- |
+| `data-theme` | `theme` | `auto`, `light`, `dark` | `auto` |
+| `data-language` | `language` | `en`, `tr`, `de`, `es`, `fr`, `it`, `pt`, `nl`, `ja`, `ko`, `zh`, `ru`, `cs` | Browser-detected, then `en` |
+| `data-layout` | `layout` | `modal`, `overlay`, `push` | `modal` |
+| `data-open-selector` | `openSelector` | CSS selector | None |
+| `data-mode` | `mode` | `chat`, `deflector` | `chat` |
+| `data-form-selector` | `formSelector` | CSS selector | Required for deflector mode |
+| `data-subject-selector` | `subjectSelector` | CSS selector | None |
+| `data-body-selector` | `bodySelector` | CSS selector | None |
 
-`data-language` controls built-in UI strings (placeholders, buttons, default consent copy). It does **not** translate `data-greeting`, `data-suggested-questions`, or your custom consent text; provide those in the language you want users to see. See [Translate the widget](/widget/setups/localize).
+`data-open-selector` binds clicks on matching elements. It also watches the DOM, so triggers rendered later by React, Vue, Docusaurus, VitePress, or another client router still work.
 
-`data-layout="overlay"` (default) floats the panel above the existing layout; `data-layout="push"` adds a right margin to the page body while open so the panel looks embedded next to your content. See [Choose a panel layout](/widget/setups/panel-layout).
+`data-mode="deflector"` turns the widget into a support form deflector. It requires Business or above and `data-form-selector`. See [Support form deflector](/integrations/support-form-deflector).
+
+## Launcher
+
+| Script attribute | npm option | Type | Default |
+| --- | --- | --- | --- |
+| `data-launcher-align` | `launcherAlign` | `bottom-right`, `bottom-left` | `bottom-right` |
+| `data-launcher-hidden` | `launcherHidden` | `true`, `false` | `false` |
+| `data-launcher-text` | `launcherText` | Text | `Ask Docs` |
+| `data-launcher-subtitle` | `launcherSubtitle` | Text | Empty |
+| `data-launcher-icon` | `launcherIcon` | Built-in icon name | `book-open` |
+| `data-launcher-style` | `launcherStyle` | `pill`, `card` | `pill` |
+| `data-launcher-icon-position` | `launcherIconPosition` | `left`, `right` | `right` |
+| `data-launcher-show-icon` | `launcherShowIcon` | `true`, `false` | `true` |
+
+The default launcher is the compact `pill` style with `Ask Docs` and the `book-open` icon.
+
+The legacy `card` style displays two lines. If you switch to `card` without overriding copy, the visual fallback is `Need help?` and `Ask AI`; explicit `data-launcher-text` and `data-launcher-subtitle` always win.
 
 ## Copy
 
-| Attribute | npm option | Type | Default |
-|---|---|---|---|
-| `data-greeting` | `greeting` | text | none (greeting hidden) |
-| `data-launcher-text` | `launcherText` | text | `Need help?` |
-| `data-launcher-subtitle` | `launcherSubtitle` | text | `Ask AI` |
-| `data-suggested-questions` | `suggestedQuestions` | comma-separated text, optional `\|icon-name` per item | none |
+| Script attribute | npm option | Type | Default |
+| --- | --- | --- | --- |
+| `data-greeting` | `greeting` | Text | Empty |
+| `data-suggested-questions` | `suggestedQuestions` | Comma-separated text, optional `|icon-name` | Empty |
 
-`data-greeting` is hidden when the attribute is omitted. Set it to a value to show a centered greeting line above the chat (`How can I help?`, `Hi there!`, etc.).
+Example:
 
-`data-suggested-questions` accepts an optional `|icon-name` suffix per item to set a leading icon — e.g. `Get started|rocket,Pricing|card,API|code`. See the [icon reference](/widget/reference/icons) for the full list of built-in names. Suggestion items without `|` use the `sparkle` icon. For questions containing commas or `|`, or to pass custom SVG, use the npm path with the object form.
+```html
+data-suggested-questions="Get started|rocket,API reference|code,Pricing|card"
+```
 
-## Consent
+Questions containing commas or `|` should use the npm object form:
 
-| Attribute | npm option | Type | Default |
-|---|---|---|---|
-| `data-consent-required` | `consent.required` | `true` \| `false` | `false` |
-| `data-consent-title` | `consent.title` | text | translated default for `data-language` |
-| `data-consent-disclaimer` | `consent.disclaimer` | text | translated default for `data-language` |
-| `data-consent-accept-text` | `consent.acceptText` | text | translated default for `data-language` |
-| `data-consent-reject-text` | `consent.rejectText` | text | translated default for `data-language` |
-
-When required, `window.Knoku.ask(question)` opens the panel on the consent screen first; the question is held until the user accepts. See [Require consent before chat](/widget/setups/consent).
+```ts
+suggestedQuestions: [
+  { text: 'Install, configure, and verify the widget', icon: 'rocket' },
+  'How does pricing work?',
+]
+```
 
 ## Colors
 
-| Attribute | npm option | Type | Default |
-|---|---|---|---|
-| `data-primary-color` | `primaryColor` | `#RRGGBB` | none (sets light + dark) |
+| Script attribute | npm option | Type | Default |
+| --- | --- | --- | --- |
+| `data-primary-color` | `primaryColor` | `#RRGGBB` | Sets light and dark together |
 | `data-primary-color-light` | `primaryColorLight` | `#RRGGBB` | `#171717` |
 | `data-primary-color-dark` | `primaryColorDark` | `#RRGGBB` | `#d4d4d4` |
 
-The primary accent applies to the launcher, submit button, and focus states. For per-slot overrides (panel header, suggestion chips, hover states, dark variants), see [Component Styles](/widget/reference/component-styles).
+Primary colors affect the launcher, submit button, and focus states. For per-slot styling, use [Component styles](/widget/reference/component-styles).
 
-## Component Styles
+## Consent
 
-Per-slot, per-property visual overrides follow the pattern `data-{slot}-{property}` (with optional `{state}` and `-dark` suffix). Full slot list, allowed CSS properties, and examples live on the dedicated page: [Component Styles](/widget/reference/component-styles).
+| Script attribute | npm option | Type | Default |
+| --- | --- | --- | --- |
+| `data-consent-required` | `consent.required` | `true`, `false` | `false` |
+| `data-consent-title` | `consent.title` | Text | Language default |
+| `data-consent-disclaimer` | `consent.disclaimer` | Text | Language default |
+| `data-consent-accept-text` | `consent.acceptText` | Text | Language default |
+| `data-consent-reject-text` | `consent.rejectText` | Text | Language default |
 
-## Light and Dark Mode
+When consent is required, `Knoku.ask(question)` opens the consent screen first and submits the held question after the visitor accepts.
 
-`data-theme="auto"` (the default) detects dark mode from the host page in this order:
+## Component styles
 
-1. `<html class="dark">`: Tailwind class-based dark mode, VitePress, Nextra, Mintlify
-2. `<html data-theme="dark">`: Docusaurus
-3. OS-level `prefers-color-scheme: dark`
+Per-slot style overrides use this pattern:
 
-Only `<html>` is checked, not `<body>`. Theme changes on the host are followed live without a remount.
+```txt
+data-{slot}-{property}
+data-{slot}-{state}-{property}
+data-{slot}-{property}-dark
+data-{slot}-{state}-{property}-dark
+```
 
-`data-theme="light"` and `data-theme="dark"` force a mode regardless of host signals.
+See [Component styles](/widget/reference/component-styles) for all slots and allowed CSS properties.
 
-## npm Path
+## npm-only options
 
-Every attribute above maps to a property on the `initKnokuWidget(options)` argument. Component styles are passed as a nested `componentStyles` object (see the [Component Styles npm equivalent](/widget/reference/component-styles#npm-equivalent)).
+These options exist on `initKnokuWidget()` but are not parsed from the CDN script tag:
+
+| npm option | Purpose |
+| --- | --- |
+| `apiUrl` | Override the API origin, usually for local development |
+| `hostId` | Override the generated widget host element ID |
+| `primaryDomain` | Override the source-link base used by citations |
+| `preview` / `previewSurface` | Dashboard preview mode |
+
+## Example
 
 ```ts
 import { initKnokuWidget } from '@knoku/widget'
@@ -88,28 +121,19 @@ await initKnokuWidget({
   projectId: 'YOUR_PROJECT_ID',
   theme: 'auto',
   language: 'en',
-  layout: 'overlay',
+  layout: 'modal',
   greeting: 'How can I help?',
-  launcherText: 'Need help?',
-  launcherSubtitle: 'Ask AI',
-  launcherAlign: 'bottom-right',
-  launcherHidden: false,
+  launcherText: 'Ask Docs',
+  launcherStyle: 'pill',
+  launcherIcon: 'book-open',
   openSelector: '#ask-ai',
   suggestedQuestions: [
     { text: 'Get started', icon: 'rocket' },
     { text: 'API reference', icon: 'code' },
-    { text: 'Pricing', icon: 'card' },
-    'How does authentication work?',  // string also accepted; defaults to sparkle icon
   ],
-  primaryColorLight: '#171717',
-  primaryColorDark: '#d4d4d4',
-  launcherIcon: 'book-open',
   consent: {
     required: true,
-    title: 'AI chat consent',
-    disclaimer: 'Your question is sent to our AI to generate an answer.',
-    acceptText: 'Continue',
-    rejectText: 'Cancel',
+    title: 'Use the AI assistant?',
   },
   componentStyles: {
     'panel-header': { 'background-color': '#ffffff' },

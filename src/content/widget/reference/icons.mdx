@@ -1,24 +1,24 @@
 # Icons
 
-The widget ships **25 built-in icons** used by the launcher mark and suggested questions. Pick a name from the table below, or — npm only — pass raw inner SVG content.
+The widget ships **25 built-in icons** used by the launcher mark and suggested questions. Pick a name from the table below, or use the npm package to pass raw inner SVG content.
 
 Two places use this icon set:
 
-- **Launcher mark** — the icon on the left of the floating button. Default: `book-open`. Override via `data-launcher-icon` (built-in name) or the `launcherIcon` npm option (built-in name OR raw SVG).
-- **Suggested questions** — leading icon next to each suggestion. Default: `sparkle` (when no `|icon-name` suffix). Override via the `|icon-name` suffix in `data-suggested-questions` or the `icon` field on each suggestion object in the npm path.
+- **Launcher mark**: the icon on the floating button. Default: `book-open`. Override via `data-launcher-icon` or the `launcherIcon` npm option.
+- **Suggested questions**: leading icon next to each suggestion. Default: `sparkle`. Override via the `|icon-name` suffix in `data-suggested-questions` or the `icon` field on each suggestion object in the npm path.
 
 Unknown names fall back to the default for that surface (`book-open` for launcher, `sparkle` for suggestions).
 
 ## Built-in icons
 
 | Name | Typical use |
-|---|---|
+| --- | --- |
 | `sparkle` | default for suggestions; AI / generic |
 | `book-open` | default for launcher; documentation, knowledge |
 | `rocket` | quickstart, getting started |
 | `book` | guides, tutorials |
 | `code` | API, SDK reference |
-| `terminal` | CLI, commands |
+| `terminal` | shell commands, developer tools |
 | `package` | installation, libraries |
 | `plug` | integrations, plugins |
 | `key` | API keys, secrets |
@@ -39,7 +39,7 @@ Unknown names fall back to the default for that surface (`book-open` for launche
 | `mail` | email |
 | `help` | FAQ, support |
 
-Style: 24×24 viewBox, 1.8px stroke, `currentColor` (icon color follows the suggestion-chip text color).
+Style: 24x24 viewBox, 1.8px stroke, `currentColor` (icon color follows the suggestion-chip text color).
 
 ## Launcher icon
 
@@ -83,14 +83,14 @@ await initKnokuWidget({
     { text: 'Get started', icon: 'rocket' },
     { text: 'API reference', icon: 'code' },
     { text: 'Authentication', icon: 'key' },
-    'How does pricing work?',  // string → sparkle icon
+    'How does pricing work?',  // string uses the sparkle icon
   ],
 })
 ```
 
 ## Custom SVG (npm only)
 
-Pass raw inner SVG content as `launcherIcon` or as a suggestion's `icon` — anything that begins with `<` is treated as SVG instead of a built-in name.
+Pass raw inner SVG content as `launcherIcon` or as a suggestion's `icon`. Anything that begins with `<` is treated as SVG instead of a built-in name.
 
 ```ts
 import { initKnokuWidget } from '@knoku/widget'
@@ -121,4 +121,4 @@ Custom SVG content is filtered before render. Rejected content falls back to the
 - XML processing instructions (`<?...?>`), `<!DOCTYPE>`, `<!ENTITY>`
 - Inputs longer than 4 KB
 
-Only the script tag path is restricted to built-in names — custom SVG is intentionally not exposed via `data-*` attributes (encoding pitfalls and harder to vet at runtime). Use the npm package when you need a custom icon.
+Only the script tag path is restricted to built-in names. Custom SVG is intentionally not exposed via `data-*` attributes because it is harder to encode and vet at runtime. Use the npm package when you need a custom icon.
