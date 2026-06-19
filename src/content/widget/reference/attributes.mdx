@@ -49,7 +49,7 @@ The legacy `card` style displays two lines. If you switch to `card` without over
 | Script attribute | npm option | Type | Default |
 | --- | --- | --- | --- |
 | `data-greeting` | `greeting` | Text | Empty |
-| `data-suggested-questions` | `suggestedQuestions` | Comma-separated text, optional `|icon-name` | Empty |
+| `data-suggested-questions` | `suggestedQuestions` | Comma-separated text, optional `|icon-name`. Escape `,`, `|`, and `\` in question text as `\,`, `\|`, `\\`. | Empty |
 
 Example:
 
@@ -57,7 +57,7 @@ Example:
 data-suggested-questions="Get started|rocket,API reference|code,Pricing|card"
 ```
 
-Questions containing commas or `|` should use the npm object form:
+Questions containing commas or `|` in the script tag must escape them (`\,`, `\|`). The dashboard snippet does this automatically. Or use the npm object form:
 
 ```ts
 suggestedQuestions: [

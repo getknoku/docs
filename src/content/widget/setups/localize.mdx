@@ -79,7 +79,7 @@ Calling `initKnokuWidget()` again replaces the previous instance, which works we
 
 ## Suggested questions with commas
 
-The CDN attribute is comma-separated. If a suggested question itself contains commas, use npm:
+The CDN attribute is comma-separated. Commas inside a question must be escaped as `\,` (the dashboard does this when generating the snippet). Or use npm:
 
 ```ts
 suggestedQuestions: [
