@@ -75,7 +75,6 @@ export default async function RootLayout({ children }) {
           data-launcher-align="bottom-right"
           data-launcher-show-icon="false"
           data-launcher-text="Ask Docs"
-          data-consent-required="true"
           data-greeting="Ask about sources, integrations, the widget, or the dashboard."
           data-suggested-questions="What sources can I connect to Knoku?|plug,Can I combine multiple sources in one project?|package,How are Public and Internal sources separated?|shield"
         />
